@@ -1,0 +1,381 @@
+"use client";
+
+import { Alert } from "@/components/ui-elements/alert";
+import { type UserFormValues, type UserRecord, type UserRole } from "@/types/user";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+
+const DEFAULT_FORM: UserFormValues = {
+  nama: "",
+  email: "",
+  password: "",
+  role: "siswa",
+};
+
+type UserApiRecord = UserRecord & {
+  name?: string;
+};
+
+function formatRole(role: UserRole) {
+  return role.charAt(0).toUpperCase() + role.slice(1);
+}
+
+export function AdminUsersManager() {
+  const [users, setUsers] = useState<UserRecord[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState<string>("");
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [pendingDeleteUser, setPendingDeleteUser] = useState<UserRecord | null>(null);
+  const [formData, setFormData] = useState<UserFormValues>(DEFAULT_FORM);
+
+  async function fetchUsers() {
+    setIsLoading(true);
+
+    try {
+      const params = new URLSearchParams();
+
+      if (search.trim()) {
+        params.set("search", search.trim());
+      }
+
+      if (roleFilter) {
+        params.set("role", roleFilter);
+      }
+
+      const response = await fetch(`/api/users${params.toString() ? `?${params.toString()}` : ""}`, {
+        credentials: "include",
+      });
+
+      const payload = (await response.json()) as UserApiRecord[] | { message?: string };
+
+      if (!response.ok) {
+        throw new Error((payload as { message?: string }).message || "Gagal memuat user");
+      }
+
+      setUsers(
+        (payload as UserApiRecord[]).map((user) => ({
+          id: user.id,
+          nama: user.nama ?? user.name ?? "Tanpa Nama",
+          email: user.email,
+          role: user.role,
+        })),
+      );
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Gagal memuat user");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    void fetchUsers();
+  }, [search, roleFilter]);
+
+  const isEditing = useMemo(() => Boolean(editingUserId), [editingUserId]);
+
+  function startCreateMode() {
+    setEditingUserId(null);
+    setFormData(DEFAULT_FORM);
+  }
+
+  function startEditMode(user: UserRecord) {
+    setEditingUserId(user.id);
+    setFormData({
+      nama: user.nama,
+      email: user.email,
+      password: "",
+      role: user.role,
+    });
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!formData.nama.trim() || !formData.email.trim() || !formData.role) {
+      toast.error("Nama, email, dan role wajib diisi");
+      return;
+    }
+
+    if (!isEditing && !formData.password.trim()) {
+      toast.error("Password wajib diisi untuk user baru");
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const response = await fetch(
+        editingUserId ? `/api/users/${editingUserId}` : "/api/users",
+        {
+          method: editingUserId ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            nama: formData.nama.trim(),
+            email: formData.email.trim(),
+            role: formData.role,
+            ...(formData.password.trim() ? { password: formData.password.trim() } : {}),
+          }),
+        },
+      );
+
+      const payload = (await response.json()) as { message?: string };
+
+      if (!response.ok) {
+        throw new Error(payload.message || "Gagal menyimpan user");
+      }
+
+      toast.success(editingUserId ? "User berhasil diperbarui" : "User berhasil dibuat");
+      setFormData(DEFAULT_FORM);
+      setEditingUserId(null);
+      await fetchUsers();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Gagal menyimpan user");
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  async function handleDelete(user: UserRecord) {
+    setPendingDeleteUser(user);
+  }
+
+  async function confirmDeleteUser() {
+    if (!pendingDeleteUser) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/users/${pendingDeleteUser.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const payload = (await response.json()) as { message?: string };
+
+      if (!response.ok) {
+        throw new Error(payload.message || "Gagal menghapus user");
+      }
+
+      toast.success("User berhasil dihapus");
+      setPendingDeleteUser(null);
+      await fetchUsers();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Gagal menghapus user");
+    }
+  }
+
+  return (
+    <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+      <section className="rounded-2xl border border-stroke bg-white p-5 shadow-1 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl dark:border-dark-3 dark:bg-gray-dark dark:hover:shadow-2xl">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="text-heading-6 font-bold text-dark dark:text-white">Registered Users</h3>
+            <p className="text-sm text-dark-4 dark:text-dark-6">
+              User admin, guru, dan siswa dikelola di sini. Setiap akun sensitif harus dibuat oleh admin.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={startCreateMode}
+            className="rounded-lg bg-primary px-4 py-2 font-medium text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0"
+          >
+            New User
+          </button>
+        </div>
+
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row">
+          <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search name or email"
+            className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
+          />
+          <select
+            value={roleFilter}
+            onChange={(event) => setRoleFilter(event.target.value)}
+            className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50 sm:max-w-48"
+          >
+            <option value="">All Roles</option>
+            <option value="admin">Admin</option>
+            <option value="guru">Guru</option>
+            <option value="siswa">Siswa</option>
+          </select>
+        </div>
+
+        {pendingDeleteUser && (
+          <div className="mb-4 rounded-2xl border border-[#FFB800]/30 bg-[#FEF5DE]/70 p-4 shadow-sm transition-all duration-300 ease-out dark:bg-[#1B1B24]">
+            <Alert
+              variant="warning"
+              title="Konfirmasi hapus user"
+              description={`User ${pendingDeleteUser.nama} (${pendingDeleteUser.email}) akan dihapus permanen dari sistem.`}
+              className="border-none bg-transparent p-0 shadow-none dark:bg-transparent md:p-0"
+            />
+
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setPendingDeleteUser(null)}
+                className="rounded-lg border border-stroke px-4 py-2 font-medium text-dark transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-gray-2 hover:shadow-sm active:translate-y-0 dark:border-dark-3 dark:text-white dark:hover:bg-dark-2"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteUser}
+                className="rounded-lg bg-red-600 px-4 py-2 font-medium text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-md active:translate-y-0"
+              >
+                Hapus User
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="overflow-hidden rounded-xl border border-stroke transition-shadow duration-300 ease-out hover:shadow-lg dark:border-dark-3">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-stroke dark:divide-dark-3">
+              <thead className="bg-gray-2 dark:bg-dark-2">
+                <tr>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-dark dark:text-white">Nama</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-dark dark:text-white">Email</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-dark dark:text-white">Role</th>
+                  <th className="px-4 py-3 text-right text-sm font-semibold text-dark dark:text-white">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-stroke dark:divide-dark-3">
+                {isLoading ? (
+                  <tr>
+                    <td className="px-4 py-8 text-center text-dark-4" colSpan={4}>
+                      Loading users...
+                    </td>
+                  </tr>
+                ) : users.length === 0 ? (
+                  <tr>
+                    <td className="px-4 py-8 text-center text-dark-4" colSpan={4}>
+                      No users found.
+                    </td>
+                  </tr>
+                ) : (
+                  users.map((user) => (
+                    <tr
+                      key={user.id}
+                      className="transition-colors duration-200 ease-out hover:bg-gray-1 dark:hover:bg-dark-2/60"
+                    >
+                      <td className="px-4 py-4 font-medium text-dark dark:text-white">{user.nama}</td>
+                      <td className="px-4 py-4 text-dark-4 dark:text-dark-6">{user.email}</td>
+                      <td className="px-4 py-4">
+                        <span className="inline-flex rounded-full bg-gray-2 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-dark dark:bg-dark-2 dark:text-white">
+                          {formatRole(user.role)}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-right">
+                        <div className="inline-flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => startEditMode(user)}
+                            className="rounded-md border border-stroke px-3 py-1.5 text-sm font-medium text-dark transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:bg-gray-2 hover:shadow-sm active:translate-y-0 dark:border-dark-3 dark:text-white dark:hover:bg-dark-2"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(user)}
+                            className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-md active:translate-y-0"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-stroke bg-white p-5 shadow-1 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl dark:border-dark-3 dark:bg-gray-dark dark:hover:shadow-2xl">
+        <h3 className="text-heading-6 font-bold text-dark dark:text-white">
+          {isEditing ? "Edit User" : "Create User"}
+        </h3>
+        <p className="mb-5 text-sm text-dark-4 dark:text-dark-6">
+          {isEditing
+            ? "Perubahan berlaku setelah disimpan. Password boleh dikosongkan jika tidak diganti."
+            : "Buat akun admin, guru, atau siswa dari sini. Password tidak disimpan di frontend."}
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-dark dark:text-white">Nama</label>
+            <input
+              value={formData.nama}
+              onChange={(event) => setFormData((current) => ({ ...current, nama: event.target.value }))}
+              className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
+              placeholder="Nama lengkap"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-dark dark:text-white">Email</label>
+            <input
+              value={formData.email}
+              onChange={(event) => setFormData((current) => ({ ...current, email: event.target.value }))}
+              className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
+              placeholder="nama@sekolah.id"
+              type="email"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-dark dark:text-white">Password</label>
+            <input
+              value={formData.password}
+              onChange={(event) => setFormData((current) => ({ ...current, password: event.target.value }))}
+              className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
+              placeholder={isEditing ? "Kosongkan jika tidak diubah" : "Password awal"}
+              type="password"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-dark dark:text-white">Role</label>
+            <select
+              value={formData.role}
+              onChange={(event) =>
+                setFormData((current) => ({ ...current, role: event.target.value as UserRole }))
+              }
+              className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
+            >
+              <option value="admin">Admin</option>
+              <option value="guru">Guru</option>
+              <option value="siswa">Siswa</option>
+            </select>
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="rounded-lg bg-primary px-4 py-2 font-medium text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSaving ? "Saving..." : "Save"}
+            </button>
+            <button
+              type="button"
+              onClick={startCreateMode}
+              className="rounded-lg border border-stroke px-4 py-2 font-medium text-dark transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:bg-gray-2 hover:shadow-sm active:translate-y-0 dark:border-dark-3 dark:text-white dark:hover:bg-dark-2"
+            >
+              Reset
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  );
+}
