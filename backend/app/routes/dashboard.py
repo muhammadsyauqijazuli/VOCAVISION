@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required
-from ..models import Student, Prediction
+from ..models import Student, Prediction, User
 from ..utils import role_required
 
 
@@ -26,21 +26,52 @@ def stats():
             latest_preds[prediction.student_id] = prediction
 
     avg_score = 0.0
+    scored_students = 0
+    avg_exam_score = 0.0
+    exam_scored_students = 0
     risk_counts = {'Sangat Beresiko': 0, 'Beresiko': 0, 'Tidak Beresiko': 0}
+    top_risky_students = []
 
     if latest_preds:
         scores = [p.predicted_exam_score for p in latest_preds.values() if p.predicted_exam_score is not None]
         if scores:
             avg_score = sum(scores) / len(scores)
+            scored_students = len(scores)
 
-        for prediction in latest_preds.values():
-            if prediction.risk_status in risk_counts:
-                risk_counts[prediction.risk_status] += 1
+        ordered_predictions = sorted(
+            latest_preds.values(),
+            key=lambda item: item.predicted_exam_score if item.predicted_exam_score is not None else 10**9,
+        )
+
+        for prediction in ordered_predictions[:5]:
+            student = Student.query.get(prediction.student_id)
+            user = User.query.get(student.user_id) if student and student.user_id else None
+            top_risky_students.append({
+                'student_id': prediction.student_id,
+                'nama': student.nama_siswa if student else '-',
+                'nisn': student.nisn if student else '-',
+                'role': user.role if user else 'siswa',
+                'predicted_exam_score': round(prediction.predicted_exam_score, 2) if prediction.predicted_exam_score is not None else None,
+                'risk_status': prediction.risk_status,
+            })
+
+    student_scores = [student.exam_score for student in Student.query.all() if student.exam_score is not None]
+    if student_scores:
+        avg_exam_score = sum(student_scores) / len(student_scores)
+        exam_scored_students = len(student_scores)
+
+    for prediction in latest_preds.values():
+        if prediction.risk_status in risk_counts:
+            risk_counts[prediction.risk_status] += 1
 
     return jsonify({
         'total_siswa': total_students,
         'rata_rata_prediksi': round(avg_score, 2),
+        'jumlah_siswa_berprediksi': scored_students,
+        'rata_rata_exam_score': round(avg_exam_score, 2),
+        'jumlah_siswa_exam_score': exam_scored_students,
         'sangat_beresiko': risk_counts['Sangat Beresiko'],
         'beresiko': risk_counts['Beresiko'],
-        'tidak_beresiko': risk_counts['Tidak Beresiko']
+        'tidak_beresiko': risk_counts['Tidak Beresiko'],
+        'top_risky_students': top_risky_students,
     }), 200

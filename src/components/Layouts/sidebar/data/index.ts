@@ -31,8 +31,16 @@ export const NAV_DATA = [
         icon: Icons.Authentication,
         items: [
           {
+            title: "Dashboard Admin",
+            url: "/admin/dashboard",
+          },
+          {
             title: "User Management",
             url: "/admin/users",
+          },
+          {
+            title: "Dataset Upload",
+            url: "/admin/dataset",
           },
         ],
       },

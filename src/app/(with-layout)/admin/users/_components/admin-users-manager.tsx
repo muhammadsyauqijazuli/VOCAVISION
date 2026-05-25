@@ -24,6 +24,8 @@ export function AdminUsersManager() {
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSyncingStudents, setIsSyncingStudents] = useState(false);
+  const [syncSummary, setSyncSummary] = useState<{ total_students: number; linked_students: number; orphan_students: number } | null>(null);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("");
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
@@ -69,9 +71,33 @@ export function AdminUsersManager() {
     }
   }
 
+  async function fetchStudentSyncSummary() {
+    try {
+      const response = await fetch("/api/users/student-sync-summary", {
+        credentials: "include",
+      });
+
+      const payload = (await response.json()) as
+        | { total_students: number; linked_students: number; orphan_students: number }
+        | { message?: string };
+
+      if (!response.ok) {
+        throw new Error((payload as { message?: string }).message || "Gagal memuat ringkasan sinkronisasi");
+      }
+
+      setSyncSummary(payload as { total_students: number; linked_students: number; orphan_students: number });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Gagal memuat ringkasan sinkronisasi");
+    }
+  }
+
   useEffect(() => {
     void fetchUsers();
   }, [search, roleFilter]);
+
+  useEffect(() => {
+    void fetchStudentSyncSummary();
+  }, []);
 
   const isEditing = useMemo(() => Boolean(editingUserId), [editingUserId]);
 
@@ -169,6 +195,34 @@ export function AdminUsersManager() {
     }
   }
 
+  async function handleSyncStudentAccounts() {
+    setIsSyncingStudents(true);
+
+    try {
+      const response = await fetch("/api/users/sync-students", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const payload = (await response.json()) as { message?: string; created_users?: number; linked_students?: number; orphan_students?: number; login_note?: string };
+
+      if (!response.ok) {
+        throw new Error(payload.message || "Gagal sinkron akun siswa");
+      }
+
+      toast.success(payload.message || "Akun siswa berhasil disinkronisasi");
+      if (payload.login_note) {
+        toast.message(payload.login_note);
+      }
+
+      await Promise.all([fetchUsers(), fetchStudentSyncSummary()]);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Gagal sinkron akun siswa");
+    } finally {
+      setIsSyncingStudents(false);
+    }
+  }
+
   return (
     <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
       <section className="rounded-2xl border border-stroke bg-white p-5 shadow-1 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl dark:border-dark-3 dark:bg-gray-dark dark:hover:shadow-2xl">
@@ -187,6 +241,40 @@ export function AdminUsersManager() {
           >
             New User
           </button>
+        </div>
+
+        <div className="mb-4 rounded-2xl border border-primary/20 bg-primary/5 p-4 dark:border-primary/30 dark:bg-primary/10">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h4 className="text-lg font-bold text-dark dark:text-white">Sinkron Akun Siswa</h4>
+              <p className="text-sm text-dark-4 dark:text-dark-6">
+                Buat akun website otomatis dari data students yang belum punya user_id. Email login memakai NISN@siswa.local dan password default NISN.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleSyncStudentAccounts}
+              disabled={isSyncingStudents || Boolean(syncSummary && syncSummary.orphan_students === 0)}
+              className="rounded-lg bg-primary px-4 py-2 font-medium text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSyncingStudents ? "Menyinkronkan..." : "Sinkron Akun Siswa"}
+            </button>
+          </div>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-xl bg-white p-4 shadow-sm dark:bg-dark-2">
+              <p className="text-xs uppercase tracking-wide text-dark-4 dark:text-dark-6">Total Students</p>
+              <p className="mt-1 text-2xl font-bold text-dark dark:text-white">{syncSummary?.total_students ?? 0}</p>
+            </div>
+            <div className="rounded-xl bg-white p-4 shadow-sm dark:bg-dark-2">
+              <p className="text-xs uppercase tracking-wide text-dark-4 dark:text-dark-6">Sudah Terhubung</p>
+              <p className="mt-1 text-2xl font-bold text-dark dark:text-white">{syncSummary?.linked_students ?? 0}</p>
+            </div>
+            <div className="rounded-xl bg-white p-4 shadow-sm dark:bg-dark-2">
+              <p className="text-xs uppercase tracking-wide text-dark-4 dark:text-dark-6">Belum Punya Akun</p>
+              <p className="mt-1 text-2xl font-bold text-dark dark:text-white">{syncSummary?.orphan_students ?? 0}</p>
+            </div>
+          </div>
         </div>
 
         <div className="mb-4 flex flex-col gap-3 sm:flex-row">
