@@ -35,6 +35,10 @@ export const NAV_DATA = [
             url: "/admin/dashboard",
           },
           {
+            title: "Student Predictions",
+            url: "/admin/predictions",
+          },
+          {
             title: "User Management",
             url: "/admin/users",
           },

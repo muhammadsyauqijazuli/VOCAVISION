@@ -11,7 +11,7 @@ students_bp = Blueprint('students', __name__)
 @students_bp.route('', methods=['GET'])
 @students_bp.route('/', methods=['GET'])
 @jwt_required()
-@role_required(['guru'])
+@role_required(['admin', 'guru'])
 def get_students():
     search = request.args.get('search')
     risk_filter = request.args.get('risk_status')
