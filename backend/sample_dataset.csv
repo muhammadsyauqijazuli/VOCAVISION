@@ -1,0 +1,3 @@
+nisn,nama_siswa,jam_belajar_per_hari,presentase_kehadiran,nilai_rata_rata_raport,skor_time_management,jam_tidur,screen_time,kehadiran_pelatihan_industry,motivasi_akademik,gender,rata_rata_pemasukan_keluarga,pendidikan_terakhir_orang_tua,kerja_sampingan,study_environment,kompetensi_skill_level,industry_readiness,stress_level,exam_score
+1234567890,Test Siswa,4.5,88,80,70,7,3,75,78,Laki-laki,2 - 5 Juta,SMA/SMK,Tidak,Cukup Kondusif,Menengah,Siap,Sedang,82
+9876543210,Test Siswa 2,2.0,70,65,40,6,8,50,55,Perempuan,< 2 Juta,SMP,Ya,Kurang Kondusif,Rendah,Belum Siap,Berat,68

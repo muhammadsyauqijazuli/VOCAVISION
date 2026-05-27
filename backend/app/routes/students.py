@@ -16,6 +16,18 @@ def get_students():
     search = request.args.get('search')
     risk_filter = request.args.get('risk_status')
 
+    # Sorting and pagination params
+    sort_by = request.args.get('sort_by')  # nama, nisn, predicted_score, risk_status
+    sort_dir = request.args.get('sort_dir', 'asc')  # asc or desc
+    try:
+        page = int(request.args.get('page') or 1)
+    except Exception:
+        page = 1
+    try:
+        page_size = int(request.args.get('page_size') or 30)
+    except Exception:
+        page_size = 30
+
     query = Student.query
     if search:
         query = query.filter(
@@ -35,7 +47,45 @@ def get_students():
             'predicted_score': pred.predicted_exam_score if pred else None,
             'risk_status': pred.risk_status if pred else None
         })
-    return jsonify(result), 200
+
+    # Sorting
+    if sort_by:
+        reverse = sort_dir.lower() == 'desc'
+        if sort_by == 'nama':
+            result.sort(key=lambda x: (x.get('nama') or '').lower(), reverse=reverse)
+        elif sort_by == 'nisn':
+            def nisn_key(x):
+                v = x.get('nisn') or ''
+                digits = ''.join(c for c in v if c.isdigit())
+                try:
+                    return int(digits) if digits else v
+                except Exception:
+                    return v
+            result.sort(key=nisn_key, reverse=reverse)
+        elif sort_by == 'predicted_score':
+            def score_key(x):
+                v = x.get('predicted_score')
+                return (v is None, v if v is not None else 0)
+            result.sort(key=score_key, reverse=reverse)
+        elif sort_by == 'risk_status':
+            order = {'Sangat Beresiko': 2, 'Beresiko': 1, 'Tidak Beresiko': 0, None: -1}
+            result.sort(key=lambda x: order.get(x.get('risk_status')), reverse=reverse)
+
+    total = len(result)
+    # Pagination
+    if page_size > 0:
+        start = (page - 1) * page_size
+        end = start + page_size
+        paged = result[start:end]
+    else:
+        paged = result
+
+    return jsonify({
+        'items': paged,
+        'total': total,
+        'page': page,
+        'page_size': page_size,
+    }), 200
 
 
 @students_bp.route('/<student_id>', methods=['GET'])

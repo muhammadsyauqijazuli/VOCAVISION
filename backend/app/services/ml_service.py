@@ -5,11 +5,14 @@ import numpy as np
 import pandas as pd
 import shap
 
-# Load model, scaler, explainer saat startup
-MODEL_PATH = os.path.join(os.path.dirname(__file__), '../../ml_model/random_forest_regressor.pkl')
-SCALER_PATH = os.path.join(os.path.dirname(__file__), '../../ml_model/scaler_reg.pkl')
+# Load model, scaler, and encoders saat startup.
+# Prioritaskan artefak final terbaru yang dihasilkan notebook terakhir.
+MODEL_PATH = os.path.join(os.path.dirname(__file__), '../../ml_model/rf_regressor_final.pkl')
+SCALER_PATH = os.path.join(os.path.dirname(__file__), '../../ml_model/scaler_final.pkl')
 FEATURE_NAMES_PATH = os.path.join(os.path.dirname(__file__), '../../ml_model/feature_names.pkl')
-ENCODERS_PATH = os.path.join(os.path.dirname(__file__), '../../ml_model/encoders.pkl')
+ORDINAL_ENCODERS_PATH = os.path.join(os.path.dirname(__file__), '../../ml_model/ordinal_encoders.pkl')
+ONEHOT_ENCODER_PATH = os.path.join(os.path.dirname(__file__), '../../ml_model/onehot_encoder.pkl')
+LEGACY_ENCODERS_PATH = os.path.join(os.path.dirname(__file__), '../../ml_model/encoders.pkl')
 MODEL_VERSION = '2.0.0'
 
 # Variabel urutan fitur sesuai pelatihan
@@ -104,12 +107,36 @@ class MLService:
         self.explainer = None
         self.load_model()
 
+    @staticmethod
+    def _load_first_available(*paths):
+        for path in paths:
+            if os.path.exists(path):
+                return joblib.load(path)
+        raise FileNotFoundError(f"Tidak ada artefak model yang ditemukan: {paths}")
+
     def load_model(self):
         try:
-            self.model = joblib.load(MODEL_PATH)
-            self.scaler = joblib.load(SCALER_PATH)
+            self.model = self._load_first_available(MODEL_PATH)
+            self.scaler = self._load_first_available(SCALER_PATH)
             self.feature_names = joblib.load(FEATURE_NAMES_PATH)
-            self.encoders = joblib.load(ENCODERS_PATH)
+            ordinal_encoders = None
+            onehot_encoder = None
+
+            if os.path.exists(LEGACY_ENCODERS_PATH):
+                legacy_encoders = joblib.load(LEGACY_ENCODERS_PATH)
+                ordinal_encoders = legacy_encoders.get('ordinal_encoders', {})
+                onehot_encoder = legacy_encoders.get('onehot_encoder')
+                nominal_cols = legacy_encoders.get('nominal_cols', [])
+            else:
+                ordinal_encoders = joblib.load(ORDINAL_ENCODERS_PATH)
+                onehot_encoder = joblib.load(ONEHOT_ENCODER_PATH)
+                nominal_cols = ['gender', 'kerja_sampingan', 'industry_readiness']
+
+            self.encoders = {
+                'ordinal_encoders': ordinal_encoders or {},
+                'onehot_encoder': onehot_encoder,
+                'nominal_cols': nominal_cols,
+            }
             # Explainer is optional - will be created on demand if needed
             self.explainer = None
             print("Model loaded successfully")
@@ -312,10 +339,9 @@ class MLService:
     def get_risk_status(score):
         if score >= 75:
             return 'Tidak Beresiko'
-        elif score >= 65:
+        if score >= 65:
             return 'Beresiko'
-        else:
-            return 'Sangat Beresiko'
+        return 'Sangat Beresiko'
 
     @staticmethod
     def generate_suggestion(feature_name, impact):

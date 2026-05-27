@@ -2,23 +2,22 @@ import { AUTH_COOKIE_NAME, backendUrl, getCookieValue } from "@/lib/auth/backend
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
-export const maxDuration = 300;
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   const token = getCookieValue(request.headers.get("cookie"), AUTH_COOKIE_NAME);
 
   if (!token) {
     return NextResponse.json({ message: "Belum login" }, { status: 401 });
   }
 
-  const formData = await request.formData();
+  const url = new URL(request.url);
+  const search = url.search || "";
 
-  const response = await fetch(backendUrl("/dataset/upload"), {
-    method: "POST",
+  const response = await fetch(backendUrl(`/students${search}`), {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    body: formData,
     cache: "no-store",
   });
 

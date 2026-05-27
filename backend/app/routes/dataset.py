@@ -1,4 +1,6 @@
-from flask import Blueprint, request, jsonify
+from threading import Thread
+
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from .. import db
 from ..models import Dataset, Student, Prediction, SHAPAnalysis, User
@@ -9,6 +11,17 @@ import io
 from werkzeug.security import generate_password_hash
 
 dataset_bp = Blueprint('dataset', __name__)
+STUDENT_COLUMN_NAMES = set(Student.__table__.columns.keys())
+DATASET_JOB_PROGRESS = {}
+JOB_PHASE_LABELS = {
+    'queued': 'Menunggu diproses',
+    'validating': 'Memvalidasi file',
+    'creating_accounts': 'Membuat akun siswa',
+    'predicting': 'Menjalankan prediksi siswa',
+    'saving_results': 'Menyimpan hasil ke database',
+    'completed': 'Selesai diproses',
+    'failed': 'Pemrosesan gagal',
+}
 
 
 def clean_value(value):
@@ -116,6 +129,151 @@ def ensure_student_user_link(student):
     student.user_id = user.id
     return created_user
 
+
+def set_job_progress(dataset_id, *, phase=None, current=0, total=0, message=None, status=None):
+    progress = DATASET_JOB_PROGRESS.setdefault(dataset_id, {})
+    if phase is not None:
+        progress['phase'] = phase
+        progress['phase_label'] = JOB_PHASE_LABELS.get(phase, phase)
+    if current is not None:
+        progress['current'] = current
+    if total is not None:
+        progress['total'] = total
+    if message is not None:
+        progress['message'] = message
+    if status is not None:
+        progress['status'] = status
+    DATASET_JOB_PROGRESS[dataset_id] = progress
+    return progress
+
+
+def _process_dataset_job(app, dataset_id, rows):
+    with app.app_context():
+        ml = MLService()
+        success = 0
+        created_accounts = 0
+        errors = []
+        total_rows = len(rows)
+
+        try:
+            set_job_progress(
+                dataset_id,
+                phase='creating_accounts',
+                current=0,
+                total=total_rows,
+                message='Menyiapkan pembuatan akun siswa',
+                status='processing',
+            )
+            for idx, row in enumerate(rows):
+                try:
+                    set_job_progress(
+                        dataset_id,
+                        phase='validating',
+                        current=idx,
+                        total=total_rows,
+                        message=f'Memvalidasi baris {idx + 1} dari {total_rows}',
+                        status='processing',
+                    )
+                    raw_data = {key: clean_value(value) for key, value in row.items()}
+
+                    nisn = raw_data.get('nisn')
+                    nama = str(raw_data.get('nama_siswa') or raw_data.get('nama') or '').strip()
+
+                    if not nisn or not nama:
+                        raise ValueError('Kolom nisn dan nama_siswa wajib diisi')
+
+                    student_payload = {
+                        key: value
+                        for key, value in raw_data.items()
+                        if key in STUDENT_COLUMN_NAMES and key not in {'id', 'user_id', 'nisn', 'nama_siswa', 'created_at', 'updated_at'}
+                    }
+
+                    student, user, created_user = upsert_student_user(nisn, nama)
+                    created_accounts += 1 if created_user else 0
+
+                    set_job_progress(
+                        dataset_id,
+                        phase='predicting',
+                        current=idx,
+                        total=total_rows,
+                        message=f'Menjalankan prediksi untuk baris {idx + 1} dari {total_rows}',
+                        status='processing',
+                    )
+
+                    for col, val in student_payload.items():
+                        setattr(student, col, val)
+
+                    db.session.commit()
+
+                    result = ml.predict(student_payload)
+                    pred = Prediction(
+                        student_id=student.id,
+                        predicted_exam_score=result['predicted_exam_score'],
+                        risk_status=result['risk_status'],
+                        model_version=result.get('model_version', '2.0.0')
+                    )
+                    db.session.add(pred)
+                    db.session.flush()
+
+                    set_job_progress(
+                        dataset_id,
+                        phase='saving_results',
+                        current=idx + 1,
+                        total=total_rows,
+                        message=f'Sedang menyimpan hasil baris {idx + 1} dari {total_rows}',
+                        status='processing',
+                    )
+
+                    for shap_item in result['shap_analysis']:
+                        db.session.add(SHAPAnalysis(
+                            prediction_id=pred.id,
+                            feature_name=shap_item['feature_name'],
+                            impact_value=shap_item['impact_value'],
+                            suggestion_text=shap_item['suggestion_text']
+                        ))
+
+                    db.session.commit()
+                    success += 1
+
+                    dataset_entry = Dataset.query.get(dataset_id)
+                    if dataset_entry:
+                        dataset_entry.row_count = success
+                        db.session.commit()
+                except Exception as row_error:
+                    db.session.rollback()
+                    errors.append({'row': idx, 'error': str(row_error)})
+
+            dataset_entry = Dataset.query.get(dataset_id)
+            if dataset_entry:
+                dataset_entry.row_count = success
+                dataset_entry.status = 'completed'
+                db.session.commit()
+            set_job_progress(
+                dataset_id,
+                phase='completed',
+                current=success,
+                total=total_rows,
+                message=f'Selesai memproses {success} dari {total_rows} baris',
+                status='completed',
+            )
+        except Exception as job_error:
+            db.session.rollback()
+            dataset_entry = Dataset.query.get(dataset_id)
+            if dataset_entry:
+                dataset_entry.status = 'failed'
+                db.session.commit()
+            set_job_progress(
+                dataset_id,
+                phase='failed',
+                current=success,
+                total=total_rows,
+                message=str(job_error),
+                status='failed',
+            )
+            current_app.logger.exception('Dataset job failed: %s', job_error)
+        finally:
+            db.session.remove()
+
 @dataset_bp.route('/upload', methods=['POST'])
 @jwt_required()
 @role_required(['admin'])
@@ -141,92 +299,54 @@ def upload_dataset():
         else:
             raise ValueError('Format file tidak didukung')
 
-        # Proses batch
-        ml = MLService()
-        success = 0
-        errors = []
-        created_accounts = 0
-        for idx, row in df.iterrows():
-            try:
-                raw_data = {key: clean_value(value) for key, value in row.to_dict().items()}
-
-                nisn = raw_data.get('nisn')
-                nama = str(raw_data.get('nama_siswa') or raw_data.get('nama') or '').strip()
-
-                if not nisn or not nama:
-                    raise ValueError('Kolom nisn dan nama_siswa wajib diisi')
-
-                student_payload = {
-                    key: value
-                    for key, value in raw_data.items()
-                    if key not in {'nisn', 'nama_siswa', 'nama', 'email'} and hasattr(Student, key)
-                }
-
-                # upsert_student_user expects (nisn, nama_siswa)
-                student, user, created_user = upsert_student_user(nisn, nama)
-                created_accounts += 1 if created_user else 0
-
-                for col, val in student_payload.items():
-                    setattr(student, col, val)
-
-                db.session.commit()
-
-                try:
-                    result = ml.predict(student_payload)
-                    pred = Prediction(
-                        student_id=student.id,
-                        predicted_exam_score=result['predicted_exam_score'],
-                        risk_status=result['risk_status'],
-                        model_version=result.get('model_version', '2.0.0')
-                    )
-                    db.session.add(pred)
-                    db.session.flush()
-                    for shap in result['shap_analysis']:
-                        db.session.add(SHAPAnalysis(
-                            prediction_id=pred.id,
-                            feature_name=shap['feature_name'],
-                            impact_value=shap['impact_value'],
-                            suggestion_text=shap['suggestion_text']
-                        ))
-                    db.session.commit()
-                except Exception as prediction_error:
-                    db.session.rollback()
-                    errors.append({'row': idx, 'error': f'Prediksi gagal: {str(prediction_error)}'})
-                    success += 1
-                    continue
-                success += 1
-            except Exception as e:
-                db.session.rollback()
-                errors.append({'row': idx, 'error': str(e)})
-
-        orphan_students = Student.query.filter(Student.user_id.is_(None)).all()
-        for student in orphan_students:
-            try:
-                ensure_student_user_link(student)
-            except Exception as link_error:
-                errors.append({'row': student.nisn, 'error': f'Link user gagal: {str(link_error)}'})
-
+        rows = df.to_dict(orient='records')
+        dataset_entry.row_count = 0
         db.session.commit()
-        dataset_entry.row_count = success
-        dataset_entry.status = 'completed'
-        db.session.commit()
+
+        set_job_progress(
+            dataset_id=dataset_entry.id,
+            phase='queued',
+            current=0,
+            total=len(rows),
+            message='Dataset diterima oleh server',
+            status='processing',
+        )
+
+        app = current_app._get_current_object()
+        worker = Thread(target=_process_dataset_job, args=(app, dataset_entry.id, rows), daemon=True)
+        worker.start()
+
         return jsonify({
-            'message': f'Diproses: {success} sukses, {len(errors)} error',
-            'created_accounts': created_accounts,
-            'errors': errors,
-            'account_note': 'Akun siswa dibuat/diperbarui dengan password default NISN.',
-        }), 201
+            'message': 'Dataset diterima. Proses pembuatan akun dan prediksi sedang berjalan.',
+            'dataset_id': dataset_entry.id,
+            'total_rows': len(rows),
+            'status': 'processing',
+        }), 202
     except Exception as e:
         dataset_entry.status = 'failed'
         db.session.commit()
         return jsonify({'message': f'Gagal: {str(e)}'}), 500
 
 
-    @dataset_bp.route('/_debug_file', methods=['GET'])
-    def debug_file():
-        import inspect, sys
-        try:
-            src = inspect.getsourcefile(sys.modules[__name__])
-        except Exception:
-            src = None
-        return jsonify({'module': __name__, 'file': src}), 200
+@dataset_bp.route('/<dataset_id>', methods=['GET'])
+@jwt_required()
+@role_required(['admin'])
+def get_dataset_status(dataset_id):
+    dataset = Dataset.query.get(dataset_id)
+    if not dataset:
+        return jsonify({'message': 'Dataset tidak ditemukan'}), 404
+
+    progress = DATASET_JOB_PROGRESS.get(dataset_id, {})
+
+    return jsonify({
+        'id': dataset.id,
+        'file_name': dataset.file_name,
+        'row_count': dataset.row_count or 0,
+        'status': dataset.status,
+        'phase': progress.get('phase', dataset.status),
+        'phase_label': progress.get('phase_label', JOB_PHASE_LABELS.get(dataset.status, dataset.status)),
+        'current': progress.get('current', dataset.row_count or 0),
+        'total': progress.get('total', dataset.row_count or 0),
+        'message': progress.get('message'),
+        'uploaded_at': dataset.uploaded_at.isoformat() if dataset.uploaded_at else None,
+    }), 200
