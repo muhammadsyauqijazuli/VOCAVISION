@@ -6,67 +6,51 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+// Prisma schema retained only for optional NextAuth usage.
+// Primary application DB is managed by Flask/SQLAlchemy (backend/app/models.py).
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false) @map("email_verified")
-  image         String?
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  phoneNumber   Int?      @map("phone_number")
-  bio           String?
-  sessions      Session[]
-  accounts      Account[]
-
-  @@unique([email])
-  @@map("user")
+  id        String   @id @default(uuid())
+  name      String?
+  email     String   @unique
+  emailVerified Boolean @default(false)
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions  Session[]
+  accounts  Account[]
 }
 
 model Session {
-  id        String   @id
-  expiresAt DateTime @map("expires_at")
-  token     String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  ipAddress String?  @map("ip_address")
-  userAgent String?  @map("user_agent")
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId], map: "session_userId_idx")
-  @@map("session")
+  id        String   @id @default(uuid())
+  sessionToken String @unique
+  expires   DateTime
+  userId    String
+  user      User     @relation(fields:[userId], references:[id], onDelete: Cascade)
 }
 
 model Account {
-  id                    String    @id
-  accountId             String    @map("account_id")
-  providerId            String    @map("provider_id")
-  userId                String    @map("user_id")
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String?   @map("access_token")
-  refreshToken          String?   @map("refresh_token")
-  idToken               String?   @map("id_token")
-  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
-  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
-  scope                 String?
-  password              String?
-  createdAt             DateTime  @default(now()) @map("created_at")
-  updatedAt             DateTime  @updatedAt @map("updated_at")
+  id                 String @id @default(uuid())
+  userId             String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  user               User   @relation(fields:[userId], references:[id], onDelete: Cascade)
 
-  @@index([userId], map: "account_userId_idx")
-  @@map("account")
+  @@unique([provider, providerAccountId])
 }
 
-model Verification {
-  id         String   @id
+model VerificationToken {
   identifier String
-  value      String
-  expiresAt  DateTime @map("expires_at")
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+  token      String @unique
+  expires    DateTime
 
-  @@index([identifier], map: "verification_identifier_idx")
-  @@map("verification")
+  @@unique([identifier, token])
 }
+

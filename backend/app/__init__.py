@@ -32,6 +32,7 @@ def create_app():
     from .routes.interventions import interventions_bp
     from .routes.dashboard import dashboard_bp
     from .routes.dataset import dataset_bp
+    from .routes.export import export_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(users_bp, url_prefix='/api/users')
@@ -40,5 +41,6 @@ def create_app():
     app.register_blueprint(interventions_bp, url_prefix='/api/interventions')
     app.register_blueprint(dashboard_bp, url_prefix='/api/dashboard')
     app.register_blueprint(dataset_bp, url_prefix='/api/dataset')
+    app.register_blueprint(export_bp, url_prefix='/api/export')
 
     return app

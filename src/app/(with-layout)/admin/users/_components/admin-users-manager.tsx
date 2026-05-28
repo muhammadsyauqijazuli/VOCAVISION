@@ -41,6 +41,9 @@ export function AdminUsersManager({
   const [syncSummary, setSyncSummary] = useState<{ total_students: number; linked_students: number; orphan_students: number } | null>(null);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>(scopeRole ?? "");
+  const [page, setPage] = useState<number>(1);
+  const [perPage] = useState<number>(25);
+  const [totalItems, setTotalItems] = useState<number>(0);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [pendingDeleteUser, setPendingDeleteUser] = useState<UserRecord | null>(null);
@@ -65,6 +68,15 @@ export function AdminUsersManager({
         params.set("role", roleFilter);
       }
 
+      // pagination params
+      if (perPage && perPage > 0) {
+        params.set('page', String(page));
+        params.set('page_size', String(perPage));
+      } else {
+        // perPage === 0 means 'All'
+        params.set('page_size', '0');
+      }
+
       const response = await fetch(`/api/users${params.toString() ? `?${params.toString()}` : ""}`, {
         credentials: "include",
       });
@@ -75,19 +87,27 @@ export function AdminUsersManager({
         throw new Error((payload as { message?: string }).message || "Gagal memuat user");
       }
 
-      const normalizedUsers = (payload as UserApiRecord[]).map((user) => ({
-        id: user.id,
-        nama: user.nama ?? user.name ?? "Tanpa Nama",
-        email: user.email,
-        role: user.role,
-      }));
-
-      // Enforce page-level role scope even if backend returns mixed roles.
-      setUsers(
-        scopeRole
-          ? normalizedUsers.filter((user) => user.role === scopeRole)
-          : normalizedUsers,
-      );
+      // payload may be either paged object or legacy array
+      if (Array.isArray(payload)) {
+        const normalizedUsers = (payload as UserApiRecord[]).map((user) => ({
+          id: user.id,
+          nama: user.nama ?? user.name ?? "Tanpa Nama",
+          email: user.email,
+          role: user.role,
+        }));
+        setUsers(scopeRole ? normalizedUsers.filter((u) => u.role === scopeRole) : normalizedUsers);
+        setTotalItems(normalizedUsers.length);
+      } else {
+        const pagePayload = payload as any;
+        const normalizedUsers = (pagePayload.items ?? []).map((user: UserApiRecord) => ({
+          id: user.id,
+          nama: user.nama ?? user.name ?? "Tanpa Nama",
+          email: user.email,
+          role: user.role,
+        }));
+        setUsers(scopeRole ? normalizedUsers.filter((u) => u.role === scopeRole) : normalizedUsers);
+        setTotalItems(pagePayload.total ?? normalizedUsers.length);
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Gagal memuat user");
     } finally {
@@ -95,11 +115,23 @@ export function AdminUsersManager({
     }
   }
 
+  function handleSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setPage(1);
+    void fetchUsers();
+  }
+
   async function fetchStudentSyncSummary() {
     try {
-      const response = await fetch("/api/users/student-sync-summary", {
+      // backend exposes /api/users/sync/student-summary and also root?action=student-sync-summary
+      let response = await fetch("/api/users/sync/student-summary", {
         credentials: "include",
       });
+
+      if (!response.ok) {
+        // fallback to action-based endpoint
+        response = await fetch('/api/users?action=student-sync-summary', { credentials: 'include' });
+      }
 
       const payload = (await response.json()) as
         | { total_students: number; linked_students: number; orphan_students: number }
@@ -116,8 +148,17 @@ export function AdminUsersManager({
   }
 
   useEffect(() => {
-    void fetchUsers();
+    // when search or role filter changes, reset to first page
+    setPage(1);
+    // fetch will be triggered by page effect
+    // avoid double fetching here
+    // void fetchUsers();
   }, [search, roleFilter, scopeRole]);
+
+  useEffect(() => {
+    // refetch when page changes (perPage is fixed at 25)
+    void fetchUsers();
+  }, [page]);
 
   useEffect(() => {
     if (!scopeRole) {
@@ -431,24 +472,32 @@ export function AdminUsersManager({
         )}
 
         <div className="mb-4 flex flex-col gap-3 sm:flex-row">
-          <input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search name or email"
-            className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
-          />
-          {!scopeRole && (
-            <select
-              value={roleFilter}
-              onChange={(event) => setRoleFilter(event.target.value)}
-              className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50 sm:max-w-48"
+          <form onSubmit={handleSearchSubmit} className="flex w-full items-center gap-3">
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Cari nama atau email"
+              className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
+            />
+            <button
+              type="submit"
+              className="shrink-0 rounded-lg bg-primary px-4 py-2 font-medium text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0"
             >
-              <option value="">All Roles</option>
-              <option value="admin">Admin</option>
-              <option value="guru">Guru</option>
-              <option value="siswa">Siswa</option>
-            </select>
-          )}
+              Search
+            </button>
+          </form>
+            {!scopeRole && (
+              <select
+                value={roleFilter}
+                onChange={(event) => setRoleFilter(event.target.value)}
+                className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50 sm:max-w-48"
+              >
+                <option value="">All Roles</option>
+                <option value="admin">Admin</option>
+                <option value="guru">Guru</option>
+                <option value="siswa">Siswa</option>
+              </select>
+            )}
         </div>
 
         {pendingDeleteUser && (
@@ -539,6 +588,18 @@ export function AdminUsersManager({
                 )}
               </tbody>
             </table>
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-4 px-5 py-4">
+          <div className="text-sm text-dark-4 dark:text-dark-6">Menampilkan {perPage === 0 ? totalItems : Math.min(totalItems, perPage)} dari {totalItems} entri</div>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="rounded-lg border border-stroke px-3 py-2 text-sm dark:border-dark-3 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-4">Prev</button>
+            <div className="px-3 py-2 text-sm">Halaman {page} dari {perPage === 0 ? 1 : Math.max(1, Math.ceil(totalItems / perPage))}</div>
+            <button onClick={() => setPage((p) => {
+              if (perPage === 0) return p;
+              const last = Math.max(1, Math.ceil(totalItems / perPage));
+              return Math.min(last, p + 1);
+            })} disabled={perPage !== 0 && page >= Math.max(1, Math.ceil(totalItems / perPage))} className="rounded-lg border border-stroke px-3 py-2 text-sm dark:border-dark-3 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-4">Next</button>
           </div>
         </div>
       </section>

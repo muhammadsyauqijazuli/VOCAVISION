@@ -75,11 +75,6 @@ Backend API akan dibuat menggunakan:
 - REST API pattern
 - *Note: Inferensi Machine Learning (file .pkl) mungkin memerlukan microservice Python terpisah (FastAPI/Flask) atau bridge Python-Node, namun semua rute komunikasi klien tetap melalui Next.js API.*
 
-## Database
-
-- MySQL (Production)
-- ORM: Prisma
-
 ## Machine Learning
 
 Model sudah tersedia dan tidak perlu dilatih ulang dari frontend.

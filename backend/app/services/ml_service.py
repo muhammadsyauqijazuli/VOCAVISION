@@ -100,6 +100,113 @@ MODEL_STRESS_MAP = {
     'berat': 2,
 }
 
+FEATURE_ALIAS_RULES = [
+    ('jam_belajar_per_hari', ('jam_belajar_per_hari', 'jam_belajar_perhari', 'jam_belajar')),
+    ('presentase_kehadiran', ('presentase_kehadiran', 'persentase_kehadiran', 'kehadiran_kelas', 'attendance')),
+    ('nilai_rata_rata_raport', ('nilai_rata_rata_raport', 'nilai_rata_rata_rapor', 'raport', 'rapor')),
+    ('skor_time_management', ('skor_time_management', 'skor_time', 'time_management')),
+    ('jam_tidur', ('jam_tidur', 'tidur', 'sleep')),
+    ('screen_time', ('screen_time', 'screen', 'layar')),
+    ('kehadiran_pelatihan_industry', ('kehadiran_pelatihan_industry', 'kehadiran_pelatihan_industri', 'pelatihan_industry', 'pelatihan_industri')),
+    ('motivasi_akademik', ('motivasi_akademik', 'motivasi')),
+    ('rata_rata_pemasukan_keluarga', ('rata_rata_pemasukan_keluarga', 'pendapatan_keluarga', 'pemasukan_keluarga', 'income')),
+    ('pendidikan_terakhir_orang_tua', ('pendidikan_terakhir_orang_tua', 'edukasi_ortu', 'pendidikan_orang_tua', 'education')),
+    ('kerja_sampingan', ('kerja_sampingan', 'side_job', 'work')),
+    ('study_environment', ('study_environment', 'lingkungan_belajar', 'environment')),
+    ('kompetensi_skill_level', ('kompetensi_skill_level', 'skill_level', 'kompetensi', 'skill')),
+    ('industry_readiness', ('industry_readiness', 'industry_ready', 'industry readiness', 'readiness')),
+    ('stress_level', ('stress_level', 'stres', 'stress')),
+    ('gender', ('gender',)),
+]
+
+FEATURE_GUIDANCE = {
+    'jam_belajar_per_hari': {
+        'label': 'Jam belajar per hari',
+        'modifiable': True,
+        'action': 'menambah 1-2 jam belajar terstruktur per hari dan memecah materi menjadi sesi fokus',
+    },
+    'presentase_kehadiran': {
+        'label': 'Kehadiran kelas',
+        'modifiable': True,
+        'action': 'meningkatkan kehadiran kelas dan mengejar materi yang tertinggal secara rutin',
+    },
+    'nilai_rata_rata_raport': {
+        'label': 'Nilai rata-rata raport',
+        'modifiable': True,
+        'action': 'fokus pada remedial, latihan soal, dan evaluasi mata pelajaran yang paling lemah',
+    },
+    'skor_time_management': {
+        'label': 'Time management',
+        'modifiable': True,
+        'action': 'membuat jadwal harian, menentukan prioritas tugas, dan membatasi distraksi',
+    },
+    'jam_tidur': {
+        'label': 'Jam tidur',
+        'modifiable': True,
+        'action': 'menjaga tidur 7-8 jam per malam dan membangun rutinitas malam yang konsisten',
+    },
+    'screen_time': {
+        'label': 'Screen time',
+        'modifiable': True,
+        'action': 'membatasi screen time sebelum tidur dan mengurangi distraksi digital saat belajar',
+    },
+    'kehadiran_pelatihan_industry': {
+        'label': 'Kehadiran pelatihan industry',
+        'modifiable': True,
+        'action': 'mengikuti pelatihan industry secara konsisten dan mencatat materi praktik yang relevan',
+    },
+    'motivasi_akademik': {
+        'label': 'Motivasi akademik',
+        'modifiable': True,
+        'action': 'menetapkan target belajar harian kecil, lalu mengevaluasi progres secara berkala',
+    },
+    'rata_rata_pemasukan_keluarga': {
+        'label': 'Pemasukan keluarga',
+        'modifiable': False,
+        'action': 'memanfaatkan beasiswa, sumber belajar gratis, atau dukungan sekolah untuk menutup hambatan',
+    },
+    'pendidikan_terakhir_orang_tua': {
+        'label': 'Pendidikan orang tua',
+        'modifiable': False,
+        'action': 'menguatkan dukungan belajar melalui guru, mentor, atau materi tambahan yang terarah',
+    },
+    'kerja_sampingan': {
+        'label': 'Kerja sampingan',
+        'modifiable': True,
+        'action': 'mengatur ulang beban kerja agar tidak mengganggu jam belajar utama dan waktu istirahat',
+    },
+    'study_environment': {
+        'label': 'Lingkungan belajar',
+        'modifiable': True,
+        'action': 'mencari ruang belajar yang lebih kondusif dan meminimalkan gangguan di sekitar',
+    },
+    'kompetensi_skill_level': {
+        'label': 'Kompetensi skill',
+        'modifiable': True,
+        'action': 'melatih skill dasar secara bertahap melalui modul, latihan praktik, dan umpan balik guru',
+    },
+    'industry_readiness': {
+        'label': 'Industry readiness',
+        'modifiable': True,
+        'action': 'mengikuti simulasi karier, project kecil, atau pelatihan yang relevan dengan dunia industri',
+    },
+    'stress_level': {
+        'label': 'Stress level',
+        'modifiable': True,
+        'action': 'mengelola stres dengan istirahat terjadwal, teknik relaksasi, dan dukungan konseling bila perlu',
+    },
+    'gender': {
+        'label': 'Gender',
+        'modifiable': False,
+        'action': 'memusatkan intervensi pada faktor yang dapat diubah seperti jam belajar, kehadiran, tidur, dan stres',
+    },
+    'default': {
+        'label': 'Faktor ini',
+        'modifiable': True,
+        'action': 'meninjau ulang kebiasaan belajar, kehadiran, dan rutinitas harian yang paling dekat dengan faktor tersebut',
+    },
+}
+
 class MLService:
     def __init__(self):
         self.model = None
@@ -221,6 +328,17 @@ class MLService:
         }
         return stress_map.get(value, 'Sedang')
 
+    @staticmethod
+    def _resolve_feature_key(feature_name):
+        lowered = str(feature_name).lower()
+
+        for canonical_name, aliases in FEATURE_ALIAS_RULES:
+            for alias in aliases:
+                if alias in lowered:
+                    return canonical_name
+
+        return 'default'
+
     def _encode_payload(self, normalized):
         feature_names = self.feature_names or []
 
@@ -328,6 +446,8 @@ class MLService:
                 'suggestion_text': suggestion
             })
 
+        shap_list.sort(key=lambda item: abs(float(item['impact_value'])), reverse=True)
+
         return {
             'predicted_exam_score': round(prediction, 2),
             'risk_status': risk,
@@ -345,10 +465,42 @@ class MLService:
 
     @staticmethod
     def generate_suggestion(feature_name, impact):
-        # Sederhana, bisa dikembangkan dengan lookup table
-        if 'jam_belajar' in feature_name and impact < 0:
-            return "Tingkatkan jam belajar agar nilaimu lebih optimal"
-        elif 'screen_time' in feature_name and impact > 0:
-            return "Kurangi screen time untuk meningkatkan konsentrasi"
+        try:
+            abs_imp = abs(float(impact))
+        except Exception:
+            abs_imp = 0.0
+
+        if abs_imp >= 2.0:
+            severity = 'high'
+        elif abs_imp >= 0.5:
+            severity = 'medium'
         else:
-            return f"Perhatikan faktor {feature_name}"
+            severity = 'low'
+
+        positive = impact > 0
+        guidance = FEATURE_GUIDANCE.get(
+            MLService._resolve_feature_key(feature_name),
+            FEATURE_GUIDANCE['default'],
+        )
+
+        label = guidance['label']
+        action = guidance['action']
+        modifiable = guidance['modifiable']
+
+        if positive:
+            if modifiable:
+                return f"{label} berkontribusi positif terhadap skor prediksi. Pertahankan kebiasaan ini dan ulangi pola yang sama secara konsisten."
+            return f"{label} saat ini menjadi sinyal penjelas yang mendukung prediksi. Fokus intervensi tetap pada faktor yang dapat diubah seperti jam belajar, kehadiran, tidur, dan stres."
+
+        if modifiable:
+            if severity == 'high':
+                return f"{label} menurunkan skor secara signifikan. Disarankan {action}."
+            if severity == 'medium':
+                return f"{label} masih menekan skor. Cobalah {action}."
+            return f"{label} memberi tekanan ringan pada prediksi. Mulai dengan {action}."
+
+        if severity == 'high':
+            return f"{label} menunjukkan sinyal risiko yang cukup besar. Karena faktor ini tidak mudah diubah, fokuskan intervensi pada kebiasaan belajar, kehadiran, dan istirahat yang lebih bisa dikendalikan."
+        if severity == 'medium':
+            return f"{label} ikut memengaruhi prediksi. Intervensi paling efektif tetap diarahkan ke faktor yang dapat diubah, sambil memanfaatkan {action}."
+        return f"{label} memberi pengaruh ringan pada prediksi. Fokus utama tetap pada perbaikan rutinitas yang lebih langsung berdampak pada hasil belajar."

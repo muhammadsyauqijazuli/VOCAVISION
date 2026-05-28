@@ -94,21 +94,53 @@ def get_users():
     if action == 'student-sync-summary':
         return jsonify(get_student_sync_summary()), 200
 
-    # Fitur filter & pencarian
+    # Fitur filter, pencarian, dan pagination
     role_filter = request.args.get('role')
     search = request.args.get('search')
+    # pagination params
+    try:
+        page = int(request.args.get('page') or 1)
+    except Exception:
+        page = 1
+    try:
+        page_size = int(request.args.get('page_size') or request.args.get('limit') or 25)
+    except Exception:
+        page_size = 25
+
+    # sanitize page_size: treat negatives as default and cap to a reasonable maximum
+    if page_size < 0:
+        page_size = 25
+    page_size = min(page_size, 1000)
+
     query = User.query
     if role_filter:
         query = query.filter_by(role=role_filter)
     if search:
         query = query.filter(User.nama.ilike(f'%{search}%') | User.email.ilike(f'%{search}%'))
-    users = query.all()
-    return jsonify([{
-        'id': u.id,
-        'nama': u.nama,
-        'email': u.email,
-        'role': u.role
-    } for u in users]), 200
+
+    # Ensure deterministic ordering for pagination (newest users first)
+    query = query.order_by(User.created_at.desc())
+
+    total = query.count()
+
+    # If page_size <= 0 treat as 'all'
+    if page_size and page_size > 0:
+        offset = (max(page, 1) - 1) * page_size
+        users_q = query.offset(offset).limit(page_size).all()
+    else:
+        users_q = query.all()
+
+    return jsonify({
+        'items': [{
+            'id': u.id,
+            'nama': u.nama,
+            'email': u.email,
+            'role': u.role
+        } for u in users_q],
+        'total': total,
+        'page': page,
+        'page_size': page_size,
+    }), 200
 
 @users_bp.route('/', methods=['POST'])
 @jwt_required()

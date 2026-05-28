@@ -1,5 +1,6 @@
 import { Header } from "@/components/Layouts/header";
 import { Sidebar } from "@/components/Layouts/sidebar";
+import { SidebarProvider } from "@/components/Layouts/sidebar/sidebar-context";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { type PropsWithChildren } from "react";
@@ -9,16 +10,18 @@ export default async function WithLayout({ children }: PropsWithChildren) {
   const role = session?.user?.role ?? "siswa";
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar role={role} />
+    <SidebarProvider>
+      <div className="flex min-h-screen">
+        <Sidebar role={role} />
 
-      <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
-        <Header />
+        <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
+          <Header />
 
-        <main className="isolate mx-auto w-full max-w-(--breakpoint-2xl) overflow-hidden p-4 md:p-6 2xl:p-10">
-          {children}
-        </main>
+          <main className="isolate mx-auto w-full max-w-(--breakpoint-2xl) overflow-hidden p-4 md:p-6 2xl:p-10">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }
