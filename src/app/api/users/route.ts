@@ -20,6 +20,7 @@ async function forwardToBackend(request: Request) {
   }
 
   const url = new URL(backendUrl("/users/"));
+  url.search = incomingUrl.search;
 
   const response = await fetch(url, {
     method: request.method,

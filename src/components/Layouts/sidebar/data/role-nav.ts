@@ -24,13 +24,7 @@ const ADMIN_NAV: NavSection[] = [
         items: [],
       },
       {
-        title: "Manajemen Guru",
-        url: "/admin/users",
-        icon: Icons.User,
-        items: [],
-      },
-      {
-        title: "Manajemen Siswa",
+        title: "Manajemen Users",
         url: "/admin/users",
         icon: Icons.User,
         items: [],
@@ -45,12 +39,6 @@ const ADMIN_NAV: NavSection[] = [
         title: "Hasil Prediksi Siswa",
         url: "/admin/predictions",
         icon: Icons.PieChart,
-        items: [],
-      },
-      {
-        title: "Pengaturan Sistem",
-        url: "/pages/settings",
-        icon: Icons.Alphabet,
         items: [],
       },
       {

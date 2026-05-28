@@ -2,7 +2,8 @@
 
 import { Alert } from "@/components/ui-elements/alert";
 import { type UserFormValues, type UserRecord, type UserRole } from "@/types/user";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { toast } from "sonner";
 
 const DEFAULT_FORM: UserFormValues = {
@@ -10,6 +11,13 @@ const DEFAULT_FORM: UserFormValues = {
   email: "",
   password: "",
   role: "siswa",
+};
+
+type AdminUsersManagerProps = {
+  scopeRole?: Extract<UserRole, "guru" | "siswa">;
+  title?: string;
+  description?: string;
+  showStudentSyncPanel?: boolean;
 };
 
 type UserApiRecord = UserRecord & {
@@ -20,17 +28,26 @@ function formatRole(role: UserRole) {
   return role.charAt(0).toUpperCase() + role.slice(1);
 }
 
-export function AdminUsersManager() {
+export function AdminUsersManager({
+  scopeRole,
+  title = "Registered Users",
+  description = "User dikelola pada halaman ini. Hanya role sesuai halaman yang ditampilkan.",
+  showStudentSyncPanel = true,
+}: AdminUsersManagerProps) {
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isSyncingStudents, setIsSyncingStudents] = useState(false);
   const [syncSummary, setSyncSummary] = useState<{ total_students: number; linked_students: number; orphan_students: number } | null>(null);
   const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState<string>("");
+  const [roleFilter, setRoleFilter] = useState<string>(scopeRole ?? "");
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [pendingDeleteUser, setPendingDeleteUser] = useState<UserRecord | null>(null);
-  const [formData, setFormData] = useState<UserFormValues>(DEFAULT_FORM);
+  const [formData, setFormData] = useState<UserFormValues>({
+    ...DEFAULT_FORM,
+    role: scopeRole ?? DEFAULT_FORM.role,
+  });
 
   async function fetchUsers() {
     setIsLoading(true);
@@ -42,7 +59,9 @@ export function AdminUsersManager() {
         params.set("search", search.trim());
       }
 
-      if (roleFilter) {
+      if (scopeRole) {
+        params.set("role", scopeRole);
+      } else if (roleFilter) {
         params.set("role", roleFilter);
       }
 
@@ -56,13 +75,18 @@ export function AdminUsersManager() {
         throw new Error((payload as { message?: string }).message || "Gagal memuat user");
       }
 
+      const normalizedUsers = (payload as UserApiRecord[]).map((user) => ({
+        id: user.id,
+        nama: user.nama ?? user.name ?? "Tanpa Nama",
+        email: user.email,
+        role: user.role,
+      }));
+
+      // Enforce page-level role scope even if backend returns mixed roles.
       setUsers(
-        (payload as UserApiRecord[]).map((user) => ({
-          id: user.id,
-          nama: user.nama ?? user.name ?? "Tanpa Nama",
-          email: user.email,
-          role: user.role,
-        })),
+        scopeRole
+          ? normalizedUsers.filter((user) => user.role === scopeRole)
+          : normalizedUsers,
       );
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Gagal memuat user");
@@ -93,21 +117,48 @@ export function AdminUsersManager() {
 
   useEffect(() => {
     void fetchUsers();
-  }, [search, roleFilter]);
+  }, [search, roleFilter, scopeRole]);
 
   useEffect(() => {
-    void fetchStudentSyncSummary();
-  }, []);
+    if (!scopeRole) {
+      return;
+    }
 
-  const isEditing = useMemo(() => Boolean(editingUserId), [editingUserId]);
+    setRoleFilter(scopeRole);
+    setFormData((current) => ({ ...current, role: scopeRole }));
+  }, [scopeRole]);
+
+  useEffect(() => {
+    if (!showStudentSyncPanel) {
+      return;
+    }
+
+    void fetchStudentSyncSummary();
+  }, [showStudentSyncPanel]);
+
+  const isEditing = Boolean(editingUserId);
+
+  function closeFormModal() {
+    setIsFormModalOpen(false);
+    setEditingUserId(null);
+    setFormData({
+      ...DEFAULT_FORM,
+      role: scopeRole ?? DEFAULT_FORM.role,
+    });
+  }
 
   function startCreateMode() {
     setEditingUserId(null);
-    setFormData(DEFAULT_FORM);
+    setIsFormModalOpen(true);
+    setFormData({
+      ...DEFAULT_FORM,
+      role: scopeRole ?? DEFAULT_FORM.role,
+    });
   }
 
   function startEditMode(user: UserRecord) {
     setEditingUserId(user.id);
+    setIsFormModalOpen(true);
     setFormData({
       nama: user.nama,
       email: user.email,
@@ -156,8 +207,7 @@ export function AdminUsersManager() {
       }
 
       toast.success(editingUserId ? "User berhasil diperbarui" : "User berhasil dibuat");
-      setFormData(DEFAULT_FORM);
-      setEditingUserId(null);
+      closeFormModal();
       await fetchUsers();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Gagal menyimpan user");
@@ -223,14 +273,115 @@ export function AdminUsersManager() {
     }
   }
 
+  const formModal = isFormModalOpen
+    ? createPortal(
+        <div className="fixed inset-0 z-[99999] flex h-screen w-screen items-center justify-center bg-black/60 px-4 py-6 backdrop-blur-sm">
+          <div
+            className="absolute inset-0"
+            aria-hidden="true"
+            onClick={closeFormModal}
+          />
+
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={isEditing ? "Edit User" : "Create User"}
+            className="relative z-[100000] w-full max-w-2xl overflow-hidden rounded-2xl border border-stroke bg-white shadow-6 dark:border-dark-3 dark:bg-gray-dark"
+          >
+            <div className="flex items-start justify-between border-b border-stroke px-5 py-4 dark:border-dark-3">
+              <div>
+                <h3 className="text-heading-6 font-bold text-dark dark:text-white">
+                  {isEditing ? "Edit User" : "Create User"}
+                </h3>
+                <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">
+                  {isEditing
+                    ? "Perubahan berlaku setelah disimpan. Password boleh dikosongkan jika tidak diganti."
+                    : "Buat akun admin, guru, atau siswa dari sini. Password tidak disimpan di frontend."}
+                </p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4 px-5 py-5">
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-dark dark:text-white">Nama</label>
+                <input
+                  value={formData.nama}
+                  onChange={(event) => setFormData((current) => ({ ...current, nama: event.target.value }))}
+                  className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
+                  placeholder="Nama lengkap"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-dark dark:text-white">Email</label>
+                <input
+                  value={formData.email}
+                  onChange={(event) => setFormData((current) => ({ ...current, email: event.target.value }))}
+                  className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
+                  placeholder="nama@sekolah.id"
+                  type="email"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-dark dark:text-white">Password</label>
+                <input
+                  value={formData.password}
+                  onChange={(event) => setFormData((current) => ({ ...current, password: event.target.value }))}
+                  className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
+                  placeholder={isEditing ? "Kosongkan jika tidak diubah" : "Password awal"}
+                  type="password"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-dark dark:text-white">Role</label>
+                <select
+                  value={formData.role}
+                  onChange={(event) =>
+                    setFormData((current) => ({ ...current, role: event.target.value as UserRole }))
+                  }
+                  disabled={Boolean(scopeRole)}
+                  className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
+                >
+                  <option value="admin">Admin</option>
+                  <option value="guru">Guru</option>
+                  <option value="siswa">Siswa</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={closeFormModal}
+                  className="rounded-lg border border-stroke px-4 py-2 font-medium text-dark transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:bg-gray-2 hover:shadow-sm active:translate-y-0 dark:border-dark-3 dark:text-white dark:hover:bg-dark-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="rounded-lg bg-primary px-4 py-2 font-medium text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isSaving ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>,
+        document.body,
+      )
+    : null;
+
   return (
-    <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr]">
+    <>
+    <div className="grid gap-6">
       <section className="rounded-2xl border border-stroke bg-white p-5 shadow-1 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl dark:border-dark-3 dark:bg-gray-dark dark:hover:shadow-2xl">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-heading-6 font-bold text-dark dark:text-white">Registered Users</h3>
+            <h3 className="text-heading-6 font-bold text-dark dark:text-white">{title}</h3>
             <p className="text-sm text-dark-4 dark:text-dark-6">
-              User admin, guru, dan siswa dikelola di sini. Setiap akun sensitif harus dibuat oleh admin.
+              {description}
             </p>
           </div>
 
@@ -243,7 +394,8 @@ export function AdminUsersManager() {
           </button>
         </div>
 
-        <div className="mb-4 rounded-2xl border border-primary/20 bg-primary/5 p-4 dark:border-primary/30 dark:bg-primary/10">
+        {showStudentSyncPanel && scopeRole !== "guru" && (
+          <div className="mb-4 rounded-2xl border border-primary/20 bg-primary/5 p-4 dark:border-primary/30 dark:bg-primary/10">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h4 className="text-lg font-bold text-dark dark:text-white">Sinkron Akun Siswa</h4>
@@ -275,7 +427,8 @@ export function AdminUsersManager() {
               <p className="mt-1 text-2xl font-bold text-dark dark:text-white">{syncSummary?.orphan_students ?? 0}</p>
             </div>
           </div>
-        </div>
+          </div>
+        )}
 
         <div className="mb-4 flex flex-col gap-3 sm:flex-row">
           <input
@@ -284,16 +437,18 @@ export function AdminUsersManager() {
             placeholder="Search name or email"
             className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
           />
-          <select
-            value={roleFilter}
-            onChange={(event) => setRoleFilter(event.target.value)}
-            className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50 sm:max-w-48"
-          >
-            <option value="">All Roles</option>
-            <option value="admin">Admin</option>
-            <option value="guru">Guru</option>
-            <option value="siswa">Siswa</option>
-          </select>
+          {!scopeRole && (
+            <select
+              value={roleFilter}
+              onChange={(event) => setRoleFilter(event.target.value)}
+              className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50 sm:max-w-48"
+            >
+              <option value="">All Roles</option>
+              <option value="admin">Admin</option>
+              <option value="guru">Guru</option>
+              <option value="siswa">Siswa</option>
+            </select>
+          )}
         </div>
 
         {pendingDeleteUser && (
@@ -387,83 +542,9 @@ export function AdminUsersManager() {
           </div>
         </div>
       </section>
-
-      <section className="rounded-2xl border border-stroke bg-white p-5 shadow-1 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl dark:border-dark-3 dark:bg-gray-dark dark:hover:shadow-2xl">
-        <h3 className="text-heading-6 font-bold text-dark dark:text-white">
-          {isEditing ? "Edit User" : "Create User"}
-        </h3>
-        <p className="mb-5 text-sm text-dark-4 dark:text-dark-6">
-          {isEditing
-            ? "Perubahan berlaku setelah disimpan. Password boleh dikosongkan jika tidak diganti."
-            : "Buat akun admin, guru, atau siswa dari sini. Password tidak disimpan di frontend."}
-        </p>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-dark dark:text-white">Nama</label>
-            <input
-              value={formData.nama}
-              onChange={(event) => setFormData((current) => ({ ...current, nama: event.target.value }))}
-              className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
-              placeholder="Nama lengkap"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-dark dark:text-white">Email</label>
-            <input
-              value={formData.email}
-              onChange={(event) => setFormData((current) => ({ ...current, email: event.target.value }))}
-              className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
-              placeholder="nama@sekolah.id"
-              type="email"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-dark dark:text-white">Password</label>
-            <input
-              value={formData.password}
-              onChange={(event) => setFormData((current) => ({ ...current, password: event.target.value }))}
-              className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
-              placeholder={isEditing ? "Kosongkan jika tidak diubah" : "Password awal"}
-              type="password"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-dark dark:text-white">Role</label>
-            <select
-              value={formData.role}
-              onChange={(event) =>
-                setFormData((current) => ({ ...current, role: event.target.value as UserRole }))
-              }
-              className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition-all duration-200 ease-out hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
-            >
-              <option value="admin">Admin</option>
-              <option value="guru">Guru</option>
-              <option value="siswa">Siswa</option>
-            </select>
-          </div>
-
-          <div className="flex gap-3 pt-2">
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="rounded-lg bg-primary px-4 py-2 font-medium text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isSaving ? "Saving..." : "Save"}
-            </button>
-            <button
-              type="button"
-              onClick={startCreateMode}
-              className="rounded-lg border border-stroke px-4 py-2 font-medium text-dark transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:bg-gray-2 hover:shadow-sm active:translate-y-0 dark:border-dark-3 dark:text-white dark:hover:bg-dark-2"
-            >
-              Reset
-            </button>
-          </div>
-        </form>
-      </section>
     </div>
+
+    {formModal}
+    </>
   );
 }

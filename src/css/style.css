@@ -383,6 +383,20 @@
   body {
     @apply bg-gray-2 text-dark-5 dark:text-dark-6 dark:bg-[#020D1A];
   }
+
+  button,
+  input[type='button'],
+  input[type='submit'],
+  input[type='reset'] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  input[type='button']:disabled,
+  input[type='submit']:disabled,
+  input[type='reset']:disabled {
+    cursor: not-allowed;
+  }
 }
 
 /* third-party libraries CSS */
