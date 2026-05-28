@@ -89,23 +89,23 @@ export function AdminUsersManager({
 
       // payload may be either paged object or legacy array
       if (Array.isArray(payload)) {
-        const normalizedUsers = (payload as UserApiRecord[]).map((user) => ({
+        const normalizedUsers: UserRecord[] = (payload as UserApiRecord[]).map((user) => ({
           id: user.id,
           nama: user.nama ?? user.name ?? "Tanpa Nama",
           email: user.email,
           role: user.role,
         }));
-        setUsers(scopeRole ? normalizedUsers.filter((u) => u.role === scopeRole) : normalizedUsers);
+        setUsers(scopeRole ? normalizedUsers.filter((u: UserRecord) => u.role === scopeRole) : normalizedUsers);
         setTotalItems(normalizedUsers.length);
       } else {
         const pagePayload = payload as any;
-        const normalizedUsers = (pagePayload.items ?? []).map((user: UserApiRecord) => ({
+        const normalizedUsers: UserRecord[] = (pagePayload.items ?? []).map((user: UserApiRecord) => ({
           id: user.id,
           nama: user.nama ?? user.name ?? "Tanpa Nama",
           email: user.email,
           role: user.role,
         }));
-        setUsers(scopeRole ? normalizedUsers.filter((u) => u.role === scopeRole) : normalizedUsers);
+        setUsers(scopeRole ? normalizedUsers.filter((u: UserRecord) => u.role === scopeRole) : normalizedUsers);
         setTotalItems(pagePayload.total ?? normalizedUsers.length);
       }
     } catch (error) {
@@ -316,7 +316,7 @@ export function AdminUsersManager({
 
   const formModal = isFormModalOpen
     ? createPortal(
-        <div className="fixed inset-0 z-[99999] flex h-screen w-screen items-center justify-center bg-black/60 px-4 py-6 backdrop-blur-sm">
+        <div className="fixed inset-0 z-99999 flex h-screen w-screen items-center justify-center bg-black/60 px-4 py-6 backdrop-blur-sm">
           <div
             className="absolute inset-0"
             aria-hidden="true"
@@ -327,7 +327,7 @@ export function AdminUsersManager({
             role="dialog"
             aria-modal="true"
             aria-label={isEditing ? "Edit User" : "Create User"}
-            className="relative z-[100000] w-full max-w-2xl overflow-hidden rounded-2xl border border-stroke bg-white shadow-6 dark:border-dark-3 dark:bg-gray-dark"
+            className="relative z-100000 w-full max-w-2xl overflow-hidden rounded-2xl border border-stroke bg-white shadow-6 dark:border-dark-3 dark:bg-gray-dark"
           >
             <div className="flex items-start justify-between border-b border-stroke px-5 py-4 dark:border-dark-3">
               <div>
