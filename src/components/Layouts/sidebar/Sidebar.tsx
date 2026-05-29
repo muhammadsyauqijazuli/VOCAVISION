@@ -61,11 +61,11 @@ export function Sidebar({ role }: SidebarProps) {
         />
       )}
 
-        <aside
+      <aside
         className={cn(
-          "w-72 overflow-hidden border-r border-gray-200 bg-white transition-width duration-200 ease-linear dark:border-gray-800 dark:bg-gray-dark",
-          isMobile ? "fixed bottom-0 top-0 z-50" : "sticky top-0 h-screen",
-          isOpen ? "w-full" : "w-0",
+          "overflow-hidden border-r border-gray-200 bg-white transition-width duration-200 ease-linear dark:border-gray-800 dark:bg-gray-dark",
+          isMobile ? "fixed bottom-0 top-0 z-50" : "sticky top-0 h-screen shrink-0",
+          isMobile ? (isOpen ? "w-72 max-w-[85vw]" : "w-0") : "w-72",
         )}
         aria-label="Main navigation"
         aria-hidden={!isOpen}
