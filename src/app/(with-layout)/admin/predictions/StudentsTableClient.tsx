@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { RiskBadge } from "@/components/guru/RiskBadge";
 
 type Student = {
   id: string;
@@ -91,25 +92,6 @@ export default function StudentsTableClient({ initialSearch = "" }: Props) {
     return Number(score).toFixed(2);
   }
 
-  function riskBadge(status: string | null, score: number | null) {
-    const base = "inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold";
-    // Preserve explicit very-high risk visual
-    if (status === "Sangat Beresiko") {
-      return <span className={`${base} bg-red-600 text-white`}><span className="h-2 w-2 rounded-full bg-white/80"/></span>;
-    }
-    // New rule: show yellow if predicted score is below 80 (but not the very-high risk above)
-    if (score !== null && !Number.isNaN(score) && Number(score) < 80) {
-      return <span className={`${base} bg-yellow-500 text-white`}><span className="h-2 w-2 rounded-full bg-white/80"/></span>;
-    }
-    if (status === "Beresiko") {
-      return <span className={`${base} bg-yellow-500 text-white`}><span className="h-2 w-2 rounded-full bg-white/80"/></span>;
-    }
-    if (status === "Tidak Beresiko") {
-      return <span className={`${base} bg-emerald-200 text-emerald-800`}><span className="h-2 w-2 rounded-full bg-emerald-800"/></span>;
-    }
-    return <span className={`${base} bg-gray-200 text-dark-4`}><span className="h-2 w-2 rounded-full bg-gray-400"/></span>;
-  }
-
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
@@ -163,7 +145,9 @@ export default function StudentsTableClient({ initialSearch = "" }: Props) {
                   <td className="px-5 py-4 font-medium text-dark dark:text-white">{student.nama}</td>
                   <td className="px-5 py-4 text-dark-4 dark:text-dark-6 hidden sm:table-cell">{student.nisn}</td>
                   <td className="px-5 py-4 text-dark-4 dark:text-dark-6">{formatScore(student.predicted_score)}</td>
-                  <td className="px-5 py-4 hidden sm:table-cell">{riskBadge(student.risk_status, student.predicted_score)}</td>
+                  <td className="px-5 py-4 hidden sm:table-cell">
+                    <RiskBadge status={student.risk_status} score={student.predicted_score} />
+                  </td>
                 </tr>
               ))
             ) : (

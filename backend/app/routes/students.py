@@ -44,8 +44,30 @@ def get_students():
             'id': s.id,
             'nama': s.nama_siswa,
             'nisn': s.nisn,
+            'jam_belajar_per_hari': s.jam_belajar_per_hari,
+            'presentase_kehadiran': s.presentase_kehadiran,
+            'nilai_rata_rata_raport': s.nilai_rata_rata_raport,
+            'skor_time_management': s.skor_time_management,
+            'jam_tidur': s.jam_tidur,
+            'screen_time': s.screen_time,
+            'kehadiran_pelatihan_industry': s.kehadiran_pelatihan_industry,
+            'motivasi_akademik': s.motivasi_akademik,
+            'exam_score': s.exam_score,
+            'gender': s.gender,
+            'rata_rata_pemasukan_keluarga': s.rata_rata_pemasukan_keluarga,
+            'pendidikan_terakhir_orang_tua': s.pendidikan_terakhir_orang_tua,
+            'kerja_sampingan': s.kerja_sampingan,
+            'study_environment': s.study_environment,
+            'kompetensi_skill_level': s.kompetensi_skill_level,
+            'industry_readiness': s.industry_readiness,
+            'stress_level': s.stress_level,
             'predicted_score': pred.predicted_exam_score if pred else None,
-            'risk_status': pred.risk_status if pred else None
+            'risk_status': pred.risk_status if pred else None,
+            'latest_prediction': {
+                'predicted_exam_score': pred.predicted_exam_score if pred else None,
+                'risk_status': pred.risk_status if pred else None,
+                'created_at': pred.created_at.isoformat() if pred and pred.created_at else None,
+            } if pred else None,
         })
 
     # Sorting

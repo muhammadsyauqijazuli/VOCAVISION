@@ -3,6 +3,7 @@ import { backendUrl } from "@/lib/auth/backend-auth";
 import { RiskDistributionChart } from "@/components/admin/risk-distribution-chart";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { RiskBadge } from "@/components/guru/RiskBadge";
 
 type DashboardStats = {
   total_siswa?: number;
@@ -150,17 +151,7 @@ export default async function AdminDashboardPage() {
                           {student.predicted_exam_score ?? "-"}
                         </td>
                         <td className="px-4 py-4">
-                          <span
-                            className={
-                              student.risk_status === "Sangat Beresiko"
-                                ? "inline-flex rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white"
-                                : student.risk_status === "Beresiko"
-                                  ? "inline-flex rounded-full bg-brand-warning px-3 py-1 text-xs font-semibold text-white"
-                                  : "inline-flex rounded-full bg-brand-accent-2 px-3 py-1 text-xs font-semibold text-brand-header"
-                            }
-                          >
-                            {student.risk_status}
-                          </span>
+                            <RiskBadge status={student.risk_status} score={student.predicted_exam_score} />
                         </td>
                       </tr>
                     ))}
