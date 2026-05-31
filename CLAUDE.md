@@ -1,11 +1,11 @@
 ```markdown
 # CLAUDE.md
 
-# SINTESA – Sistem Intelijen Evaluasi Siswa
+# VOCAVISION – Vocational Student Predictive Analytics
 
 ## Project Overview
 
-SINTESA adalah aplikasi analitik pendidikan berbasis web yang digunakan untuk memprediksi dan memantau performa akademik siswa menggunakan model Machine Learning Random Forest yang telah dilatih sebelumnya.
+VOCAVISION adalah aplikasi analitik pendidikan berbasis web yang digunakan untuk memprediksi dan memantau performa akademik siswa menggunakan model Machine Learning Random Forest yang telah dilatih sebelumnya.
 
 Sistem dirancang untuk membantu sekolah mengidentifikasi siswa berisiko lebih awal melalui prediksi nilai ujian, analisis faktor penyebab menggunakan SHAP, serta pencatatan intervensi akademik yang dapat dilakukan oleh guru.
 
@@ -413,7 +413,7 @@ Saat menghasilkan kode:
 4. Gunakan App Router Next.js 16.
 5. Pisahkan logic fetching data (melalui fetch API ke Route Handlers) dan presentation.
 6. Semua halaman dan komponen harus siap diintegrasikan dengan skema database dan endpoints yang tercantum di atas.
-7. Nama aplikasi selalu **SINTESA** (bukan EduPredict).
+7. Nama aplikasi selalu **VOCAVISION** (bukan EduPredict).
 8. Status risiko ada 3: **Sangat Beresiko**, **Beresiko**, **Tidak Beresiko**.
 9. Password hash menggunakan bcrypt, tidak disimpan dalam teks biasa.
 10. Semua ID menggunakan UUID (CHAR(36) di MySQL).

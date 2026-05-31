@@ -19,7 +19,7 @@ type SavedIntervention = {
 };
 
 export function InterventionForm({ studentId, studentName, recommendations = [] }: InterventionFormProps) {
-  const storageKey = `sintesa-interventions-${studentId}`;
+  const storageKey = `vocavision-interventions-${studentId}`;
   const [note, setNote] = useState("");
   const [savedCount, setSavedCount] = useState(0);
   const [message, setMessage] = useState<string | null>(null);

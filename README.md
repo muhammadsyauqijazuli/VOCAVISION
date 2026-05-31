@@ -1,24 +1,15 @@
-# NextAdmin - Next.js Admin Dashboard Template and Components
+# VOCAVISION - Vocational Student Predictive Analytics
 
-**NextAdmin** is a Free, open-source Next.js admin dashboard toolkit featuring 200+ UI components and templates that come with pre-built elements, components, pages, high-quality design, integrations, and much more to help you create powerful admin dashboards with ease.
-
-[![nextjs admin template](https://cdn.pimjo.com/nextadmin-2.png)](https://nextadmin.co/)
+VOCAVISION is a vocational student predictive analytics platform for early risk detection, performance insight, and academic intervention.
 
 ---
-## Useful Links
-- [Website](https://nextadmin.co/)
-- [Live Demo](https://demo.nextadmin.co/)
-- [Docs](https://nextadmin.co/docs)
-- [Components](https://nextadmin.co/components)
+## Project Links
+- Local app: http://localhost:3000
+- Backend API: http://localhost:5000
 
 ## Quick start
 
 You'll need Node.js installed. Then:
-
-```bash
-git clone https://github.com/NextAdminHQ/nextjs-admin-dashboard.git
-cd nextjs-admin-dashboard
-```
 
 Install dependencies — pick your poison:
 
@@ -45,15 +36,9 @@ Open [http://localhost:3000](http://localhost:3000) and you're good.
 
 Works out of the box on Vercel and Netlify.
 
-## Docs & components
+## Notes
 
-Full docs at [nextadmin.co/docs](https://nextadmin.co/docs). Component-level docs (props, examples, code) live under [/docs/components](https://nextadmin.co/docs) — accordions, charts, tables, form layouts, maps, modals, and everything else.
-
-## Community
-
-- [Discord](https://pimjo.com/community)
-- [X / Twitter](https://twitter.com/PimjoHQ)
-- [GitHub](https://github.com/NextAdminHQ/)
+This workspace ships with a Flask backend and a Next.js frontend. Use the backend README for API and database setup details.
 
 
 ## Update Logs

@@ -214,8 +214,8 @@ export default function UpdateDataPage() {
     <div className="min-h-screen bg-brand-light px-4 py-6 text-slate-900 md:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6">
         <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-          <div className="bg-gradient-to-r from-brand-header via-brand-accent to-teal-500 px-6 py-8 text-white md:px-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/80">SINTESA</p>
+          <div className="bg-linear-to-r from-brand-header via-brand-accent to-teal-500 px-6 py-8 text-white md:px-8">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/80">VOCAVISION</p>
             <h1 className="mt-2 text-3xl font-bold md:text-4xl">Perbarui Data & Prediksi</h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-white/90 md:text-base">
               Isi 17 variabel gaya hidup dan akademik untuk mengirim data ke proxy Next.js, memanggil model Flask, lalu menampilkan prediksi skor ujian dan insight SHAP yang lebih mudah dibaca.
@@ -404,7 +404,7 @@ export default function UpdateDataPage() {
               )}
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-brand-header to-brand-accent p-6 text-white shadow-sm">
+            <div className="rounded-3xl border border-slate-200 bg-linear-to-br from-brand-header to-brand-accent p-6 text-white shadow-sm">
               <h3 className="text-lg font-semibold">Catatan integrasi</h3>
               <p className="mt-2 text-sm leading-6 text-white/85">
                 Proxy Next.js menjaga frontend tetap seragam, menyembunyikan URL Flask, dan menghindari masalah CORS. Untuk database, implementasi ini tetap menganggap Flask SQLAlchemy sebagai sumber kebenaran utama.

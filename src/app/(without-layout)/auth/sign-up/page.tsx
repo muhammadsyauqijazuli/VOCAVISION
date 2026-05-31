@@ -1,4 +1,5 @@
 import Signup from "@/components/Auth/Signup";
+import { Logo } from "@/components/logo";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,7 +12,7 @@ export default function SignUp() {
   return (
     <div className="flex min-h-screen flex-wrap items-center">
       <div className="w-full xl:w-1/2">
-        <div className="mx-auto w-[570px] p-4 sm:p-12.5 xl:p-15">
+        <div className="mx-auto w-142.5 p-4 sm:p-12.5 xl:p-15">
           <Signup />
         </div>
       </div>
@@ -19,20 +20,7 @@ export default function SignUp() {
       <div className="hidden w-full p-6 xl:block xl:w-1/2">
         <div className="custom-gradient-1 overflow-hidden rounded-2xl px-15 pt-12.5 dark:bg-dark-2! dark:bg-none">
           <Link className="mb-10 inline-block" href="/">
-            <Image
-              className="hidden dark:block"
-              src={"/images/logo/logo.svg"}
-              alt="Logo"
-              width={176}
-              height={32}
-            />
-            <Image
-              className="dark:hidden"
-              src={"/images/logo/logo-dark.svg"}
-              alt="Logo"
-              width={176}
-              height={32}
-            />
+            <Logo />
           </Link>
           <p className="mb-3 text-xl font-medium text-dark dark:text-white">
             Create your account
@@ -42,7 +30,7 @@ export default function SignUp() {
             Start your journey
           </h1>
 
-          <p className="w-full max-w-[375px] font-medium text-dark-4 dark:text-dark-6">
+          <p className="w-full max-w-93.75 font-medium text-dark-4 dark:text-dark-6">
             Create an account with email and password to begin.
           </p>
 

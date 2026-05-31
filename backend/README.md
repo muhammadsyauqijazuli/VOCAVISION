@@ -45,8 +45,8 @@ pip install -r requirements.txt
 
 ### 5. Siapkan database
 
-1. Buat database MySQL, misalnya `sintesa`.
-2. Import file `migrations/sintesa-database.sql` ke database tersebut.
+1. Buat database MySQL, misalnya `vocavision`.
+2. Import file SQL dump di folder `migrations` ke database tersebut.
 3. Pastikan user database punya akses baca/tulis ke database.
 
 ### 6. Atur environment variable
@@ -56,7 +56,7 @@ Backend membaca konfigurasi dari file `.env` di folder `backend/`. Minimal isi y
 ```env
 SECRET_KEY=dev-secret
 JWT_SECRET_KEY=jwt-secret
-DATABASE_URL=mysql+pymysql://root:password@localhost/sintesa
+DATABASE_URL=mysql+pymysql://root:password@localhost/vocavision
 ```
 
 Sesuaikan `DATABASE_URL` dengan kredensial MySQL Anda.

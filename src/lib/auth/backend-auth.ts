@@ -21,8 +21,8 @@ export type SessionResult = {
   error: { message: string } | null;
 };
 
-export const AUTH_COOKIE_NAME = "sintesa_access_token";
-export const ROLE_COOKIE_NAME = "sintesa_role";
+export const AUTH_COOKIE_NAME = "vocavision_access_token";
+export const ROLE_COOKIE_NAME = "vocavision_role";
 
 export function getBackendApiBase() {
   return (

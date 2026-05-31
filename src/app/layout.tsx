@@ -12,11 +12,11 @@ import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | NextAdmin - Next.js Dashboard Kit",
-    default: "NextAdmin - Next.js Dashboard Kit",
+    template: "%s | VOCAVISION – Vocational Student Predictive Analytics",
+    default: "VOCAVISION – Vocational Student Predictive Analytics",
   },
   description:
-    "Next.js admin dashboard toolkit with 200+ templates, UI components, and integrations for fast dashboard development.",
+    "VOCAVISION is a vocational student predictive analytics platform for risk detection, insight generation, and academic intervention.",
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {

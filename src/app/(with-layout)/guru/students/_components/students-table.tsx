@@ -186,6 +186,12 @@ export function StudentsTable() {
                 >
                   Buka Detail
                 </Link>
+                <Link
+                  href={`/guru/reports/${student.id}`}
+                  className="mt-3 inline-flex w-full items-center justify-center rounded-lg border border-stroke px-4 py-2.5 text-sm font-semibold text-dark transition hover:bg-gray-1 dark:border-dark-3 dark:text-white dark:hover:bg-dark-2"
+                >
+                  Buka Laporan
+                </Link>
               </article>
             ))
           ) : (
@@ -231,12 +237,20 @@ export function StudentsTable() {
                         <RiskBadge status={student.risk_status} score={student.predicted_score} />
                       </td>
                       <td className="px-5 py-4">
-                        <Link
-                          href={`/guru/students/${student.id}`}
-                          className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:opacity-95"
-                        >
-                          Detail
-                        </Link>
+                        <div className="flex flex-wrap gap-2">
+                          <Link
+                            href={`/guru/students/${student.id}`}
+                            className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:opacity-95"
+                          >
+                            Detail
+                          </Link>
+                          <Link
+                            href={`/guru/reports/${student.id}`}
+                            className="inline-flex items-center rounded-lg border border-stroke px-4 py-2 text-sm font-semibold text-dark transition hover:bg-gray-1 dark:border-dark-3 dark:text-white dark:hover:bg-dark-2"
+                          >
+                            Laporan
+                          </Link>
+                        </div>
                       </td>
                     </tr>
                   ))

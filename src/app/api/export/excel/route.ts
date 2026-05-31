@@ -23,6 +23,10 @@ function copyResponseHeaders(response: Response) {
   return headers;
 }
 
+function studentFileName(studentId: string | null) {
+  return studentId ? `laporan-siswa-${studentId}.xlsx` : "laporan_siswa.xlsx";
+}
+
 export async function GET(request: Request) {
   const cookieHeader = request.headers.get("cookie");
   const token = getCookieValue(cookieHeader, AUTH_COOKIE_NAME);
@@ -37,6 +41,7 @@ export async function GET(request: Request) {
   try {
     const incoming = new URL(request.url);
     const qs = incoming.search;
+    const studentId = incoming.searchParams.get("student_id");
     const resp = await fetch(backendUrl(`/export/excel${qs}`), {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
@@ -44,9 +49,7 @@ export async function GET(request: Request) {
     });
 
     const headers = copyResponseHeaders(resp);
-    if (!headers.has("content-disposition")) {
-      headers.set("content-disposition", 'attachment; filename="laporan_prediksi.xlsx"');
-    }
+    headers.set("content-disposition", `attachment; filename="${studentFileName(studentId)}"`);
 
     if (resp.body) {
       return new Response(resp.body, { status: resp.status, headers });

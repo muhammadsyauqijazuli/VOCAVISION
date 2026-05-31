@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { getRoleHomePath } from "@/lib/auth/backend-auth";
 import { getRiskStatus } from "@/lib/utils";
 import { headers } from "next/headers";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 type StudentDetailResponse = {
@@ -322,6 +323,14 @@ export default async function GuruStudentDetailPage({ params }: PageProps) {
             <p className="mt-1 text-3xl font-bold text-dark dark:text-white">{formatScore(predictedScore)}</p>
             <div className="mt-3">
               <RiskBadge status={riskStatus} score={predictedScore} />
+            </div>
+            <div className="mt-4 flex justify-start lg:justify-end">
+              <Link
+                href={`/guru/reports/${student.id}`}
+                className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:opacity-95"
+              >
+                Buka Laporan Siswa
+              </Link>
             </div>
           </div>
         </div>
