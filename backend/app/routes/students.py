@@ -28,39 +28,51 @@ def get_students():
     except Exception:
         page_size = 30
 
+    # Build base query with optional search
     query = Student.query
     if search:
         query = query.filter(
             Student.nama_siswa.ilike(f'%{search}%') | Student.nisn.ilike(f'%{search}%')
         )
 
-    students = query.all()
+    # Get total count for pagination before applying limits
+    try:
+        total = query.count()
+    except Exception:
+        # fallback if count fails
+        total = None
+
+    # Apply sorting at DB level for supported fields
+    if sort_by == 'nama':
+        query = query.order_by(Student.nama_siswa.asc() if sort_dir.lower() == 'asc' else Student.nama_siswa.desc())
+    elif sort_by == 'nisn':
+        # nisn stored as string; sort lexicographically
+        query = query.order_by(Student.nisn.asc() if sort_dir.lower() == 'asc' else Student.nisn.desc())
+
+    # DB-level pagination to avoid loading all students into memory
+    start = (page - 1) * page_size
+    students = query.offset(start).limit(page_size).all()
+
+    # Fetch latest predictions for the students on this page in a single query (avoid N+1)
+    student_ids = [s.id for s in students]
+    latest_preds = {}
+    if student_ids:
+        preds_q = Prediction.query.filter(Prediction.student_id.in_(student_ids)).order_by(Prediction.student_id, Prediction.created_at.desc()).all()
+        for p in preds_q:
+            if p.student_id not in latest_preds:
+                latest_preds[p.student_id] = p
+
+    # Build result (keep payload small for list view)
     result = []
     for s in students:
-        pred = Prediction.query.filter_by(student_id=s.id).order_by(Prediction.created_at.desc()).first()
+        pred = latest_preds.get(s.id)
         if risk_filter and pred and pred.risk_status != risk_filter:
             continue
         result.append({
             'id': s.id,
             'nama': s.nama_siswa,
             'nisn': s.nisn,
-            'jam_belajar_per_hari': s.jam_belajar_per_hari,
-            'presentase_kehadiran': s.presentase_kehadiran,
-            'nilai_rata_rata_raport': s.nilai_rata_rata_raport,
-            'skor_time_management': s.skor_time_management,
-            'jam_tidur': s.jam_tidur,
-            'screen_time': s.screen_time,
-            'kehadiran_pelatihan_industry': s.kehadiran_pelatihan_industry,
-            'motivasi_akademik': s.motivasi_akademik,
             'exam_score': s.exam_score,
-            'gender': s.gender,
-            'rata_rata_pemasukan_keluarga': s.rata_rata_pemasukan_keluarga,
-            'pendidikan_terakhir_orang_tua': s.pendidikan_terakhir_orang_tua,
-            'kerja_sampingan': s.kerja_sampingan,
-            'study_environment': s.study_environment,
-            'kompetensi_skill_level': s.kompetensi_skill_level,
-            'industry_readiness': s.industry_readiness,
-            'stress_level': s.stress_level,
             'predicted_score': pred.predicted_exam_score if pred else None,
             'risk_status': pred.risk_status if pred else None,
             'latest_prediction': {
