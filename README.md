@@ -52,6 +52,17 @@ This workspace ships with a Flask backend and a Next.js frontend. Use the backen
 - Configured Role-Based Access Control (RBAC).
 - Added user profile data mutations and queries in profile and settings pages.
 
+### Development Progress - [June 02, 2026]
+
+- Frontend: Redesigned sign-in landing page (responsive, 100vh hero, merged info sections).
+- Frontend: Implemented `Guru` (teacher) Dashboard UI with live data integration.
+	- Server page now fetches `/api/dashboard/stats` and `/api/students` and passes props to a client component.
+	- Added `src/app/(with-layout)/guru/dashboard/_components/teacher-dashboard.tsx` and updated `page.tsx` to use real backend data.
+	- Charts use Recharts; summary cards and alerts table show live counts and top-risk students.
+- Repo hygiene: Added `.gitignore` entries for Python caches and virtualenvs; removed tracked `__pycache__` and `.pyc` files.
+
+If you want more detail on any of these items (files changed, API contracts, or how to run the backend), tell me which area to expand.
+
 ### Version 1.2.3 - [Mar 16, 2026]
 
 - Update Next.js to ^16.1.6 and configure image qualities
