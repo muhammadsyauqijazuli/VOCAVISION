@@ -1,5 +1,6 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { RiskBadge } from "@/components/guru/RiskBadge";
+import DownloadButton from "@/components/guru/DownloadButton";
 import { auth } from "@/lib/auth";
 import { getRoleHomePath } from "@/lib/auth/backend-auth";
 import { getRiskStatus } from "@/lib/utils";
@@ -162,18 +163,18 @@ export default async function GuruStudentReportPage({ params }: PageProps) {
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <a
-              href={downloadHref("pdf", student.id)}
-              className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95"
-            >
-              Unduh PDF Per Siswa
-            </a>
-            <a
-              href={downloadHref("excel", student.id)}
-              className="inline-flex items-center justify-center rounded-xl border border-stroke px-4 py-3 text-sm font-semibold text-dark transition hover:bg-gray-1 dark:border-dark-3 dark:text-white dark:hover:bg-dark-2"
-            >
-              Unduh Excel Per Siswa
-            </a>
+            <DownloadButton
+              studentId={student.id}
+              format="pdf"
+              label="Unduh PDF Per Siswa"
+              className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95 disabled:opacity-60"
+            />
+            <DownloadButton
+              studentId={student.id}
+              format="excel"
+              label="Unduh Excel Per Siswa"
+              className="inline-flex items-center justify-center rounded-xl border border-stroke px-4 py-3 text-sm font-semibold text-dark transition hover:bg-gray-1 dark:border-dark-3 dark:text-dark-3 dark:hover:bg-dark-2 disabled:opacity-60"
+            />
           </div>
 
           <p className="mt-4 text-sm leading-6 text-dark-4 dark:text-dark-6">

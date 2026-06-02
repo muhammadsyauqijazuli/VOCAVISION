@@ -214,11 +214,25 @@ def _build_stress_bar_chart(rows):
 
 
 def _build_attendance_bar_chart(rows):
-    attendance_rows = [row for row in rows if isinstance(row.get('presentase_kehadiran'), (int, float)) and isinstance(row.get('predicted_score'), (int, float))]
-    attendance_rows = sorted(attendance_rows, key=lambda item: float(item['presentase_kehadiran']), reverse=True)[:6]
+    attendance_rows = [
+        row for row in rows
+        if isinstance(row.get('presentase_kehadiran'), (int, float))
+        and isinstance(row.get('predicted_score'), (int, float))
+    ]
+    attendance_rows.sort(key=lambda item: float(item['presentase_kehadiran']), reverse=True)
+    attendance_rows = attendance_rows[:6]
+
+    # Jika tidak ada data, kembalikan placeholder
+    if not attendance_rows:
+        drawing = Drawing(420, 220)
+        drawing.add(String(40, 100, "Data kehadiran tidak tersedia",
+                          fontName='Helvetica', fontSize=10,
+                          fillColor=colors.HexColor('#94A3B8')))
+        return drawing
 
     averages = [round(float(row['predicted_score']), 2) for row in attendance_rows]
-    labels = [row['nama_siswa'][:12] for row in attendance_rows]
+    labels = [(row.get('nama') or '')[:12] for row in attendance_rows]
+
 
     drawing = Drawing(420, 220)
     chart = VerticalBarChart()
@@ -735,195 +749,254 @@ def _analytics_report_pdf():
     summary = _analytics_summary(rows)
 
     buffer = io.BytesIO()
-    doc = SimpleDocTemplate(
-        buffer,
-        pagesize=landscape(A4),
-        leftMargin=16 * mm,
-        rightMargin=16 * mm,
-        topMargin=24 * mm,
-        bottomMargin=18 * mm,
-    )
-    styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name='SmallMuted', parent=styles['Normal'], fontSize=9, leading=12, textColor=colors.HexColor('#334155')))
-    story = []
+    try:
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=landscape(A4),
+            leftMargin=16 * mm,
+            rightMargin=16 * mm,
+            topMargin=24 * mm,
+            bottomMargin=18 * mm,
+        )
+        styles = getSampleStyleSheet()
+        styles.add(
+            ParagraphStyle(
+                name='SmallMuted',
+                parent=styles['Normal'],
+                fontSize=9,
+                leading=12,
+                textColor=colors.HexColor('#334155')
+            )
+        )
+        story = []
 
-    story.append(_build_dashboard_hero())
-    story.append(Spacer(1, 12))
-    story.append(_build_dashboard_cards(summary))
-    story.append(Spacer(1, 12))
+        story.append(_build_dashboard_hero())
+        story.append(Spacer(1, 12))
+        story.append(_build_dashboard_cards(summary))
+        story.append(Spacer(1, 12))
 
-    chart_row = [[
-        _build_risk_pie_chart(rows),
-        _build_stress_bar_chart(rows),
-    ], [
-        _build_attendance_bar_chart(rows),
-        Table([
-            [Paragraph('<font color="#64748B" size="8"><b>Risk snapshot</b></font>', styles['BodyText'])],
-            [Paragraph(f'<font color="#0F172A" size="18"><b>{summary["risk_counts"]["Sangat Beresiko"]}</b></font>', styles['BodyText'])],
-            [Paragraph('<font color="#64748B" size="8">Sangat Beresiko</font>', styles['BodyText'])],
-            [Spacer(1, 5)],
-            [Paragraph(f'<font color="#0F172A" size="18"><b>{summary["risk_counts"]["Beresiko"]}</b></font>', styles['BodyText'])],
-            [Paragraph('<font color="#64748B" size="8">Beresiko</font>', styles['BodyText'])],
-            [Spacer(1, 5)],
-            [Paragraph(f'<font color="#0F172A" size="18"><b>{summary["risk_counts"]["Tidak Beresiko"]}</b></font>', styles['BodyText'])],
-            [Paragraph('<font color="#64748B" size="8">Tidak Beresiko</font>', styles['BodyText'])],
-        ], colWidths=[250])
-    ]]
-    chart_table = Table(chart_row, colWidths=[260, 260])
-    chart_table.setStyle(TableStyle([
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 0),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 0),
-        ('TOPPADDING', (0, 0), (-1, -1), 0),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-    ]))
-    story.append(chart_table)
+        chart_row = [[
+            _build_risk_pie_chart(rows),
+            _build_stress_bar_chart(rows),
+        ], [
+            _build_attendance_bar_chart(rows),
+            Table([
+                [Paragraph('<font color="#64748B" size="8"><b>Risk snapshot</b></font>', styles['BodyText'])],
+                [Paragraph(f'<font color="#0F172A" size="18"><b>{summary["risk_counts"]["Sangat Beresiko"]}</b></font>', styles['BodyText'])],
+                [Paragraph('<font color="#64748B" size="8">Sangat Beresiko</font>', styles['BodyText'])],
+                [Spacer(1, 5)],
+                [Paragraph(f'<font color="#0F172A" size="18"><b>{summary["risk_counts"]["Beresiko"]}</b></font>', styles['BodyText'])],
+                [Paragraph('<font color="#64748B" size="8">Beresiko</font>', styles['BodyText'])],
+                [Spacer(1, 5)],
+                [Paragraph(f'<font color="#0F172A" size="18"><b>{summary["risk_counts"]["Tidak Beresiko"]}</b></font>', styles['BodyText'])],
+                [Paragraph('<font color="#64748B" size="8">Tidak Beresiko</font>', styles['BodyText'])],
+            ], colWidths=[250])
+        ]]
+        chart_table = Table(chart_row, colWidths=[260, 260])
+        chart_table.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 0),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+            ('TOPPADDING', (0, 0), (-1, -1), 0),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ]))
+        story.append(chart_table)
 
-    story.append(PageBreak())
-    story.append(Paragraph('Siswa Prioritas', styles['Heading2']))
-    story.append(Spacer(1, 8))
-    story.append(Paragraph('Lima siswa dengan risiko tertinggi ditampilkan sebagai tindak lanjut cepat untuk guru.', styles['SmallMuted']))
-    story.append(Spacer(1, 8))
-    priority_rows = _build_top_risky_students_table(rows)
-    priority_table = LongTable(priority_rows, repeatRows=1)
-    priority_table.setStyle(_build_table_style())
-    story.append(priority_table)
+        story.append(PageBreak())
+        story.append(Paragraph('Siswa Prioritas', styles['Heading2']))
+        story.append(Spacer(1, 8))
+        story.append(
+            Paragraph(
+                'Lima siswa dengan risiko tertinggi ditampilkan sebagai tindak lanjut cepat untuk guru.',
+                styles['SmallMuted']
+            )
+        )
+        story.append(Spacer(1, 8))
 
-    doc.build(
-        story,
-        onFirstPage=_draw_vocavision_header_footer,
-        onLaterPages=_draw_vocavision_header_footer,
-    )
-    buffer.seek(0)
-    return buffer
+        priority_rows = _build_top_risky_students_table(rows)
+        priority_table = LongTable(priority_rows, repeatRows=1)
+        priority_table.setStyle(_build_table_style())
+        story.append(priority_table)
+
+        doc.build(
+            story,
+            onFirstPage=_draw_vocavision_header_footer,
+            onLaterPages=_draw_vocavision_header_footer,
+        )
+        buffer.seek(0)
+        return buffer
+    except Exception as e:
+        # Fallback ultra-minimal: hindari ketergantungan SimpleDocTemplate (yang bisa gagal di kondisi ekstrem)
+        print("[export/pdf] _analytics_report_pdf error:", repr(e))
+        from reportlab.pdfgen import canvas as pdfcanvas
+        from reportlab.lib.pagesizes import A4 as _A4
+
+        fallback = io.BytesIO()
+        c = pdfcanvas.Canvas(fallback, pagesize=landscape(_A4))
+        c.setFont("Helvetica", 12)
+        c.drawString(72, 720, "Gagal membuat PDF analytics.")
+        c.setFont("Helvetica", 9)
+        c.drawString(72, 700, f"Error: {repr(e)}")
+        c.drawString(72, 680, "Silakan coba ekspor lagi atau cek data.")
+        c.showPage()
+        c.save()
+        fallback.seek(0)
+        return fallback
+
 
 
 def _student_report_pdf(report: dict[str, Any]):
     buffer = io.BytesIO()
-    doc = SimpleDocTemplate(
-        buffer,
-        pagesize=landscape(A4),
-        leftMargin=16 * mm,
-        rightMargin=16 * mm,
-        topMargin=24 * mm,
-        bottomMargin=18 * mm,
-    )
-    styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name='ReportTitle', parent=styles['Heading1'], fontName='Helvetica-Bold', fontSize=18, leading=22, textColor=colors.HexColor('#0F172A')))
-    styles.add(ParagraphStyle(name='ReportSubtitle', parent=styles['Normal'], fontSize=10, leading=14, textColor=colors.HexColor('#334155')))
-    styles.add(ParagraphStyle(name='SmallMuted', parent=styles['Normal'], fontSize=9, leading=12, textColor=colors.HexColor('#334155')))
-    styles.add(ParagraphStyle(name='BodyLead', parent=styles['BodyText'], fontSize=10, leading=15, textColor=colors.HexColor('#0F172A')))
-    story = []
+    try:
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=landscape(A4),
+            leftMargin=16 * mm,
+            rightMargin=16 * mm,
+            topMargin=24 * mm,
+            bottomMargin=18 * mm,
+        )
+        styles = getSampleStyleSheet()
+        styles.add(ParagraphStyle(name='ReportTitle', parent=styles['Heading1'], fontName='Helvetica-Bold', fontSize=18, leading=22, textColor=colors.HexColor('#0F172A')))
+        styles.add(ParagraphStyle(name='ReportSubtitle', parent=styles['Normal'], fontSize=10, leading=14, textColor=colors.HexColor('#334155')))
+        styles.add(ParagraphStyle(name='SmallMuted', parent=styles['Normal'], fontSize=9, leading=12, textColor=colors.HexColor('#334155')))
+        styles.add(ParagraphStyle(name='BodyLead', parent=styles['BodyText'], fontSize=10, leading=15, textColor=colors.HexColor('#0F172A')))
+        story = []
 
-    student = report['student']
-    prediction = report['prediction']
-    insight = _build_student_story(report)
-    title_style = ParagraphStyle(
-        name='StudentHeroTitle',
-        fontName='Helvetica-Bold',
-        fontSize=24,
-        leading=28,
-        textColor=colors.white,
-        spaceAfter=2,
-    )
-    subtitle_style = ParagraphStyle(
-        name='StudentHeroSubtitle',
-        fontName='Helvetica',
-        fontSize=10,
-        leading=14,
-        textColor=colors.HexColor('#DCFCE7'),
-    )
+        student = report['student']
+        prediction = report['prediction']
+        insight = _build_student_story(report)
+        title_style = ParagraphStyle(
+            name='StudentHeroTitle',
+            fontName='Helvetica-Bold',
+            fontSize=24,
+            leading=28,
+            textColor=colors.white,
+            spaceAfter=2,
+        )
+        subtitle_style = ParagraphStyle(
+            name='StudentHeroSubtitle',
+            fontName='Helvetica',
+            fontSize=10,
+            leading=14,
+            textColor=colors.HexColor('#DCFCE7'),
+        )
 
-    story.append(Table([
-        [Paragraph('REPORT AKADEMIK PER SISWA', ParagraphStyle(name='StudentHeroKicker', fontName='Helvetica-Bold', fontSize=12, textColor=colors.HexColor('#DCFCE7'), leading=14))],
-        [Paragraph(student.nama_siswa, title_style)],
-        [Paragraph(f'NISN {student.nisn} • Status {prediction.risk_status} • Prediksi {"-" if prediction.predicted_exam_score is None else f"{prediction.predicted_exam_score:.2f}"}', subtitle_style)],
-    ], colWidths=[520], style=TableStyle([
-        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#1F6F5F')),
-        ('BOX', (0, 0), (-1, -1), 0.6, colors.HexColor('#1F6F5F')),
-        ('LEFTPADDING', (0, 0), (-1, -1), 20),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 20),
-        ('TOPPADDING', (0, 0), (-1, -1), 18),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 18),
-    ])))
-    story.append(Spacer(1, 12))
+        story.append(Table([
+            [Paragraph('REPORT AKADEMIK PER SISWA', ParagraphStyle(name='StudentHeroKicker', fontName='Helvetica-Bold', fontSize=12, textColor=colors.HexColor('#DCFCE7'), leading=14))],
+            [Paragraph(student.nama_siswa, title_style)],
+            [Paragraph(f'NISN {student.nisn} • Status {prediction.risk_status} • Prediksi {"-" if prediction.predicted_exam_score is None else f"{prediction.predicted_exam_score:.2f}"}', subtitle_style)],
+        ], colWidths=[520], style=TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#1F6F5F')),
+            ('BOX', (0, 0), (-1, -1), 0.6, colors.HexColor('#1F6F5F')),
+            ('LEFTPADDING', (0, 0), (-1, -1), 20),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 20),
+            ('TOPPADDING', (0, 0), (-1, -1), 18),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 18),
+        ])))
+        story.append(Spacer(1, 12))
 
-    summary_score = '-' if prediction.predicted_exam_score is None else f'{prediction.predicted_exam_score:.1f}'
-    summary_attendance = '-' if student.presentase_kehadiran is None else f'{float(student.presentase_kehadiran):.0f}%'
-    summary_study = '-' if student.jam_belajar_per_hari is None else f'{float(student.jam_belajar_per_hari):.1f} jam'
-    summary_stress = _format_value(student.stress_level)
+        summary_score = '-' if prediction.predicted_exam_score is None else f'{prediction.predicted_exam_score:.1f}'
+        summary_attendance = '-' if student.presentase_kehadiran is None else f'{float(student.presentase_kehadiran):.0f}%'
+        summary_study = '-' if student.jam_belajar_per_hari is None else f'{float(student.jam_belajar_per_hari):.1f} jam'
 
-    metrics = Table([[
-        Table([
-            [Paragraph('<font color="#64748B" size="8"><b>Prediksi skor</b></font>', styles['BodyText'])],
-            [Paragraph(f'<font color="#0F172A" size="18"><b>{summary_score}</b></font>', styles['BodyText'])],
-            [Paragraph('<font color="#64748B" size="8">Hasil model terbaru</font>', styles['BodyText'])],
-        ], colWidths=[114]),
-        Table([
-            [Paragraph('<font color="#64748B" size="8"><b>Status risiko</b></font>', styles['BodyText'])],
-            [Paragraph(f'<font color="#0F172A" size="18"><b>{prediction.risk_status}</b></font>', styles['BodyText'])],
-            [Paragraph('<font color="#64748B" size="8">Klasifikasi risiko terbaru</font>', styles['BodyText'])],
-        ], colWidths=[114]),
-        Table([
-            [Paragraph('<font color="#64748B" size="8"><b>Kehadiran</b></font>', styles['BodyText'])],
-            [Paragraph(f'<font color="#0F172A" size="18"><b>{summary_attendance}</b></font>', styles['BodyText'])],
-            [Paragraph('<font color="#64748B" size="8">Persentase kehadiran</font>', styles['BodyText'])],
-        ], colWidths=[114]),
-        Table([
-            [Paragraph('<font color="#64748B" size="8"><b>Jam belajar</b></font>', styles['BodyText'])],
-            [Paragraph(f'<font color="#0F172A" size="18"><b>{summary_study}</b></font>', styles['BodyText'])],
-            [Paragraph('<font color="#64748B" size="8">Jam belajar per hari</font>', styles['BodyText'])],
-        ], colWidths=[114]),
-    ]], colWidths=[122, 122, 122, 122])
-    metrics.setStyle(TableStyle([
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 0),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-        ('TOPPADDING', (0, 0), (-1, -1), 0),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
-    ]))
-    story.append(metrics)
-    story.append(Spacer(1, 10))
+        metrics = Table([[
+            Table([
+                [Paragraph('<font color="#64748B" size="8"><b>Prediksi skor</b></font>', styles['BodyText'])],
+                [Paragraph(f'<font color="#0F172A" size="18"><b>{summary_score}</b></font>', styles['BodyText'])],
+                [Paragraph('<font color="#64748B" size="8">Hasil model terbaru</font>', styles['BodyText'])],
+            ], colWidths=[114]),
+            Table([
+                [Paragraph('<font color="#64748B" size="8"><b>Status risiko</b></font>', styles['BodyText'])],
+                [Paragraph(f'<font color="#0F172A" size="18"><b>{prediction.risk_status}</b></font>', styles['BodyText'])],
+                [Paragraph('<font color="#64748B" size="8">Klasifikasi risiko terbaru</font>', styles['BodyText'])],
+            ], colWidths=[114]),
+            Table([
+                [Paragraph('<font color="#64748B" size="8"><b>Kehadiran</b></font>', styles['BodyText'])],
+                [Paragraph(f'<font color="#0F172A" size="18"><b>{summary_attendance}</b></font>', styles['BodyText'])],
+                [Paragraph('<font color="#64748B" size="8">Persentase kehadiran</font>', styles['BodyText'])],
+            ], colWidths=[114]),
+            Table([
+                [Paragraph('<font color="#64748B" size="8"><b>Jam belajar</b></font>', styles['BodyText'])],
+                [Paragraph(f'<font color="#0F172A" size="18"><b>{summary_study}</b></font>', styles['BodyText'])],
+                [Paragraph('<font color="#64748B" size="8">Jam belajar per hari</font>', styles['BodyText'])],
+            ], colWidths=[114]),
+        ]], colWidths=[122, 122, 122, 122])
+        metrics.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 0),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+            ('TOPPADDING', (0, 0), (-1, -1), 0),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+        ]))
+        story.append(metrics)
+        story.append(Spacer(1, 10))
 
-    story.append(Paragraph(insight['summary_text'], styles['SmallMuted']))
-    story.append(Spacer(1, 8))
-
-    insight_table = Table([[
-        Paragraph('<font color="#64748B" size="8"><b>Keunggulan</b></font>', styles['BodyText']),
-        Paragraph('<font color="#64748B" size="8"><b>Perhatian</b></font>', styles['BodyText']),
-        Paragraph('<font color="#64748B" size="8"><b>Tindak lanjut</b></font>', styles['BodyText']),
-    ], [
-        Paragraph('<br/>'.join([f'• {item}' for item in insight['strengths'][:3]]) or '• Belum ada poin yang tercatat.', styles['BodyText']),
-        Paragraph('<br/>'.join([f'• {item}' for item in insight['concerns'][:3]]) or '• Belum ada poin yang tercatat.', styles['BodyText']),
-        Paragraph('<br/>'.join([f'• {item}' for item in insight['actions'][:3]]) or '• Belum ada poin yang tercatat.', styles['BodyText']),
-    ]], colWidths=[170, 170, 170])
-    insight_table.setStyle(TableStyle([
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-        ('TOPPADDING', (0, 0), (-1, -1), 8),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#F8FAFC')),
-        ('BOX', (0, 1), (-1, -1), 0.4, colors.HexColor('#CBD5E1')),
-    ]))
-    story.append(insight_table)
-    story.append(Spacer(1, 10))
-
-    if insight['top_shap_texts']:
-        story.append(Paragraph('Faktor SHAP Utama', styles['BodyLead']))
-        story.append(Spacer(1, 4))
-        shap_lines = ''.join([f'<br/>• {text}' for text in insight['top_shap_texts']])
-        story.append(Paragraph(shap_lines, styles['SmallMuted']))
+        story.append(Paragraph(insight['summary_text'], styles['SmallMuted']))
         story.append(Spacer(1, 8))
 
-    intervention_rows = _student_intervention_rows(report)
-    intervention_table = LongTable(intervention_rows[:4], repeatRows=1)
-    intervention_table.setStyle(_build_table_style())
-    story.append(Paragraph('Catatan Tindak Lanjut', styles['BodyLead']))
-    story.append(Spacer(1, 4))
-    story.append(intervention_table)
-    buffer.seek(0)
-    return buffer
+        insight_table = Table([[
+            Paragraph('<font color="#64748B" size="8"><b>Keunggulan</b></font>', styles['BodyText']),
+            Paragraph('<font color="#64748B" size="8"><b>Perhatian</b></font>', styles['BodyText']),
+            Paragraph('<font color="#64748B" size="8"><b>Tindak lanjut</b></font>', styles['BodyText']),
+        ], [
+            Paragraph('<br/>'.join([f'• {item}' for item in insight['strengths'][:3]]) or '• Belum ada poin yang tercatat.', styles['BodyText']),
+            Paragraph('<br/>'.join([f'• {item}' for item in insight['concerns'][:3]]) or '• Belum ada poin yang tercatat.', styles['BodyText']),
+            Paragraph('<br/>'.join([f'• {item}' for item in insight['actions'][:3]]) or '• Belum ada poin yang tercatat.', styles['BodyText']),
+        ]], colWidths=[170, 170, 170])
+        insight_table.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 8),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#F8FAFC')),
+            ('BOX', (0, 1), (-1, -1), 0.4, colors.HexColor('#CBD5E1')),
+        ]))
+        story.append(insight_table)
+        story.append(Spacer(1, 10))
+
+        if insight['top_shap_texts']:
+            story.append(Paragraph('Faktor SHAP Utama', styles['BodyLead']))
+            story.append(Spacer(1, 4))
+            shap_lines = ''.join([f'<br/>• {text}' for text in insight['top_shap_texts']])
+            story.append(Paragraph(shap_lines, styles['SmallMuted']))
+            story.append(Spacer(1, 8))
+
+        intervention_rows = _student_intervention_rows(report)
+        intervention_table = LongTable(intervention_rows[:4], repeatRows=1)
+        intervention_table.setStyle(_build_table_style())
+        story.append(Paragraph('Catatan Tindak Lanjut', styles['BodyLead']))
+        story.append(Spacer(1, 4))
+        story.append(intervention_table)
+
+        doc.build(
+            story,
+            onFirstPage=_draw_vocavision_header_footer,
+            onLaterPages=_draw_vocavision_header_footer,
+        )
+        buffer.seek(0)
+        return buffer
+    except Exception as e:
+        # Fallback ultra-minimal: pastikan buffer terisi meskipun SimpleDocTemplate gagal
+        print("[export/pdf] _student_report_pdf error:", repr(e))
+        from reportlab.pdfgen import canvas as pdfcanvas
+        from reportlab.lib.pagesizes import A4 as _A4
+
+        fallback = io.BytesIO()
+        c = pdfcanvas.Canvas(fallback, pagesize=landscape(_A4))
+        c.setFont("Helvetica", 12)
+        c.drawString(72, 720, "Gagal membuat PDF laporan siswa.")
+        c.setFont("Helvetica", 9)
+        c.drawString(72, 700, f"Error: {repr(e)}")
+        c.drawString(72, 680, "Silakan coba ekspor lagi atau periksa data siswa.")
+        c.showPage()
+        c.save()
+        fallback.seek(0)
+        if len(fallback.getvalue()) <= 0:
+            print("[export/pdf] _student_report_pdf fallback buffer still empty")
+        return fallback
+
 
 
 def _student_report_excel(report: dict[str, Any]):
@@ -984,21 +1057,42 @@ def export_pdf():
             report, error = _build_student_report(student_id)
             if error:
                 message, status_code = error
+                print("[export/pdf] student export build error:", student_id, status_code, message)
                 return jsonify({'message': message}), status_code
 
             buffer = _student_report_pdf(report)
+            buffer_bytes = len(buffer.getvalue()) if buffer else 0
+            print("[export/pdf] student export result:", student_id, "bytes=", buffer_bytes)
+
+            if buffer_bytes <= 0:
+                # Prevent returning an empty PDF with HTTP 200
+                return jsonify({
+                    'message': 'PDF buffer is empty',
+                    'student_id': student_id,
+                }), 500
+
             student_slug = _slugify_filename(report['student'].nama_siswa)
             filename = f'laporan-{student_slug}-{student_id}.pdf'
         else:
             buffer = _analytics_report_pdf()
+            buffer_bytes = len(buffer.getvalue()) if buffer else 0
+            if buffer_bytes <= 0:
+                return jsonify({
+                    'message': 'Analytics PDF buffer is empty',
+                }), 500
+
             filename = 'laporan-analytics-guru.pdf'
 
-        response = make_response(buffer.getvalue())
+        pdf_bytes = buffer.getvalue() if buffer else b""
+        response = make_response(pdf_bytes)
         response.headers['Content-Type'] = 'application/pdf'
         response.headers['Content-Disposition'] = f'attachment; filename={filename}'
+        response.headers['Content-Length'] = str(len(pdf_bytes))
         return response
     except Exception as e:
+        print("[export/pdf] top-level error:", repr(e))
         return jsonify({'message': 'Gagal membuat PDF', 'error': str(e)}), 500
+
 
 
 @export_bp.route('/excel', methods=['GET'])
@@ -1017,9 +1111,12 @@ def export_excel():
         buffer = _student_report_excel(report)
         student_slug = _slugify_filename(report['student'].nama_siswa)
         filename = f'laporan-{student_slug}-{student_id}.xlsx'
-        response = make_response(buffer.getvalue())
+
+        excel_bytes = buffer.getvalue() if buffer else b""
+        response = make_response(excel_bytes)
         response.headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         response.headers['Content-Disposition'] = f'attachment; filename={filename}'
+        response.headers['Content-Length'] = str(len(excel_bytes))
         return response
     except Exception as e:
         return jsonify({'message': 'Gagal membuat Excel', 'error': str(e)}), 500

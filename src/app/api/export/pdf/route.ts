@@ -49,13 +49,27 @@ export async function GET(request: Request) {
     });
 
     const headers = copyResponseHeaders(resp);
-    headers.set("content-disposition", `attachment; filename="${studentFileName(studentId)}"`);
+    headers.set(
+      "content-disposition",
+      `attachment; filename="${studentFileName(studentId)}"`
+    );
 
-    if (resp.body) {
-      return new Response(resp.body, { status: resp.status, headers });
+    // Always buffer response to avoid 0KB / incomplete downloads
+    const arrayBuffer = await resp.arrayBuffer();
+    console.log(
+      "[export/pdf proxy] backend status=",
+      resp.status,
+      "bytes=",
+      arrayBuffer.byteLength,
+      "content-type=",
+      resp.headers.get("content-type")
+    );
+
+    // keep content-length if backend provided it
+    if (resp.headers.get("content-length")) {
+      headers.set("content-length", resp.headers.get("content-length") as string);
     }
 
-    const arrayBuffer = await resp.arrayBuffer();
     return new Response(arrayBuffer, { status: resp.status, headers });
   } catch (e) {
     if (controller.signal.aborted) {
