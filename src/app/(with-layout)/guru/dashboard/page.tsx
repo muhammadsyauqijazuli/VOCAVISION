@@ -1,6 +1,53 @@
 import { auth } from "@/lib/auth";
+import { backendUrl } from "@/lib/auth/backend-auth";
+import { getRoleHomePath } from "@/lib/auth/backend-auth";
+import type { DashboardStatsResponse } from "@/types/analytics";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { TeacherDashboard } from "./_components/teacher-dashboard";
+
+type DashboardStudentRow = {
+  id: string;
+  nama: string;
+  nisn: string;
+  predicted_score: number | null;
+  risk_status: "Sangat Beresiko" | "Beresiko" | "Tidak Beresiko" | null;
+};
+
+type StudentsResponse = {
+  items?: DashboardStudentRow[];
+};
+
+async function fetchDashboardStats(token: string): Promise<DashboardStatsResponse> {
+  const response = await fetch(backendUrl("/dashboard/stats"), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    return {};
+  }
+
+  return (await response.json()) as DashboardStatsResponse;
+}
+
+async function fetchStudents(token: string): Promise<DashboardStudentRow[]> {
+  const response = await fetch(backendUrl("/students?page_size=200"), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const payload = (await response.json()) as StudentsResponse;
+  return payload.items ?? [];
+}
 
 export default async function GuruDashboardPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -9,34 +56,50 @@ export default async function GuruDashboardPage() {
     redirect("/auth/sign-in?callbackUrl=/guru/dashboard");
   }
 
-  return (
-    <div className="space-y-6">
-      <section className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
-        <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary">
-          Guru access
-        </p>
-        <h1 className="text-heading-4 mb-2 font-bold text-dark dark:text-white">
-          Guru Dashboard
-        </h1>
-        <p className="text-dark-4 dark:text-dark-6">
-          Login berhasil sebagai <strong>{session.user.name}</strong> dengan role <strong>{session.user.role}</strong>.
-        </p>
-      </section>
+  if (session.user.role !== "guru") {
+    redirect(getRoleHomePath(session.user.role));
+  }
 
-      <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl bg-white p-5 shadow-1 dark:bg-gray-dark">
-          <p className="text-sm text-dark-4 dark:text-dark-6">Daftar Siswa</p>
-          <h2 className="mt-2 text-xl font-bold text-dark dark:text-white">Guru only</h2>
-        </div>
-        <div className="rounded-2xl bg-white p-5 shadow-1 dark:bg-gray-dark">
-          <p className="text-sm text-dark-4 dark:text-dark-6">Prediksi & SHAP</p>
-          <h2 className="mt-2 text-xl font-bold text-dark dark:text-white">Guru only</h2>
-        </div>
-        <div className="rounded-2xl bg-white p-5 shadow-1 dark:bg-gray-dark">
-          <p className="text-sm text-dark-4 dark:text-dark-6">Intervensi</p>
-          <h2 className="mt-2 text-xl font-bold text-dark dark:text-white">Guru only</h2>
-        </div>
-      </section>
-    </div>
+  const token = session.session?.token;
+  const [stats, students] = token
+    ? await Promise.all([fetchDashboardStats(token), fetchStudents(token)])
+    : [{}, [] as DashboardStudentRow[]];
+
+  const alertRows = students
+    .filter((student) => student.risk_status === "Sangat Beresiko")
+    .sort((left, right) => (left.predicted_score ?? 999) - (right.predicted_score ?? 999))
+    .slice(0, 5)
+    .map((student) => ({
+      studentId: student.id,
+      name: student.nama,
+      className: "Belum tersedia",
+      score: student.predicted_score ?? 0,
+      status: student.risk_status ?? "Sangat Beresiko",
+    }));
+
+  const fallbackAlertRows =
+    alertRows.length > 0
+      ? alertRows
+      : (stats.top_risky_students ?? [])
+          .filter((student) => student.risk_status === "Sangat Beresiko")
+          .slice(0, 5)
+          .map((student) => ({
+            studentId: student.student_id,
+            name: student.nama,
+            className: "Belum tersedia",
+            score: student.predicted_exam_score ?? 0,
+            status: student.risk_status,
+          }));
+
+  return (
+    <TeacherDashboard
+      teacherName={session.user.name ?? "Guru"}
+      stats={stats}
+      lastUpdatedLabel={new Intl.DateTimeFormat("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(new Date())}
+      alertRows={fallbackAlertRows}
+    />
   );
 }
