@@ -43,3 +43,35 @@ next-env.d.ts
 skills-lock.json
 
 /src/generated/prisma
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+/.env
+
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+pip-wheel-metadata/
+__pypackages__/
+
+# IDEs / editors
+/.vscode/
+.idea/
+.classpath
+.project
+.settings/
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Logs
+*.log
