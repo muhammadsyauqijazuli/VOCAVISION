@@ -31,6 +31,9 @@ export function StudentsTable() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(20);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     let ignore = false;
@@ -40,7 +43,7 @@ export function StudentsTable() {
       setError(null);
 
       try {
-        const params = new URLSearchParams({ page: "1", page_size: "100" });
+        const params = new URLSearchParams({ page: String(page), page_size: String(pageSize) });
 
         if (query.trim()) {
           params.set("search", query.trim());
@@ -57,7 +60,8 @@ export function StudentsTable() {
         }
 
         if (!ignore) {
-          setItems(payload.items ?? []);
+          setItems(payload.items ?? payload.items ?? []);
+          setTotal((payload as any).total ?? 0);
         }
       } catch (caughtError) {
         if (!ignore) {
@@ -77,7 +81,7 @@ export function StudentsTable() {
     return () => {
       ignore = true;
     };
-  }, [query]);
+  }, [query, page, pageSize]);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -87,6 +91,15 @@ export function StudentsTable() {
   function handleReset() {
     setSearch("");
     setQuery("");
+  }
+
+  function prevPage() {
+    setPage((p) => Math.max(1, p - 1));
+  }
+
+  function nextPage() {
+    const max = Math.max(1, Math.ceil(total / pageSize));
+    setPage((p) => Math.min(max, p + 1));
   }
 
   return (
@@ -199,6 +212,29 @@ export function StudentsTable() {
               Tidak ada data siswa yang ditemukan.
             </div>
           )}
+          {/* Pagination controls */}
+          <div className="mt-4 flex items-center justify-between gap-4">
+            <div className="text-sm text-dark-4 dark:text-dark-6">
+              Menampilkan {items.length} dari {total} siswa
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={prevPage}
+                disabled={page === 1}
+                className="inline-flex items-center justify-center rounded-lg border border-stroke px-3 py-1 text-sm disabled:opacity-50"
+              >
+                Sebelumnya
+              </button>
+              <div className="text-sm">Halaman {page} / {Math.max(1, Math.ceil(total / pageSize))}</div>
+              <button
+                onClick={nextPage}
+                disabled={page >= Math.max(1, Math.ceil(total / pageSize))}
+                className="inline-flex items-center justify-center rounded-lg border border-stroke px-3 py-1 text-sm disabled:opacity-50"
+              >
+                Selanjutnya
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="hidden overflow-hidden rounded-2xl border border-stroke dark:border-dark-3 md:block">
