@@ -5,7 +5,6 @@ import type { RiskStatus } from "@/lib/utils";
 import type { DashboardStatsResponse } from "@/types/analytics";
 import {
   Cell,
-  Legend,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -385,16 +384,16 @@ export function TeacherDashboard({
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl bg-brand-header/5 p-5 dark:bg-brand-header/10">
-                <p className="text-sm font-semibold text-brand-header">Catatan kelas</p>
+              <p className="text-sm font-semibold text-brand-header">Catatan kelas</p>
               <p className="mt-2 text-sm leading-6 text-dark-4 dark:text-dark-6">
-                  Kolom kelas akan tampil otomatis saat data kelas tersedia.
+                Kolom kelas akan tampil otomatis saat data kelas tersedia.
               </p>
             </div>
 
             <div className="rounded-2xl bg-brand-warning/10 p-5 dark:bg-brand-warning/15">
-                <p className="text-sm font-semibold text-brand-header">Sumber data</p>
+              <p className="text-sm font-semibold text-brand-header">Sumber data</p>
               <p className="mt-2 text-sm leading-6 text-dark-4 dark:text-dark-6">
-                  Seluruh angka di halaman ini mengikuti data terbaru yang tersimpan di sistem.
+                Seluruh angka di halaman ini mengikuti data terbaru yang tersimpan di sistem.
               </p>
             </div>
           </div>
