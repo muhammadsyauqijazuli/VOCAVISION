@@ -20,7 +20,7 @@ export function SignInForm() {
           placeholder="Enter your password"
         />
 
-        <div className="mb-5.5 mt-5 flex items-center justify-between">
+        <div className="mt-5 mb-5.5 flex items-center justify-between">
           <Checkbox label="Remember me" minimal withBg withIcon="check" />
 
           <Link href="#" className="text-body-sm text-primary hover:underline">
@@ -28,7 +28,7 @@ export function SignInForm() {
           </Link>
         </div>
 
-        <button className="flex w-full justify-center rounded-lg bg-primary p-[13px] font-medium text-white hover:bg-opacity-90">
+        <button className="hover:bg-opacity-90 flex w-full justify-center rounded-lg bg-primary p-[13px] font-medium text-white">
           Sign In
         </button>
       </form>

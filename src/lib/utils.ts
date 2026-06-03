@@ -7,7 +7,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getRiskStatus(score: number | string | null | undefined): RiskStatus | null {
+export function getRiskStatus(
+  score: number | string | null | undefined,
+): RiskStatus | null {
   if (score === null || score === undefined || score === "") {
     return null;
   }

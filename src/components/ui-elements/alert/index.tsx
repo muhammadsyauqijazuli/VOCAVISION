@@ -4,7 +4,7 @@ import React from "react";
 import { AlertErrorIcon, AlertSuccessIcon, AlertWarningIcon } from "./icons";
 
 const alertVariants = cva(
-  "flex gap-5 w-full rounded-[10px] border-l-6 px-7 py-8 dark:bg-opacity-30 md:p-9",
+  "dark:bg-opacity-30 flex w-full gap-5 rounded-[10px] border-l-6 px-7 py-8 md:p-9",
   {
     variants: {
       variant: {
@@ -50,7 +50,7 @@ const Alert = ({
 
       <div className="w-full">
         <h5
-          className={cn("mb-4 font-bold leading-[22px]", {
+          className={cn("mb-4 leading-[22px] font-bold", {
             "text-[#004434] dark:text-[#34D399]": variant === "success",
             "text-[#9D5425]": variant === "warning",
             "text-[#BC1C21]": variant === "error",

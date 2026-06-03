@@ -11,7 +11,9 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "auth:generate": "npx @better-auth/cli generate --config ./src/lib/auth/auth.ts --output ./prisma/schema.prisma"
+    "auth:generate": "npx @better-auth/cli generate --config ./src/lib/auth/auth.ts --output ./prisma/schema.prisma",
+    "prepare": "husky",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@better-auth/prisma-adapter": "^1.6.7",
@@ -38,6 +40,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
     "@tailwindcss/postcss": "^4.2.4",
     "@types/node": "^22",
     "@types/pg": "^8.20.0",
@@ -46,6 +49,8 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "postcss": "^8",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.7.3",
@@ -53,5 +58,14 @@
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.4",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
   }
 }

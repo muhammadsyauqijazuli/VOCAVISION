@@ -8,7 +8,7 @@ export default function NotAuthorized() {
           Not Authorized
         </h1>
         <p className="mb-6 text-dark-4 dark:text-dark-6">
-          You don\'t have permission to view this page.
+          You don&apos;t have permission to view this page.
         </p>
         <Link
           href="/"

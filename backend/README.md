@@ -93,24 +93,24 @@ Backend menyediakan akun demo untuk login cepat:
 
 Semua endpoint berada di bawah prefix `/api`.
 
-| Method | Endpoint | Auth | Role | Keterangan |
-| --- | --- | --- | --- | --- |
-| GET | `/api/health` | Tidak | - | Health check backend. |
-| POST | `/api/auth/login` | Tidak | - | Login dan mendapatkan JWT access token. |
-| GET | `/api/auth/me` | Ya | Semua role | Mengambil data profil user aktif dari token. |
-| GET | `/api/users/` | Ya | `admin` | Mengambil daftar user, mendukung query `role` dan `search`. |
-| POST | `/api/users/` | Ya | `admin` | Membuat user baru. |
-| PUT | `/api/users/<user_id>` | Ya | `admin` | Memperbarui data user. |
-| DELETE | `/api/users/<user_id>` | Ya | `admin` | Menghapus user. |
-| GET | `/api/students` | Ya | `guru` | Mengambil daftar siswa, mendukung query `search` dan `risk_status`. |
-| GET | `/api/students/` | Ya | `guru` | Alias dari `/api/students`. |
-| GET | `/api/students/<student_id>` | Ya | Semua role | Mengambil detail siswa. Role `siswa` hanya bisa melihat data miliknya sendiri. |
-| POST | `/api/predict/single` | Ya | Semua role | Melakukan prediksi satu siswa, menyimpan hasil prediksi dan SHAP analysis. |
-| GET | `/api/predict/insight/<student_id>` | Ya | Semua role | Mengambil insight prediksi dan SHAP analysis untuk siswa. |
-| POST | `/api/interventions/<student_id>` | Ya | `guru` | Menambahkan catatan intervensi untuk siswa. |
-| GET | `/api/interventions/<student_id>` | Ya | Semua role | Mengambil daftar intervensi siswa. |
-| GET | `/api/dashboard/stats` | Ya | `admin`, `guru` | Statistik dashboard: total siswa, rata-rata prediksi, dan rekap risiko. |
-| POST | `/api/dataset/upload` | Ya | `admin` | Upload dataset `.csv` atau `.xlsx` untuk diproses batch. |
+| Method | Endpoint                            | Auth  | Role            | Keterangan                                                                     |
+| ------ | ----------------------------------- | ----- | --------------- | ------------------------------------------------------------------------------ |
+| GET    | `/api/health`                       | Tidak | -               | Health check backend.                                                          |
+| POST   | `/api/auth/login`                   | Tidak | -               | Login dan mendapatkan JWT access token.                                        |
+| GET    | `/api/auth/me`                      | Ya    | Semua role      | Mengambil data profil user aktif dari token.                                   |
+| GET    | `/api/users/`                       | Ya    | `admin`         | Mengambil daftar user, mendukung query `role` dan `search`.                    |
+| POST   | `/api/users/`                       | Ya    | `admin`         | Membuat user baru.                                                             |
+| PUT    | `/api/users/<user_id>`              | Ya    | `admin`         | Memperbarui data user.                                                         |
+| DELETE | `/api/users/<user_id>`              | Ya    | `admin`         | Menghapus user.                                                                |
+| GET    | `/api/students`                     | Ya    | `guru`          | Mengambil daftar siswa, mendukung query `search` dan `risk_status`.            |
+| GET    | `/api/students/`                    | Ya    | `guru`          | Alias dari `/api/students`.                                                    |
+| GET    | `/api/students/<student_id>`        | Ya    | Semua role      | Mengambil detail siswa. Role `siswa` hanya bisa melihat data miliknya sendiri. |
+| POST   | `/api/predict/single`               | Ya    | Semua role      | Melakukan prediksi satu siswa, menyimpan hasil prediksi dan SHAP analysis.     |
+| GET    | `/api/predict/insight/<student_id>` | Ya    | Semua role      | Mengambil insight prediksi dan SHAP analysis untuk siswa.                      |
+| POST   | `/api/interventions/<student_id>`   | Ya    | `guru`          | Menambahkan catatan intervensi untuk siswa.                                    |
+| GET    | `/api/interventions/<student_id>`   | Ya    | Semua role      | Mengambil daftar intervensi siswa.                                             |
+| GET    | `/api/dashboard/stats`              | Ya    | `admin`, `guru` | Statistik dashboard: total siswa, rata-rata prediksi, dan rekap risiko.        |
+| POST   | `/api/dataset/upload`               | Ya    | `admin`         | Upload dataset `.csv` atau `.xlsx` untuk diproses batch.                       |
 
 ## Detail Request Penting
 
@@ -119,8 +119,8 @@ Semua endpoint berada di bawah prefix `/api`.
 
 ```json
 {
-	"email": "admin@test.com",
-	"password": "admin"
+  "email": "admin@test.com",
+  "password": "admin"
 }
 ```
 
@@ -128,7 +128,7 @@ Semua endpoint berada di bawah prefix `/api`.
 
 ```json
 {
-	"note": "Perlu pendampingan belajar matematika 2x seminggu"
+  "note": "Perlu pendampingan belajar matematika 2x seminggu"
 }
 ```
 

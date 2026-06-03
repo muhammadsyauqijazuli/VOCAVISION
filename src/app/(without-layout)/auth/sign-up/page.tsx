@@ -26,7 +26,7 @@ export default function SignUp() {
             Create your account
           </p>
 
-          <h1 className="mb-4 text-2xl font-bold text-dark dark:text-white sm:text-heading-3">
+          <h1 className="mb-4 text-2xl font-bold text-dark sm:text-heading-3 dark:text-white">
             Start your journey
           </h1>
 

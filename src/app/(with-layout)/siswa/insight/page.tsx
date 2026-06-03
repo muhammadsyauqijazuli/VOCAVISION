@@ -17,22 +17,22 @@ export default async function SiswaInsightPage() {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-6 duration-500 ease-out">
       {/* ── Hero Banner ── */}
       <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-indigo-500 to-blue-dark p-8 shadow-1 md:p-10">
-        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
 
         <div className="relative z-10">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
+          <p className="mb-2 text-xs font-semibold tracking-widest text-white/70 uppercase">
             VOCAVISION
           </p>
           <h1 className="text-3xl font-bold text-white md:text-4xl">
             Hasil &amp; Insight Prediksi
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/85 md:text-base">
-            Lihat analisis mendalam tentang faktor-faktor yang paling mempengaruhi
-            performa akademikmu berdasarkan model prediksi SHAP.
+            Lihat analisis mendalam tentang faktor-faktor yang paling
+            mempengaruhi performa akademikmu berdasarkan model prediksi SHAP.
           </p>
         </div>
       </section>
@@ -48,9 +48,9 @@ export default async function SiswaInsightPage() {
             Insight Personal SHAP
           </h2>
           <p className="mt-2 flex-1 text-sm leading-relaxed text-dark-4 dark:text-dark-6">
-            Lihat skor prediksi ujian, status risiko, dan faktor-faktor utama yang
-            mempengaruhi hasil belajarmu. Data diambil langsung dari model machine
-            learning menggunakan ID akunmu.
+            Lihat skor prediksi ujian, status risiko, dan faktor-faktor utama
+            yang mempengaruhi hasil belajarmu. Data diambil langsung dari model
+            machine learning menggunakan ID akunmu.
           </p>
           <Link
             href={`/siswa/prediksi/${session.user.id}`}
@@ -70,9 +70,9 @@ export default async function SiswaInsightPage() {
             Perbarui Data Kamu
           </h2>
           <p className="mt-2 flex-1 text-sm leading-relaxed text-dark-4 dark:text-dark-6">
-            Hasil insight bergantung pada kelengkapan dan keakuratan data yang kamu
-            masukkan. Perbarui 17 variabel gaya hidup dan akademik untuk mendapatkan
-            prediksi yang lebih akurat.
+            Hasil insight bergantung pada kelengkapan dan keakuratan data yang
+            kamu masukkan. Perbarui 17 variabel gaya hidup dan akademik untuk
+            mendapatkan prediksi yang lebih akurat.
           </p>
           <Link
             href="/siswa/update-data"
@@ -125,8 +125,12 @@ export default async function SiswaInsightPage() {
               <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
                 {item.step}
               </div>
-              <h3 className="mb-1.5 font-semibold text-dark dark:text-white">{item.title}</h3>
-              <p className="text-sm leading-relaxed text-dark-4 dark:text-dark-6">{item.desc}</p>
+              <h3 className="mb-1.5 font-semibold text-dark dark:text-white">
+                {item.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-dark-4 dark:text-dark-6">
+                {item.desc}
+              </p>
             </div>
           ))}
         </div>

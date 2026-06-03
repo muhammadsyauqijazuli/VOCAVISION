@@ -1,4 +1,8 @@
-import { AUTH_COOKIE_NAME, backendUrl, getCookieValue } from "@/lib/auth/backend-auth";
+import {
+  AUTH_COOKIE_NAME,
+  backendUrl,
+  getCookieValue,
+} from "@/lib/auth/backend-auth";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";

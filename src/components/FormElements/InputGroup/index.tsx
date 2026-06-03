@@ -40,7 +40,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
         className="text-body-sm font-medium text-dark dark:text-white"
       >
         {label}
-        {required && <span className="ml-1 select-none text-red">*</span>}
+        {required && <span className="ml-1 text-red select-none">*</span>}
       </label>
 
       <div
@@ -60,7 +60,7 @@ const InputGroup: React.FC<InputGroupProps> = ({
           value={props.value}
           defaultValue={props.defaultValue}
           className={cn(
-            "w-full rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition focus:border-primary disabled:cursor-default disabled:bg-gray-2 data-[active=true]:border-primary dark:border-dark-3 dark:bg-dark-2 dark:focus:border-primary dark:disabled:bg-dark dark:data-[active=true]:border-primary",
+            "w-full rounded-lg border-[1.5px] border-stroke bg-transparent transition outline-none focus:border-primary disabled:cursor-default disabled:bg-gray-2 data-[active=true]:border-primary dark:border-dark-3 dark:bg-dark-2 dark:focus:border-primary dark:disabled:bg-dark dark:data-[active=true]:border-primary",
             type === "file"
               ? getFileStyles(props.fileStyleVariant!)
               : "px-5.5 py-3 text-dark placeholder:text-dark-6 dark:text-white",

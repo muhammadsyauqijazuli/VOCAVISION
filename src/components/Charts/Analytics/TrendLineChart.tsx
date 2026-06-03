@@ -38,7 +38,12 @@ export default function TrendLineChart() {
             <XAxis dataKey="month" />
             <YAxis />
             <Tooltip />
-            <Line type="monotone" dataKey="nilai" stroke="#3BA99C" strokeWidth={3} />
+            <Line
+              type="monotone"
+              dataKey="nilai"
+              stroke="#3BA99C"
+              strokeWidth={3}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>

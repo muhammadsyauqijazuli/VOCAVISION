@@ -16,7 +16,7 @@ export default function Loading() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-3">
-        <div className="xl:col-span-2 h-[420px] animate-pulse rounded-2xl bg-gray-200 dark:bg-dark-3" />
+        <div className="h-[420px] animate-pulse rounded-2xl bg-gray-200 xl:col-span-2 dark:bg-dark-3" />
         <div className="h-[420px] animate-pulse rounded-2xl bg-gray-200 dark:bg-dark-3" />
       </section>
     </div>

@@ -121,7 +121,7 @@ export function UserInfo() {
               {user.email}
             </div>
 
-            <div className="inline-flex rounded-full bg-gray-2 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-dark dark:bg-dark-3 dark:text-white">
+            <div className="inline-flex rounded-full bg-gray-2 px-2 py-0.5 text-xs font-semibold tracking-wide text-dark uppercase dark:bg-dark-3 dark:text-white">
               {user.role}
             </div>
           </figcaption>

@@ -1,4 +1,4 @@
-```markdown
+````markdown
 # CLAUDE.md
 
 # VOCAVISION – Vocational Student Predictive Analytics
@@ -38,21 +38,24 @@ Sistem harus mampu:
 
 Status risiko ditentukan berdasarkan **predicted exam score**:
 
-| Skor Prediksi | Status Risiko |
-|---------------|---------------|
-| ≥ 75 | **Tidak Beresiko** |
-| 65 – 74 | **Beresiko** |
-| ≤ 64 | **Sangat Beresiko** |
+| Skor Prediksi | Status Risiko       |
+| ------------- | ------------------- |
+| ≥ 75          | **Tidak Beresiko**  |
+| 65 – 74       | **Beresiko**        |
+| ≤ 64          | **Sangat Beresiko** |
 
 Fungsi bantu di `lib/utils.ts`:
 
 ```ts
-export function getRiskStatus(score: number): "Sangat Beresiko" | "Beresiko" | "Tidak Beresiko" {
+export function getRiskStatus(
+  score: number,
+): "Sangat Beresiko" | "Beresiko" | "Tidak Beresiko" {
   if (score >= 75) return "Tidak Beresiko";
   if (score >= 65) return "Beresiko";
   return "Sangat Beresiko";
 }
 ```
+````
 
 ---
 
@@ -73,7 +76,7 @@ Backend API akan dibuat menggunakan:
 
 - Next.js Route Handlers
 - REST API pattern
-- *Note: Inferensi Machine Learning (file .pkl) mungkin memerlukan microservice Python terpisah (FastAPI/Flask) atau bridge Python-Node, namun semua rute komunikasi klien tetap melalui Next.js API.*
+- _Note: Inferensi Machine Learning (file .pkl) mungkin memerlukan microservice Python terpisah (FastAPI/Flask) atau bridge Python-Node, namun semua rute komunikasi klien tetap melalui Next.js API._
 
 ## Machine Learning
 
@@ -92,32 +95,36 @@ Output model:
 Berikut adalah struktur REST API yang harus diimplementasikan menggunakan Next.js Route Handlers (`app/api/...`):
 
 ## Authentication & Users
-| Method | Endpoint | Role Akses | Deskripsi |
-|---|---|---|---|
-| POST | `/api/auth/login` | Public | Validasi email/password, return JWT token & role. |
-| GET | `/api/users/me` | All | Mengambil profil user yang sedang login. |
-| GET | `/api/users` | Admin | Mengambil daftar seluruh pengguna (Guru/Siswa). |
-| POST | `/api/users` | Admin | Menambah pengguna baru. |
+
+| Method | Endpoint          | Role Akses | Deskripsi                                         |
+| ------ | ----------------- | ---------- | ------------------------------------------------- |
+| POST   | `/api/auth/login` | Public     | Validasi email/password, return JWT token & role. |
+| GET    | `/api/users/me`   | All        | Mengambil profil user yang sedang login.          |
+| GET    | `/api/users`      | Admin      | Mengambil daftar seluruh pengguna (Guru/Siswa).   |
+| POST   | `/api/users`      | Admin      | Menambah pengguna baru.                           |
 
 ## Core Prediction (Machine Learning Bridge)
-| Method | Endpoint | Role Akses | Deskripsi |
-|---|---|---|---|
-| POST | `/api/predict/single` | Siswa, Guru | Menerima payload 17 variabel, melakukan pre-processing, memanggil model RF, menyimpan ke DB, dan mengembalikan prediksi & SHAP. |
-| POST | `/api/predict/batch` | Admin, Guru | Menerima file CSV/Excel, memproses banyak data sekaligus, dan menyimpan masal ke DB. |
-| GET | `/api/predict/insight/[student_id]` | Siswa, Guru | Mengambil hasil analisis SHAP dan menerjemahkannya menjadi rekomendasi teks. |
+
+| Method | Endpoint                            | Role Akses  | Deskripsi                                                                                                                       |
+| ------ | ----------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/api/predict/single`               | Siswa, Guru | Menerima payload 17 variabel, melakukan pre-processing, memanggil model RF, menyimpan ke DB, dan mengembalikan prediksi & SHAP. |
+| POST   | `/api/predict/batch`                | Admin, Guru | Menerima file CSV/Excel, memproses banyak data sekaligus, dan menyimpan masal ke DB.                                            |
+| GET    | `/api/predict/insight/[student_id]` | Siswa, Guru | Mengambil hasil analisis SHAP dan menerjemahkannya menjadi rekomendasi teks.                                                    |
 
 ## Dashboard & Monitoring
-| Method | Endpoint | Role Akses | Deskripsi |
-|---|---|---|---|
-| GET | `/api/dashboard/stats` | Admin, Guru | Mengembalikan metrik agregat (total siswa berisiko, rata-rata kelas, dll). |
-| GET | `/api/students` | Guru | Mengambil daftar seluruh siswa & nilai prediksinya (mendukung query search & filter). |
-| GET | `/api/students/[id]` | Guru, Siswa* | Mengambil detail 17 variabel dan riwayat prediksi siswa. (*Siswa hanya ID miliknya). |
+
+| Method | Endpoint               | Role Akses    | Deskripsi                                                                             |
+| ------ | ---------------------- | ------------- | ------------------------------------------------------------------------------------- |
+| GET    | `/api/dashboard/stats` | Admin, Guru   | Mengembalikan metrik agregat (total siswa berisiko, rata-rata kelas, dll).            |
+| GET    | `/api/students`        | Guru          | Mengambil daftar seluruh siswa & nilai prediksinya (mendukung query search & filter). |
+| GET    | `/api/students/[id]`   | Guru, Siswa\* | Mengambil detail 17 variabel dan riwayat prediksi siswa. (\*Siswa hanya ID miliknya). |
 
 ## Interventions
-| Method | Endpoint | Role Akses | Deskripsi |
-|---|---|---|---|
-| POST | `/api/interventions/[student_id]` | Guru | Menyimpan catatan intervensi/tindak lanjut terhadap siswa berisiko. |
-| GET | `/api/interventions/[student_id]` | Guru | Melihat riwayat intervensi siswa tertentu. |
+
+| Method | Endpoint                          | Role Akses | Deskripsi                                                           |
+| ------ | --------------------------------- | ---------- | ------------------------------------------------------------------- |
+| POST   | `/api/interventions/[student_id]` | Guru       | Menyimpan catatan intervensi/tindak lanjut terhadap siswa berisiko. |
+| GET    | `/api/interventions/[student_id]` | Guru       | Melihat riwayat intervensi siswa tertentu.                          |
 
 ---
 
@@ -126,6 +133,7 @@ Berikut adalah struktur REST API yang harus diimplementasikan menggunakan Next.j
 Database menggunakan MySQL melalui Prisma ORM. Berikut adalah rincian skema tabel utamanya:
 
 ### 1. Table: `users`
+
 - `id` (CHAR(36), Primary Key, default UUID)
 - `nama` (VARCHAR 100)
 - `email` (VARCHAR 100, Unique)
@@ -134,6 +142,7 @@ Database menggunakan MySQL melalui Prisma ORM. Berikut adalah rincian skema tabe
 - `created_at`, `updated_at` (TIMESTAMP)
 
 ### 2. Table: `students` (17 Variabel)
+
 - `id` (CHAR(36), Primary Key)
 - `user_id` (CHAR(36), Foreign Key ke users, nullable)
 - `nisn` (VARCHAR 20, Unique)
@@ -142,6 +151,7 @@ Database menggunakan MySQL melalui Prisma ORM. Berikut adalah rincian skema tabe
 - **Kategorikal (8):** `gender`, `rata_rata_pemasukan_keluarga`, `pendidikan_terakhir_orang_tua`, `kerja_sampingan`, `study_environment`, `kompetensi_skill_level`, `industry_readiness`, `stress_level`
 
 ### 3. Table: `predictions`
+
 - `id` (CHAR(36), Primary Key)
 - `student_id` (CHAR(36), Foreign Key ke students)
 - `predicted_exam_score` (DECIMAL 5,2)
@@ -150,6 +160,7 @@ Database menggunakan MySQL melalui Prisma ORM. Berikut adalah rincian skema tabe
 - `created_at`
 
 ### 4. Table: `shap_analysis`
+
 - `id` (CHAR(36), Primary Key)
 - `prediction_id` (CHAR(36), Foreign Key ke predictions)
 - `feature_name` (VARCHAR 50)
@@ -157,6 +168,7 @@ Database menggunakan MySQL melalui Prisma ORM. Berikut adalah rincian skema tabe
 - `suggestion_text` (TEXT)
 
 ### 5. Table: `interventions`
+
 - `id` (CHAR(36), Primary Key)
 - `student_id` (CHAR(36), Foreign Key ke students)
 - `guru_id` (CHAR(36), Foreign Key ke users)
@@ -165,6 +177,7 @@ Database menggunakan MySQL melalui Prisma ORM. Berikut adalah rincian skema tabe
 - `created_at`
 
 ### 6. Table: `datasets` (Log Upload)
+
 - `id` (CHAR(36), Primary Key)
 - `admin_id` (CHAR(36), Foreign Key ke users)
 - `file_name` (VARCHAR 255)
@@ -178,14 +191,14 @@ Database menggunakan MySQL melalui Prisma ORM. Berikut adalah rincian skema tabe
 
 ## Color Palette
 
-| Token | HEX | Usage |
-|---------|---------|---------|
-| brand-header | #1F6F5F | Navbar, primary buttons |
-| brand-accent | #3BA99C | Active menu, secondary buttons |
-| brand-accent-2 | #A3E4D7 | Low risk badge, success state |
-| brand-danger | #E74C3C | High risk badge, delete buttons |
-| brand-warning | #F39C12 | Warning icon, medium risk |
-| brand-light | #EEEEEE | Global page background |
+| Token          | HEX     | Usage                           |
+| -------------- | ------- | ------------------------------- |
+| brand-header   | #1F6F5F | Navbar, primary buttons         |
+| brand-accent   | #3BA99C | Active menu, secondary buttons  |
+| brand-accent-2 | #A3E4D7 | Low risk badge, success state   |
+| brand-danger   | #E74C3C | High risk badge, delete buttons |
+| brand-warning  | #F39C12 | Warning icon, medium risk       |
+| brand-light    | #EEEEEE | Global page background          |
 
 ---
 
@@ -205,16 +218,17 @@ Menggunakan direktif:
 @import "tailwindcss";
 
 @theme {
-  --color-brand-header: #1F6F5F;
-  --color-brand-accent: #3BA99C;
-  --color-brand-accent-2: #A3E4D7;
-  --color-brand-danger: #E74C3C;
-  --color-brand-warning: #F39C12;
-  --color-brand-light: #EEEEEE;
+  --color-brand-header: #1f6f5f;
+  --color-brand-accent: #3ba99c;
+  --color-brand-accent-2: #a3e4d7;
+  --color-brand-danger: #e74c3c;
+  --color-brand-warning: #f39c12;
+  --color-brand-light: #eeeeee;
 }
 ```
 
 **JANGAN membuat konfigurasi baru pada:**
+
 - `tailwind.config.js`
 - `tailwind.config.ts`
 
@@ -225,27 +239,29 @@ karena proyek menggunakan Tailwind CSS v4 yang membaca konfigurasi langsung dari
 # Authentication Flow
 
 ## Public Route
+
 - `/login` – Semua pengguna login dari halaman yang sama.
 
 ## Demo Credentials
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@test.com | admin |
-| Guru | guru@test.com | guru |
-| Siswa | siswa@test.com | siswa |
+| Role  | Email          | Password |
+| ----- | -------------- | -------- |
+| Admin | admin@test.com | admin    |
+| Guru  | guru@test.com  | guru     |
+| Siswa | siswa@test.com | siswa    |
 
 ## Authorization
 
 Setelah login:
 
-| Role | Redirect |
-|------|----------|
+| Role  | Redirect           |
+| ----- | ------------------ |
 | Admin | `/admin/dashboard` |
-| Guru | `/guru/dashboard` |
+| Guru  | `/guru/dashboard`  |
 | Siswa | `/siswa/dashboard` |
 
 Middleware (`middleware.ts`) digunakan untuk:
+
 - Memeriksa token login
 - Melindungi halaman privat
 - Redirect user jika role tidak sesuai
@@ -322,36 +338,45 @@ student-prediction/
 # User Roles
 
 ## Admin
+
 **Responsibilities:**
+
 - Mengelola akun pengguna
 - Upload dataset
 - Monitoring data sistem
 
 **Pages:**
+
 - `/admin/dashboard` – Menampilkan metrik utama sistem.
 - `/admin/users` – Tambah, edit, hapus, cari, dan filter akun.
 - `/admin/dataset` – Upload CSV/Excel, validasi file, dan preview.
 
 ## Guru
+
 **Responsibilities:**
+
 - Memantau performa siswa
 - Melihat SHAP analysis
 - Memberikan intervensi akademik
 - Mengekspor laporan
 
 **Pages:**
+
 - `/guru/dashboard` – Ringkasan kelas, rata-rata nilai, jumlah siswa berisiko.
 - `/guru/students` – Daftar seluruh siswa, pencarian, dan filter.
 - `/guru/students/[id]` – Detail siswa, prediksi, visualisasi SHAP, dan form intervensi.
 - `/guru/reports` – Export PDF/Excel laporan prediksi.
 
 ## Siswa
+
 **Responsibilities:**
+
 - Melihat prediksi akademik
 - Memahami faktor penyebab
 - Memperbarui data pribadi
 
 **Pages:**
+
 - `/siswa/dashboard` – Prediksi skor, status risiko, nama siswa.
 - `/siswa/insight` – Terjemahan SHAP menjadi rekomendasi actionable.
 - `/siswa/update-data` – Form input kuesioner mandiri untuk 17 variabel gaya hidup.
@@ -361,30 +386,36 @@ student-prediction/
 # Core Components
 
 ## DataUploader
+
 - Drag and drop
 - CSV & Excel validation
 - Error handling & Preview
 
 ## RiskBadge
+
 - **Sangat Beresiko**: Red background (`bg-red-600 text-white`)
 - **Beresiko**: Warning background (`bg-brand-warning text-white`)
 - **Tidak Beresiko**: Success background (`bg-brand-accent-2 text-brand-header`)
 
 ## SHAPChart
+
 - Menggunakan Recharts (Horizontal Bar Chart).
 - Positif = meningkatkan skor (brand-accent); Negatif = menurunkan skor (brand-danger).
 - Terurut menurun berdasarkan nilai absolut (absolute impact).
 
 ## InterventionForm
+
 - Input catatan.
 - Timestamp otomatis & riwayat.
 - Disimpan ke localStorage (simulasi) atau API.
 
 ## SummaryCard
+
 - Card layout (Nama, Prediksi, Status Risiko).
 - Warna status sesuai RiskBadge.
 
 ## LifestyleForm
+
 - Validasi 17 input field (9 numerik dan 8 select box).
 - Terbagi dalam dua section: Data Numerik dan Data Kategorikal.
 - Umpan balik sukses setelah submit.
@@ -417,4 +448,7 @@ Saat menghasilkan kode:
 8. Status risiko ada 3: **Sangat Beresiko**, **Beresiko**, **Tidak Beresiko**.
 9. Password hash menggunakan bcrypt, tidak disimpan dalam teks biasa.
 10. Semua ID menggunakan UUID (CHAR(36) di MySQL).
+
+```
+
 ```

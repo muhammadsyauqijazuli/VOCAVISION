@@ -29,17 +29,17 @@ export function Header() {
         : "Next.js Admin Dashboard Solution";
 
   return (
-    <header className="border-stroke shadow-1 dark:border-stroke-dark dark:bg-gray-dark sticky top-0 z-30 flex items-center justify-between border-b bg-white px-4 py-5 md:px-5 2xl:px-10">
+    <header className="sticky top-0 z-30 flex items-center justify-between border-b border-stroke bg-white px-4 py-5 shadow-1 md:px-5 2xl:px-10 dark:border-stroke-dark dark:bg-gray-dark">
       <button
         onClick={toggleSidebar}
-        className="dark:border-stroke-dark rounded-lg border px-1.5 py-1 lg:hidden dark:bg-[#020D1A] hover:dark:bg-[#FFFFFF1A]"
+        className="rounded-lg border px-1.5 py-1 lg:hidden dark:border-stroke-dark dark:bg-[#020D1A] hover:dark:bg-[#FFFFFF1A]"
       >
         <MenuIcon />
         <span className="sr-only">Toggle Sidebar</span>
       </button>
 
       {isMobile && (
-        <Link href={"/"} className="2xsm:ml-4 ml-2 max-[430px]:hidden">
+        <Link href={"/"} className="ml-2 max-[430px]:hidden 2xsm:ml-4">
           <Image
             src={"/images/logo/logo-icon.svg"}
             width={32}
@@ -51,13 +51,13 @@ export function Header() {
       )}
 
       <div className="max-xl:hidden">
-        <h1 className="text-heading-5 text-dark mb-0.5 font-bold dark:text-white">
+        <h1 className="mb-0.5 text-heading-5 font-bold text-dark dark:text-white">
           {title}
         </h1>
         <p className="font-medium">{subtitle}</p>
       </div>
 
-      <div className="2xsm:gap-4 flex flex-1 items-center justify-end gap-2">
+      <div className="flex flex-1 items-center justify-end gap-2 2xsm:gap-4">
         <ThemeToggleSwitch />
 
         <div className="shrink-0">

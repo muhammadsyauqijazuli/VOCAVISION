@@ -16,7 +16,11 @@ type SessionResult = {
 
 export const auth = {
   api: {
-    async getSession({ headers }: { headers: Headers }): Promise<SessionResult> {
+    async getSession({
+      headers,
+    }: {
+      headers: Headers;
+    }): Promise<SessionResult> {
       const token = getTokenFromHeaders(headers);
 
       if (!token) {

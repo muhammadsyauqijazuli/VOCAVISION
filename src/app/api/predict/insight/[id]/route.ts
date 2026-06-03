@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { backendUrl, getCookieValue, AUTH_COOKIE_NAME } from "@/lib/auth/backend-auth";
+import {
+  backendUrl,
+  getCookieValue,
+  AUTH_COOKIE_NAME,
+} from "@/lib/auth/backend-auth";
 
 const BACKEND_TIMEOUT_MS = 20_000;
 
@@ -55,7 +59,10 @@ async function forward(request: Request, context: RouteContext) {
       return NextResponse.json({ message: "Backend timeout" }, { status: 504 });
     }
 
-    return NextResponse.json({ message: "Backend tidak merespons" }, { status: 502 });
+    return NextResponse.json(
+      { message: "Backend tidak merespons" },
+      { status: 502 },
+    );
   } finally {
     clearTimeout(timeoutId);
   }

@@ -126,8 +126,13 @@ export default function ShapChart({
             />
             <Tooltip
               cursor={{ fill: "rgba(87, 80, 241, 0.06)" }}
-              formatter={(value: number) => [Number(value).toFixed(3), "Impact"]}
-              labelFormatter={(label) => `Fitur: ${formatFeatureLabel(String(label))}`}
+              formatter={(value: number) => [
+                Number(value).toFixed(3),
+                "Impact",
+              ]}
+              labelFormatter={(label) =>
+                `Fitur: ${formatFeatureLabel(String(label))}`
+              }
               contentStyle={{
                 borderRadius: 12,
                 border: "1px solid rgba(148, 163, 184, 0.25)",

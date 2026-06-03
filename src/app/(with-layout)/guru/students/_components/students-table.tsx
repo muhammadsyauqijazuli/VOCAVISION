@@ -43,7 +43,10 @@ export function StudentsTable() {
       setError(null);
 
       try {
-        const params = new URLSearchParams({ page: String(page), page_size: String(pageSize) });
+        const params = new URLSearchParams({
+          page: String(page),
+          page_size: String(pageSize),
+        });
 
         if (query.trim()) {
           params.set("search", query.trim());
@@ -53,7 +56,9 @@ export function StudentsTable() {
           credentials: "include",
         });
 
-        const payload = (await response.json().catch(() => ({}))) as ApiResponse;
+        const payload = (await response
+          .json()
+          .catch(() => ({}))) as ApiResponse;
 
         if (!response.ok) {
           throw new Error(payload.message ?? "Gagal memuat data siswa");
@@ -65,7 +70,10 @@ export function StudentsTable() {
         }
       } catch (caughtError) {
         if (!ignore) {
-          const message = caughtError instanceof Error ? caughtError.message : "Gagal memuat data siswa";
+          const message =
+            caughtError instanceof Error
+              ? caughtError.message
+              : "Gagal memuat data siswa";
           setError(message);
           setItems([]);
         }
@@ -104,21 +112,25 @@ export function StudentsTable() {
 
   return (
     <div className="overflow-hidden rounded-2xl">
-      <div className="border-b border-stroke p-5 dark:border-dark-3 sm:p-6">
+      <div className="border-b border-stroke p-5 sm:p-6 dark:border-dark-3">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-1">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+            <p className="text-xs font-semibold tracking-[0.2em] text-primary uppercase">
               Student Directory
             </p>
-            <h2 className="text-xl font-bold text-dark dark:text-white sm:text-2xl">
+            <h2 className="text-xl font-bold text-dark sm:text-2xl dark:text-white">
               Daftar Siswa
             </h2>
             <p className="max-w-2xl text-sm leading-6 text-dark-4 dark:text-dark-6">
-              Cari siswa, lihat skor prediksi terbaru, lalu buka detail untuk SHAP insight dan intervensi.
+              Cari siswa, lihat skor prediksi terbaru, lalu buka detail untuk
+              SHAP insight dan intervensi.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex w-full flex-col gap-3 lg:max-w-xl lg:flex-row">
+          <form
+            onSubmit={handleSubmit}
+            className="flex w-full flex-col gap-3 lg:max-w-xl lg:flex-row"
+          >
             <label className="flex-1">
               <span className="sr-only">Cari nama atau NISN</span>
               <input
@@ -126,7 +138,7 @@ export function StudentsTable() {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Cari nama atau NISN"
-                className="h-11 w-full rounded-lg border border-stroke bg-white px-4 text-sm text-dark outline-none transition placeholder:text-dark-4 focus:border-primary dark:border-dark-3 dark:bg-dark-2 dark:text-white dark:placeholder:text-dark-6"
+                className="h-11 w-full rounded-lg border border-stroke bg-white px-4 text-sm text-dark transition outline-none placeholder:text-dark-4 focus:border-primary dark:border-dark-3 dark:bg-dark-2 dark:text-white dark:placeholder:text-dark-6"
               />
             </label>
 
@@ -140,7 +152,7 @@ export function StudentsTable() {
               <button
                 type="button"
                 onClick={handleReset}
-                className="inline-flex h-11 flex-1 items-center justify-center rounded-lg border border-stroke px-4 text-sm font-semibold text-dark transition hover:bg-gray-1 dark:border-dark-3 dark:text-white dark:hover:bg-dark-2 sm:flex-none sm:px-5"
+                className="inline-flex h-11 flex-1 items-center justify-center rounded-lg border border-stroke px-4 text-sm font-semibold text-dark transition hover:bg-gray-1 sm:flex-none sm:px-5 dark:border-dark-3 dark:text-white dark:hover:bg-dark-2"
               >
                 Reset
               </button>
@@ -170,17 +182,24 @@ export function StudentsTable() {
                     <h3 className="truncate text-base font-semibold text-dark dark:text-white">
                       {student.nama}
                     </h3>
-                    <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">NISN {student.nisn}</p>
+                    <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">
+                      NISN {student.nisn}
+                    </p>
                   </div>
 
                   <div className="shrink-0">
-                    <RiskBadge status={student.risk_status} score={student.predicted_score} />
+                    <RiskBadge
+                      status={student.risk_status}
+                      score={student.predicted_score}
+                    />
                   </div>
                 </div>
 
                 <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                   <div className="rounded-xl bg-gray-1 p-3 dark:bg-dark-2">
-                    <dt className="text-dark-4 dark:text-dark-6">Skor Prediksi</dt>
+                    <dt className="text-dark-4 dark:text-dark-6">
+                      Skor Prediksi
+                    </dt>
                     <dd className="mt-1 font-semibold text-dark dark:text-white">
                       {formatScore(student.predicted_score)}
                     </dd>
@@ -225,7 +244,9 @@ export function StudentsTable() {
               >
                 Sebelumnya
               </button>
-              <div className="text-sm">Halaman {page} / {Math.max(1, Math.ceil(total / pageSize))}</div>
+              <div className="text-sm">
+                Halaman {page} / {Math.max(1, Math.ceil(total / pageSize))}
+              </div>
               <button
                 onClick={nextPage}
                 disabled={page >= Math.max(1, Math.ceil(total / pageSize))}
@@ -237,7 +258,7 @@ export function StudentsTable() {
           </div>
         </div>
 
-        <div className="hidden overflow-hidden rounded-2xl border border-stroke dark:border-dark-3 md:block">
+        <div className="hidden overflow-hidden rounded-2xl border border-stroke md:block dark:border-dark-3">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-stroke dark:divide-dark-3">
               <thead className="bg-gray-1 dark:bg-dark-2">
@@ -253,24 +274,42 @@ export function StudentsTable() {
               <tbody className="divide-y divide-stroke dark:divide-dark-3">
                 {loading ? (
                   <tr>
-                    <td colSpan={5} className="px-5 py-12 text-center text-dark-4 dark:text-dark-6">
+                    <td
+                      colSpan={5}
+                      className="px-5 py-12 text-center text-dark-4 dark:text-dark-6"
+                    >
                       Memuat data siswa...
                     </td>
                   </tr>
                 ) : error ? (
                   <tr>
-                    <td colSpan={5} className="px-5 py-12 text-center text-red-600 dark:text-red-300">
+                    <td
+                      colSpan={5}
+                      className="px-5 py-12 text-center text-red-600 dark:text-red-300"
+                    >
                       {error}
                     </td>
                   </tr>
                 ) : items.length ? (
                   items.map((student) => (
-                    <tr key={student.id} className="transition hover:bg-gray-1 dark:hover:bg-dark-2/70">
-                      <td className="px-5 py-4 font-medium text-dark dark:text-white">{student.nama}</td>
-                      <td className="px-5 py-4 text-dark-4 dark:text-dark-6">{student.nisn}</td>
-                      <td className="px-5 py-4 text-dark-4 dark:text-dark-6">{formatScore(student.predicted_score)}</td>
+                    <tr
+                      key={student.id}
+                      className="transition hover:bg-gray-1 dark:hover:bg-dark-2/70"
+                    >
+                      <td className="px-5 py-4 font-medium text-dark dark:text-white">
+                        {student.nama}
+                      </td>
+                      <td className="px-5 py-4 text-dark-4 dark:text-dark-6">
+                        {student.nisn}
+                      </td>
+                      <td className="px-5 py-4 text-dark-4 dark:text-dark-6">
+                        {formatScore(student.predicted_score)}
+                      </td>
                       <td className="px-5 py-4">
-                        <RiskBadge status={student.risk_status} score={student.predicted_score} />
+                        <RiskBadge
+                          status={student.risk_status}
+                          score={student.predicted_score}
+                        />
                       </td>
                       <td className="px-5 py-4">
                         <div className="flex flex-wrap gap-2">
@@ -292,7 +331,10 @@ export function StudentsTable() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="px-5 py-12 text-center text-dark-4 dark:text-dark-6">
+                    <td
+                      colSpan={5}
+                      className="px-5 py-12 text-center text-dark-4 dark:text-dark-6"
+                    >
                       Tidak ada data siswa yang ditemukan.
                     </td>
                   </tr>

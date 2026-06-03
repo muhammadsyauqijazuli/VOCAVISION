@@ -1,6 +1,9 @@
 "use client";
 
-import type { AnalyticsStudentRecord, DashboardStatsResponse } from "@/types/analytics";
+import type {
+  AnalyticsStudentRecord,
+  DashboardStatsResponse,
+} from "@/types/analytics";
 import {
   Bar,
   BarChart,
@@ -73,7 +76,11 @@ function hasBubbleMetrics(
   exam_score: number;
   screen_time: number;
 } {
-  return isNumber(student.jam_belajar_per_hari) && isNumber(student.exam_score) && isNumber(student.screen_time);
+  return (
+    isNumber(student.jam_belajar_per_hari) &&
+    isNumber(student.exam_score) &&
+    isNumber(student.screen_time)
+  );
 }
 
 function hasAttendanceMetrics(
@@ -104,7 +111,9 @@ function formatScore(value: number) {
 function buildBubbleData(students: AnalyticsStudentRecord[]) {
   return students
     .filter(hasBubbleMetrics)
-    .sort((left, right) => left.jam_belajar_per_hari - right.jam_belajar_per_hari)
+    .sort(
+      (left, right) => left.jam_belajar_per_hari - right.jam_belajar_per_hari,
+    )
     .slice(0, 24)
     .map((student) => ({
       name: student.nama,
@@ -142,7 +151,10 @@ function buildStressData(students: AnalyticsStudentRecord[]) {
     });
 }
 
-function buildRiskData(stats: DashboardStatsResponse, students: AnalyticsStudentRecord[]) {
+function buildRiskData(
+  stats: DashboardStatsResponse,
+  students: AnalyticsStudentRecord[],
+) {
   const hasStats =
     typeof stats.sangat_beresiko === "number" ||
     typeof stats.beresiko === "number" ||
@@ -163,7 +175,8 @@ function buildRiskData(stats: DashboardStatsResponse, students: AnalyticsStudent
   };
 
   for (const student of students) {
-    const status = student.latest_prediction?.risk_status ?? student.risk_status;
+    const status =
+      student.latest_prediction?.risk_status ?? student.risk_status;
     if (status && status in counts) {
       counts[status as keyof typeof counts] += 1;
     }
@@ -179,7 +192,9 @@ function buildRiskData(stats: DashboardStatsResponse, students: AnalyticsStudent
 function buildAttendanceTrendData(students: AnalyticsStudentRecord[]) {
   return students
     .filter(hasAttendanceMetrics)
-    .sort((left, right) => right.presentase_kehadiran - left.presentase_kehadiran)
+    .sort(
+      (left, right) => right.presentase_kehadiran - left.presentase_kehadiran,
+    )
     .slice(0, 6)
     .map((student) => ({
       name: student.nama,
@@ -188,7 +203,13 @@ function buildAttendanceTrendData(students: AnalyticsStudentRecord[]) {
     }));
 }
 
-function BubbleTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: BubbleDatum }> }) {
+function BubbleTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: BubbleDatum }>;
+}) {
   if (!active || !payload?.length) {
     return null;
   }
@@ -198,14 +219,26 @@ function BubbleTooltip({ active, payload }: { active?: boolean; payload?: Array<
   return (
     <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-xl dark:border-dark-3 dark:bg-gray-dark">
       <p className="font-semibold text-dark dark:text-white">{data.name}</p>
-      <p className="mt-2 text-dark-4 dark:text-dark-6">Jam belajar: {data.jam_belajar_per_hari.toFixed(1)} jam</p>
-      <p className="text-dark-4 dark:text-dark-6">Exam score: {data.exam_score.toFixed(1)}</p>
-      <p className="text-dark-4 dark:text-dark-6">Screen time: {data.screen_time.toFixed(1)} jam</p>
+      <p className="mt-2 text-dark-4 dark:text-dark-6">
+        Jam belajar: {data.jam_belajar_per_hari.toFixed(1)} jam
+      </p>
+      <p className="text-dark-4 dark:text-dark-6">
+        Exam score: {data.exam_score.toFixed(1)}
+      </p>
+      <p className="text-dark-4 dark:text-dark-6">
+        Screen time: {data.screen_time.toFixed(1)} jam
+      </p>
     </div>
   );
 }
 
-function StressTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: StressDatum }> }) {
+function StressTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: StressDatum }>;
+}) {
   if (!active || !payload?.length) {
     return null;
   }
@@ -214,13 +247,23 @@ function StressTooltip({ active, payload }: { active?: boolean; payload?: Array<
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-xl dark:border-dark-3 dark:bg-gray-dark">
-      <p className="font-semibold text-dark dark:text-white">Stress Level: {data.stress_level}</p>
-      <p className="mt-2 text-dark-4 dark:text-dark-6">Rata-rata exam score: {data.avg_exam_score.toFixed(1)}</p>
+      <p className="font-semibold text-dark dark:text-white">
+        Stress Level: {data.stress_level}
+      </p>
+      <p className="mt-2 text-dark-4 dark:text-dark-6">
+        Rata-rata exam score: {data.avg_exam_score.toFixed(1)}
+      </p>
     </div>
   );
 }
 
-function RiskTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: RiskDatum }> }) {
+function RiskTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: RiskDatum }>;
+}) {
   if (!active || !payload?.length) {
     return null;
   }
@@ -230,12 +273,20 @@ function RiskTooltip({ active, payload }: { active?: boolean; payload?: Array<{ 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-xl dark:border-dark-3 dark:bg-gray-dark">
       <p className="font-semibold text-dark dark:text-white">{data.name}</p>
-      <p className="mt-2 text-dark-4 dark:text-dark-6">Total siswa: {data.value}</p>
+      <p className="mt-2 text-dark-4 dark:text-dark-6">
+        Total siswa: {data.value}
+      </p>
     </div>
   );
 }
 
-function AttendanceTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: AttendanceTrendDatum }> }) {
+function AttendanceTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: AttendanceTrendDatum }>;
+}) {
   if (!active || !payload?.length) {
     return null;
   }
@@ -245,24 +296,41 @@ function AttendanceTooltip({ active, payload }: { active?: boolean; payload?: Ar
   return (
     <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-xl dark:border-dark-3 dark:bg-gray-dark">
       <p className="font-semibold text-dark dark:text-white">{data.name}</p>
-      <p className="mt-2 text-dark-4 dark:text-dark-6">Kehadiran: {formatPercent(data.presentase_kehadiran)}</p>
-      <p className="text-dark-4 dark:text-dark-6">Exam score: {formatScore(data.exam_score)}</p>
+      <p className="mt-2 text-dark-4 dark:text-dark-6">
+        Kehadiran: {formatPercent(data.presentase_kehadiran)}
+      </p>
+      <p className="text-dark-4 dark:text-dark-6">
+        Exam score: {formatScore(data.exam_score)}
+      </p>
     </div>
   );
 }
 
-function EmptyState({ title, description }: { title: string; description: string }) {
+function EmptyState({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
   return (
     <div className="flex h-90 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 text-center dark:border-dark-3 dark:bg-dark-2">
       <div className="max-w-sm space-y-2">
-        <p className="text-lg font-semibold text-dark dark:text-white">{title}</p>
-        <p className="text-sm leading-6 text-slate-500 dark:text-dark-6">{description}</p>
+        <p className="text-lg font-semibold text-dark dark:text-white">
+          {title}
+        </p>
+        <p className="text-sm leading-6 text-slate-500 dark:text-dark-6">
+          {description}
+        </p>
       </div>
     </div>
   );
 }
 
-export function AnalyticsDashboard({ stats, students }: AnalyticsDashboardProps) {
+export function AnalyticsDashboard({
+  stats,
+  students,
+}: AnalyticsDashboardProps) {
   const bubbleData = buildBubbleData(students);
   const stressData = buildStressData(students);
   const riskData = buildRiskData(stats, students);
@@ -270,67 +338,101 @@ export function AnalyticsDashboard({ stats, students }: AnalyticsDashboardProps)
 
   const totalStudents = students.length || stats.total_siswa || 0;
   const averageExamScore =
-    stats.rata_rata_exam_score ?? average(students.map((student) => student.exam_score).filter(isNumber));
-  const averageStudyHours = average(students.map((student) => student.jam_belajar_per_hari).filter(isNumber));
-  const lowRiskCount = stats.tidak_beresiko ?? riskData.find((item) => item.name === "Tidak Beresiko")?.value ?? 0;
+    stats.rata_rata_exam_score ??
+    average(students.map((student) => student.exam_score).filter(isNumber));
+  const averageStudyHours = average(
+    students.map((student) => student.jam_belajar_per_hari).filter(isNumber),
+  );
+  const lowRiskCount =
+    stats.tidak_beresiko ??
+    riskData.find((item) => item.name === "Tidak Beresiko")?.value ??
+    0;
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-6 duration-500 ease-out">
       {/* ── Hero Banner ── */}
       <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-indigo-500 to-blue-dark p-8 shadow-1 md:p-10">
-        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
 
         <div className="relative z-10 text-white">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
+          <p className="mb-2 text-xs font-semibold tracking-widest text-white/70 uppercase">
             Analytics
           </p>
-          <h1 className="text-3xl font-bold md:text-4xl">
-            EDA Dashboard
-          </h1>
+          <h1 className="text-3xl font-bold md:text-4xl">EDA Dashboard</h1>
           <p className="mt-3 max-w-4xl text-sm leading-6 text-white/90 md:text-base">
-            Visualisasi eksploratif yang dibangun dari data siswa dan hasil analisis backend, bukan lagi mock data.
+            Visualisasi eksploratif yang dibangun dari data siswa dan hasil
+            analisis backend, bukan lagi mock data.
           </p>
         </div>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className={cardClassName()}>
-          <p className="text-sm text-slate-500 dark:text-dark-6">Total sample</p>
-          <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">{totalStudents}</h2>
-          <p className="mt-2 text-sm text-slate-500 dark:text-dark-6">Seluruh siswa yang tersedia di backend</p>
+          <p className="text-sm text-slate-500 dark:text-dark-6">
+            Total sample
+          </p>
+          <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">
+            {totalStudents}
+          </h2>
+          <p className="mt-2 text-sm text-slate-500 dark:text-dark-6">
+            Seluruh siswa yang tersedia di backend
+          </p>
         </div>
         <div className={cardClassName()}>
-          <p className="text-sm text-slate-500 dark:text-dark-6">Avg exam score</p>
-          <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">{formatScore(averageExamScore)}</h2>
-          <p className="mt-2 text-sm text-slate-500 dark:text-dark-6">Rata-rata nilai dari data nyata</p>
+          <p className="text-sm text-slate-500 dark:text-dark-6">
+            Avg exam score
+          </p>
+          <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">
+            {formatScore(averageExamScore)}
+          </h2>
+          <p className="mt-2 text-sm text-slate-500 dark:text-dark-6">
+            Rata-rata nilai dari data nyata
+          </p>
         </div>
         <div className={cardClassName()}>
-          <p className="text-sm text-slate-500 dark:text-dark-6">Avg study hours</p>
-          <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">{formatScore(averageStudyHours)}</h2>
-          <p className="mt-2 text-sm text-slate-500 dark:text-dark-6">Rata-rata jam belajar per hari</p>
+          <p className="text-sm text-slate-500 dark:text-dark-6">
+            Avg study hours
+          </p>
+          <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">
+            {formatScore(averageStudyHours)}
+          </h2>
+          <p className="mt-2 text-sm text-slate-500 dark:text-dark-6">
+            Rata-rata jam belajar per hari
+          </p>
         </div>
         <div className={cardClassName()}>
           <p className="text-sm text-slate-500 dark:text-dark-6">Low risk</p>
-          <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">{lowRiskCount}</h2>
-          <p className="mt-2 text-sm text-slate-500 dark:text-dark-6">Tidak Beresiko menurut analisis backend</p>
+          <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">
+            {lowRiskCount}
+          </h2>
+          <p className="mt-2 text-sm text-slate-500 dark:text-dark-6">
+            Tidak Beresiko menurut analisis backend
+          </p>
         </div>
       </section>
 
       <section className="grid gap-6 xl:grid-cols-2">
         <article className={cardClassName()}>
           <div className="mb-4">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-header">Correlation</p>
-            <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">Korelasi Jam Belajar vs Nilai Ujian</h2>
+            <p className="text-brand-header text-sm font-semibold tracking-[0.2em] uppercase">
+              Correlation
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">
+              Korelasi Jam Belajar vs Nilai Ujian
+            </h2>
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-dark-6">
-              Bubble chart memakai data siswa asli dari backend. Ukuran bubble merepresentasikan screen time.
+              Bubble chart memakai data siswa asli dari backend. Ukuran bubble
+              merepresentasikan screen time.
             </p>
           </div>
 
           {bubbleData.length ? (
             <div className="w-full" style={{ height: 360 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <ScatterChart margin={{ top: 10, right: 18, bottom: 12, left: 6 }}>
+                <ScatterChart
+                  margin={{ top: 10, right: 18, bottom: 12, left: 6 }}
+                >
                   <CartesianGrid stroke={COLORS.grid} strokeDasharray="3 3" />
                   <XAxis
                     type="number"
@@ -351,9 +453,22 @@ export function AnalyticsDashboard({ stats, students }: AnalyticsDashboardProps)
                     axisLine={{ stroke: COLORS.slate }}
                     tickLine={false}
                   />
-                  <ZAxis dataKey="screen_time" range={[90, 420]} name="Screen Time" unit=" jam" />
-                  <Tooltip cursor={{ strokeDasharray: "4 4" }} content={<BubbleTooltip />} />
-                  <Scatter data={bubbleData} fill={COLORS.header} stroke={COLORS.header} strokeWidth={1} />
+                  <ZAxis
+                    dataKey="screen_time"
+                    range={[90, 420]}
+                    name="Screen Time"
+                    unit=" jam"
+                  />
+                  <Tooltip
+                    cursor={{ strokeDasharray: "4 4" }}
+                    content={<BubbleTooltip />}
+                  />
+                  <Scatter
+                    data={bubbleData}
+                    fill={COLORS.header}
+                    stroke={COLORS.header}
+                    strokeWidth={1}
+                  />
                 </ScatterChart>
               </ResponsiveContainer>
             </div>
@@ -367,21 +482,42 @@ export function AnalyticsDashboard({ stats, students }: AnalyticsDashboardProps)
 
         <article className={cardClassName()}>
           <div className="mb-4">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-accent">Psychology</p>
-            <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">Rata-rata Exam Score per Stress Level</h2>
+            <p className="text-brand-accent text-sm font-semibold tracking-[0.2em] uppercase">
+              Psychology
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">
+              Rata-rata Exam Score per Stress Level
+            </h2>
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-dark-6">
-              Distribusi ini dihitung langsung dari siswa yang punya stress level dan exam score.
+              Distribusi ini dihitung langsung dari siswa yang punya stress
+              level dan exam score.
             </p>
           </div>
 
           {stressData.length ? (
             <div className="w-full" style={{ height: 360 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stressData} margin={{ top: 10, right: 16, bottom: 8, left: 8 }}>
+                <BarChart
+                  data={stressData}
+                  margin={{ top: 10, right: 16, bottom: 8, left: 8 }}
+                >
                   <CartesianGrid stroke={COLORS.grid} strokeDasharray="3 3" />
-                  <XAxis dataKey="stress_level" tick={{ fill: COLORS.slate, fontSize: 12 }} axisLine={{ stroke: COLORS.slate }} tickLine={false} />
-                  <YAxis tick={{ fill: COLORS.slate, fontSize: 12 }} axisLine={{ stroke: COLORS.slate }} tickLine={false} domain={[0, 100]} />
-                  <Tooltip content={<StressTooltip />} cursor={{ fill: "rgba(31, 111, 95, 0.08)" }} />
+                  <XAxis
+                    dataKey="stress_level"
+                    tick={{ fill: COLORS.slate, fontSize: 12 }}
+                    axisLine={{ stroke: COLORS.slate }}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    tick={{ fill: COLORS.slate, fontSize: 12 }}
+                    axisLine={{ stroke: COLORS.slate }}
+                    tickLine={false}
+                    domain={[0, 100]}
+                  />
+                  <Tooltip
+                    content={<StressTooltip />}
+                    cursor={{ fill: "rgba(31, 111, 95, 0.08)" }}
+                  />
                   <Bar dataKey="avg_exam_score" radius={[10, 10, 0, 0]}>
                     {stressData.map((entry) => (
                       <Cell
@@ -409,14 +545,22 @@ export function AnalyticsDashboard({ stats, students }: AnalyticsDashboardProps)
 
         <article className={cardClassName()}>
           <div className="mb-4">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-warning">Distribution</p>
-            <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">Distribusi Risk Status</h2>
+            <p className="text-brand-warning text-sm font-semibold tracking-[0.2em] uppercase">
+              Distribution
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">
+              Distribusi Risk Status
+            </h2>
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-dark-6">
-              Donut chart ini memakai distribusi risiko nyata dari hasil analisis prediksi backend.
+              Donut chart ini memakai distribusi risiko nyata dari hasil
+              analisis prediksi backend.
             </p>
           </div>
 
-          <div className="flex w-full items-center justify-center" style={{ height: 360 }}>
+          <div
+            className="flex w-full items-center justify-center"
+            style={{ height: 360 }}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Tooltip content={<RiskTooltip />} />
@@ -450,24 +594,70 @@ export function AnalyticsDashboard({ stats, students }: AnalyticsDashboardProps)
 
         <article className={cardClassName()}>
           <div className="mb-4">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-header">Trend</p>
-            <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">Attendance vs Exam Score</h2>
+            <p className="text-brand-header text-sm font-semibold tracking-[0.2em] uppercase">
+              Trend
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">
+              Attendance vs Exam Score
+            </h2>
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-dark-6">
-              Composed chart ini memakai siswa dengan kehadiran tertinggi untuk memperlihatkan pola nyata di data.
+              Composed chart ini memakai siswa dengan kehadiran tertinggi untuk
+              memperlihatkan pola nyata di data.
             </p>
           </div>
 
           {attendanceTrendData.length ? (
             <div className="w-full" style={{ height: 360 }}>
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={attendanceTrendData} margin={{ top: 10, right: 16, bottom: 8, left: 8 }}>
+                <ComposedChart
+                  data={attendanceTrendData}
+                  margin={{ top: 10, right: 16, bottom: 8, left: 8 }}
+                >
                   <CartesianGrid stroke={COLORS.grid} strokeDasharray="3 3" />
-                  <XAxis dataKey="name" tick={{ fill: COLORS.slate, fontSize: 11 }} axisLine={{ stroke: COLORS.slate }} tickLine={false} interval={0} />
-                  <YAxis yAxisId="left" tick={{ fill: COLORS.slate, fontSize: 12 }} axisLine={{ stroke: COLORS.slate }} tickLine={false} domain={[0, 100]} />
-                  <YAxis yAxisId="right" orientation="right" tick={{ fill: COLORS.slate, fontSize: 12 }} axisLine={{ stroke: COLORS.slate }} tickLine={false} domain={[0, 100]} />
-                  <Tooltip content={<AttendanceTooltip />} cursor={{ fill: "rgba(59, 169, 156, 0.08)" }} />
-                  <Bar yAxisId="left" dataKey="presentase_kehadiran" name="Kehadiran" fill={COLORS.accent} radius={[8, 8, 0, 0]} barSize={22} />
-                  <Line yAxisId="right" type="monotone" dataKey="exam_score" name="Exam Score" stroke={COLORS.header} strokeWidth={3} dot={{ r: 4, fill: COLORS.header }} activeDot={{ r: 6 }} />
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fill: COLORS.slate, fontSize: 11 }}
+                    axisLine={{ stroke: COLORS.slate }}
+                    tickLine={false}
+                    interval={0}
+                  />
+                  <YAxis
+                    yAxisId="left"
+                    tick={{ fill: COLORS.slate, fontSize: 12 }}
+                    axisLine={{ stroke: COLORS.slate }}
+                    tickLine={false}
+                    domain={[0, 100]}
+                  />
+                  <YAxis
+                    yAxisId="right"
+                    orientation="right"
+                    tick={{ fill: COLORS.slate, fontSize: 12 }}
+                    axisLine={{ stroke: COLORS.slate }}
+                    tickLine={false}
+                    domain={[0, 100]}
+                  />
+                  <Tooltip
+                    content={<AttendanceTooltip />}
+                    cursor={{ fill: "rgba(59, 169, 156, 0.08)" }}
+                  />
+                  <Bar
+                    yAxisId="left"
+                    dataKey="presentase_kehadiran"
+                    name="Kehadiran"
+                    fill={COLORS.accent}
+                    radius={[8, 8, 0, 0]}
+                    barSize={22}
+                  />
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="exam_score"
+                    name="Exam Score"
+                    stroke={COLORS.header}
+                    strokeWidth={3}
+                    dot={{ r: 4, fill: COLORS.header }}
+                    activeDot={{ r: 6 }}
+                  />
                 </ComposedChart>
               </ResponsiveContainer>
             </div>

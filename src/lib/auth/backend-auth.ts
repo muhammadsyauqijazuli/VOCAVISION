@@ -49,7 +49,10 @@ export function getRoleHomePath(role?: string) {
   }
 }
 
-export function normalizeUser(raw: Record<string, unknown>, fallbackRole?: Role): BackendUser {
+export function normalizeUser(
+  raw: Record<string, unknown>,
+  fallbackRole?: Role,
+): BackendUser {
   const name =
     (raw.name as string | undefined) ??
     (raw.nama as string | undefined) ??

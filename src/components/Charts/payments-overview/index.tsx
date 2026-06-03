@@ -18,7 +18,7 @@ export async function PaymentsOverview({
   return (
     <div
       className={cn(
-        "grid gap-2 rounded-[10px] bg-white px-7.5 pb-6 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card",
+        "grid gap-2 rounded-[10px] bg-white px-7.5 pt-7.5 pb-6 shadow-1 dark:bg-gray-dark dark:shadow-card",
         className,
       )}
     >
@@ -32,8 +32,8 @@ export async function PaymentsOverview({
 
       <PaymentsOverviewChart data={data} />
 
-      <dl className="grid divide-stroke text-center dark:divide-dark-3 sm:grid-cols-2 sm:divide-x [&>div]:flex [&>div]:flex-col-reverse [&>div]:gap-1">
-        <div className="dark:border-dark-3 max-sm:mb-3 max-sm:border-b max-sm:pb-3">
+      <dl className="grid divide-stroke text-center sm:grid-cols-2 sm:divide-x dark:divide-dark-3 [&>div]:flex [&>div]:flex-col-reverse [&>div]:gap-1">
+        <div className="max-sm:mb-3 max-sm:border-b max-sm:pb-3 dark:border-dark-3">
           <dt className="text-xl font-bold text-dark dark:text-white">
             ${standardFormat(data.received.reduce((acc, { y }) => acc + y, 0))}
           </dt>

@@ -18,7 +18,11 @@ export const metadata: Metadata = {
     "VOCAVISION is a vocational student predictive analytics platform for risk detection, insight generation, and academic intervention.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>

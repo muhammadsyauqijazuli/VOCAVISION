@@ -1,4 +1,8 @@
-import { AUTH_COOKIE_NAME, backendUrl, getCookieValue } from "@/lib/auth/backend-auth";
+import {
+  AUTH_COOKIE_NAME,
+  backendUrl,
+  getCookieValue,
+} from "@/lib/auth/backend-auth";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -18,25 +22,44 @@ export async function GET(request: Request) {
 
   // Forward request to backend
   const response = await fetch(
-    backendUrl(`/students?page=${encodeURIComponent(page)}&page_size=${encodeURIComponent(page_size)}${params.has("search") ? `&search=${encodeURIComponent(params.get("search") ?? "")}` : ""}`),
+    backendUrl(
+      `/students?page=${encodeURIComponent(page)}&page_size=${encodeURIComponent(page_size)}${params.has("search") ? `&search=${encodeURIComponent(params.get("search") ?? "")}` : ""}`,
+    ),
     {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },
       cache: "no-store",
-    }
+    },
   );
 
   const payload = await response.json().catch(() => ({}));
 
+  type BackendStudentItem = {
+    id: string;
+    nama_siswa?: string;
+    nama?: string;
+    name?: string;
+    nisn?: string | null;
+    latest_prediction?: {
+      predicted_exam_score?: number;
+      risk_status?: string;
+    };
+    predicted_exam_score?: number;
+    risk_status?: string;
+  };
+
   // If backend returns a students array, map to a minimal summary payload for the client
   if (Array.isArray(payload.students)) {
-    const minimal = payload.students.map((s: any) => ({
+    const minimal = payload.students.map((s: BackendStudentItem) => ({
       id: s.id,
       nama: s.nama_siswa ?? s.nama ?? s.name,
       nisn: s.nisn ?? null,
-      predicted_score: s.latest_prediction?.predicted_exam_score ?? s.predicted_exam_score ?? null,
+      predicted_score:
+        s.latest_prediction?.predicted_exam_score ??
+        s.predicted_exam_score ??
+        null,
       risk_status: s.latest_prediction?.risk_status ?? s.risk_status ?? null,
     }));
 
@@ -47,7 +70,7 @@ export async function GET(request: Request) {
         page: Number(page),
         page_size: Number(page_size),
       },
-      { status: response.status }
+      { status: response.status },
     );
   }
 

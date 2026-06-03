@@ -28,7 +28,10 @@ export async function GET(request: Request) {
   }
 
   const payload = (await response.json()) as Record<string, unknown>;
-  const user = normalizeUser(payload, fallbackRole as "admin" | "guru" | "siswa" | undefined);
+  const user = normalizeUser(
+    payload,
+    fallbackRole as "admin" | "guru" | "siswa" | undefined,
+  );
 
   return NextResponse.json({
     user,

@@ -18,7 +18,7 @@ export function RiskBadge({ status, score }: RiskBadgeProps) {
 
   if (resolvedStatus === "Beresiko") {
     return (
-      <span className="inline-flex items-center rounded-full bg-brand-warning px-3 py-1 text-xs font-semibold text-white shadow-sm">
+      <span className="bg-brand-warning inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold text-white shadow-sm">
         Beresiko
       </span>
     );
@@ -26,7 +26,7 @@ export function RiskBadge({ status, score }: RiskBadgeProps) {
 
   if (resolvedStatus === "Tidak Beresiko") {
     return (
-      <span className="inline-flex items-center rounded-full bg-brand-accent-2 px-3 py-1 text-xs font-semibold text-brand-header shadow-sm">
+      <span className="bg-brand-accent-2 text-brand-header inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold shadow-sm">
         Tidak Beresiko
       </span>
     );

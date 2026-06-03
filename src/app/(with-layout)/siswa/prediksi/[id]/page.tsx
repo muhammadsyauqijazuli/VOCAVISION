@@ -95,27 +95,39 @@ const numericFields: Array<{ key: StudentNumericKey; label: string }> = [
   { key: "skor_time_management", label: "Skor time management" },
   { key: "jam_tidur", label: "Jam tidur" },
   { key: "screen_time", label: "Screen time" },
-  { key: "kehadiran_pelatihan_industry", label: "Kehadiran pelatihan industry" },
+  {
+    key: "kehadiran_pelatihan_industry",
+    label: "Kehadiran pelatihan industry",
+  },
   { key: "motivasi_akademik", label: "Motivasi akademik" },
   { key: "exam_score", label: "Exam score" },
 ] as const;
 
-const categoricalFields: Array<{ key: StudentCategoricalKey; label: string }> = [
-  { key: "gender", label: "Gender" },
-  { key: "rata_rata_pemasukan_keluarga", label: "Rata-rata pemasukan keluarga" },
-  { key: "pendidikan_terakhir_orang_tua", label: "Pendidikan terakhir orang tua" },
-  { key: "kerja_sampingan", label: "Kerja sampingan" },
-  { key: "study_environment", label: "Study environment" },
-  { key: "kompetensi_skill_level", label: "Kompetensi skill level" },
-  { key: "industry_readiness", label: "Industry readiness" },
-  { key: "stress_level", label: "Stress level" },
-] as const;
+const categoricalFields: Array<{ key: StudentCategoricalKey; label: string }> =
+  [
+    { key: "gender", label: "Gender" },
+    {
+      key: "rata_rata_pemasukan_keluarga",
+      label: "Rata-rata pemasukan keluarga",
+    },
+    {
+      key: "pendidikan_terakhir_orang_tua",
+      label: "Pendidikan terakhir orang tua",
+    },
+    { key: "kerja_sampingan", label: "Kerja sampingan" },
+    { key: "study_environment", label: "Study environment" },
+    { key: "kompetensi_skill_level", label: "Kompetensi skill level" },
+    { key: "industry_readiness", label: "Industry readiness" },
+    { key: "stress_level", label: "Stress level" },
+  ] as const;
 
 function formatValue(value: number | string | null | undefined) {
   if (value === null || value === undefined || value === "") return "-";
   const parsed = typeof value === "number" ? value : Number(value);
   if (!Number.isNaN(parsed) && value !== "") {
-    return new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(parsed);
+    return new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(
+      parsed,
+    );
   }
   return String(value);
 }
@@ -133,7 +145,9 @@ function toNumber(value: number | string | null | undefined) {
   return Number.isNaN(parsed) ? null : parsed;
 }
 
-function buildRecommendations(student: StudentDetailResponse): InterventionRecommendation[] {
+function buildRecommendations(
+  student: StudentDetailResponse,
+): InterventionRecommendation[] {
   const recommendations: InterventionRecommendation[] = [];
   const name = student.nama;
 
@@ -185,7 +199,10 @@ function buildRecommendations(student: StudentDetailResponse): InterventionRecom
     });
   }
 
-  if (student.study_environment && student.study_environment.toLowerCase() !== "baik") {
+  if (
+    student.study_environment &&
+    student.study_environment.toLowerCase() !== "baik"
+  ) {
     recommendations.push({
       title: "Benahi lingkungan belajar",
       description: `Study environment ${name} masih ${student.study_environment}. Pastikan ruang belajar tenang, pencahayaan cukup, dan minim gangguan saat belajar.`,
@@ -199,21 +216,29 @@ function buildRecommendations(student: StudentDetailResponse): InterventionRecom
     });
   }
 
-  if (student.kompetensi_skill_level && student.kompetensi_skill_level.toLowerCase() !== "tinggi") {
+  if (
+    student.kompetensi_skill_level &&
+    student.kompetensi_skill_level.toLowerCase() !== "tinggi"
+  ) {
     recommendations.push({
       title: "Tingkatkan skill inti",
       description: `Kompetensi skill level ${name} masih ${student.kompetensi_skill_level}. Berikan latihan tambahan, proyek kecil, atau modul penguatan konsep.`,
     });
   }
 
-  if (student.industry_readiness && student.industry_readiness.toLowerCase() !== "siap") {
+  if (
+    student.industry_readiness &&
+    student.industry_readiness.toLowerCase() !== "siap"
+  ) {
     recommendations.push({
       title: "Bangun kesiapan industri",
       description: `Industry readiness ${name} masih ${student.industry_readiness}. Ajak mengikuti pelatihan, simulasi praktik, atau kegiatan berbasis proyek.`,
     });
   }
 
-  const industryTrainingAttendance = toNumber(student.kehadiran_pelatihan_industry);
+  const industryTrainingAttendance = toNumber(
+    student.kehadiran_pelatihan_industry,
+  );
   if (industryTrainingAttendance !== null && industryTrainingAttendance < 1) {
     recommendations.push({
       title: "Dorong ikut pelatihan industri",
@@ -236,7 +261,10 @@ async function getRequestOrigin() {
   const host = headerList.get("x-forwarded-host") ?? headerList.get("host");
   const protocol = headerList.get("x-forwarded-proto") ?? "http";
   if (!host) throw new Error("Host header tidak ditemukan");
-  return { origin: `${protocol}://${host}`, cookie: headerList.get("cookie") ?? "" };
+  return {
+    origin: `${protocol}://${host}`,
+    cookie: headerList.get("cookie") ?? "",
+  };
 }
 
 async function fetchJson<T>(url: string, cookie: string) {
@@ -244,7 +272,9 @@ async function fetchJson<T>(url: string, cookie: string) {
     headers: cookie ? { cookie } : undefined,
     cache: "no-store",
   });
-  const payload = (await response.json().catch(() => ({}))) as T & { message?: string };
+  const payload = (await response.json().catch(() => ({}))) as T & {
+    message?: string;
+  };
   return { response, payload };
 }
 
@@ -270,50 +300,64 @@ export default async function PrediksiSiswaPage({ params }: PageProps) {
   if (studentResult.response.status === 404) notFound();
 
   if (!studentResult.response.ok) {
-    throw new Error(studentResult.payload?.message ?? "Gagal mengambil detail siswa");
+    throw new Error(
+      studentResult.payload?.message ?? "Gagal mengambil detail siswa",
+    );
   }
 
   const student = studentResult.payload;
-  
+
   let insight: Partial<InsightResponse> = {};
   if (insightResult.response.ok) {
     insight = insightResult.payload;
   } else if (insightResult.response.status !== 404) {
-    console.error("Gagal mengambil insight prediksi terbaru:", insightResult.payload?.message);
+    console.error(
+      "Gagal mengambil insight prediksi terbaru:",
+      insightResult.payload?.message,
+    );
   }
 
-  const predictedScore = insight.predicted_exam_score ?? student.latest_prediction?.predicted_exam_score;
-  const riskStatus = getRiskStatus(predictedScore) ?? insight.risk_status ?? student.latest_prediction?.risk_status;
+  const predictedScore =
+    insight.predicted_exam_score ??
+    student.latest_prediction?.predicted_exam_score;
+  const riskStatus =
+    getRiskStatus(predictedScore) ??
+    insight.risk_status ??
+    student.latest_prediction?.risk_status;
   const recommendations = buildRecommendations(student);
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-6 duration-500 ease-out">
       {/* ── Hero Banner ── */}
       <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-indigo-500 to-blue-dark p-8 shadow-1 md:p-10">
-        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
 
         <div className="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           {/* Student Info */}
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white/20 text-2xl font-bold text-white backdrop-blur-md ring-2 ring-white/30">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white/20 text-2xl font-bold text-white ring-2 ring-white/30 backdrop-blur-md">
               {student.nama.charAt(0).toUpperCase()}
             </div>
             <div className="text-white">
-              <p className="text-xs font-semibold uppercase tracking-widest text-white/70">
+              <p className="text-xs font-semibold tracking-widest text-white/70 uppercase">
                 Detail Siswa
               </p>
               <h1 className="text-2xl font-bold md:text-3xl">{student.nama}</h1>
-              <p className="mt-0.5 text-sm text-white/80">NISN: {student.nisn}</p>
+              <p className="mt-0.5 text-sm text-white/80">
+                NISN: {student.nisn}
+              </p>
             </div>
           </div>
 
           {/* Score Badge */}
           <div className="flex w-fit flex-col gap-3 rounded-2xl bg-white/15 px-6 py-4 backdrop-blur-md lg:text-right">
-            <p className="text-xs font-semibold uppercase tracking-wider text-white/70">
+            <p className="text-xs font-semibold tracking-wider text-white/70 uppercase">
               Prediksi Skor Ujian
             </p>
-            <p className="text-4xl font-bold text-white">{formatScore(predictedScore)}</p>
+            <p className="text-4xl font-bold text-white">
+              {formatScore(predictedScore)}
+            </p>
             <div className="flex items-center gap-2 lg:justify-end">
               <RiskBadge status={riskStatus} score={predictedScore} />
             </div>
@@ -349,19 +393,24 @@ export default async function PrediksiSiswaPage({ params }: PageProps) {
             <FiBarChart2 size={18} />
           </div>
           <div>
-            <h2 className="font-bold text-dark dark:text-white">Data 17 Variabel</h2>
+            <h2 className="font-bold text-dark dark:text-white">
+              Data 17 Variabel
+            </h2>
             <p className="text-sm text-dark-4 dark:text-dark-6">
-              Informasi numerik dan kategorikal yang digunakan untuk prediksi siswa.
+              Informasi numerik dan kategorikal yang digunakan untuk prediksi
+              siswa.
             </p>
           </div>
         </div>
 
-        <div className="grid gap-0 divide-y divide-stroke p-6 dark:divide-dark-3 xl:grid-cols-2 xl:divide-x xl:divide-y-0">
+        <div className="grid gap-0 divide-y divide-stroke p-6 xl:grid-cols-2 xl:divide-x xl:divide-y-0 dark:divide-dark-3">
           {/* Numeric */}
-          <div className="pb-6 xl:pb-0 xl:pr-6">
+          <div className="pb-6 xl:pr-6 xl:pb-0">
             <div className="mb-4 flex items-center gap-2">
               <FiHash size={14} className="text-dark-5 dark:text-dark-6" />
-              <h3 className="text-sm font-bold text-dark dark:text-white">Data Numerik</h3>
+              <h3 className="text-sm font-bold text-dark dark:text-white">
+                Data Numerik
+              </h3>
             </div>
             <dl className="grid gap-3 sm:grid-cols-2">
               {numericFields.map((field) => (
@@ -369,7 +418,7 @@ export default async function PrediksiSiswaPage({ params }: PageProps) {
                   key={field.key}
                   className="rounded-xl border border-stroke bg-gray-1 p-4 dark:border-dark-3 dark:bg-dark-2"
                 >
-                  <dt className="text-xs font-semibold uppercase tracking-wider text-dark-5 dark:text-dark-6">
+                  <dt className="text-xs font-semibold tracking-wider text-dark-5 uppercase dark:text-dark-6">
                     {field.label}
                   </dt>
                   <dd className="mt-1.5 text-base font-bold text-dark dark:text-white">
@@ -381,10 +430,12 @@ export default async function PrediksiSiswaPage({ params }: PageProps) {
           </div>
 
           {/* Categorical */}
-          <div className="pt-6 xl:pl-6 xl:pt-0">
+          <div className="pt-6 xl:pt-0 xl:pl-6">
             <div className="mb-4 flex items-center gap-2">
               <FiList size={14} className="text-dark-5 dark:text-dark-6" />
-              <h3 className="text-sm font-bold text-dark dark:text-white">Data Kategorikal</h3>
+              <h3 className="text-sm font-bold text-dark dark:text-white">
+                Data Kategorikal
+              </h3>
             </div>
             <dl className="grid gap-3 sm:grid-cols-2">
               {categoricalFields.map((field) => (
@@ -392,7 +443,7 @@ export default async function PrediksiSiswaPage({ params }: PageProps) {
                   key={field.key}
                   className="rounded-xl border border-stroke bg-gray-1 p-4 dark:border-dark-3 dark:bg-dark-2"
                 >
-                  <dt className="text-xs font-semibold uppercase tracking-wider text-dark-5 dark:text-dark-6">
+                  <dt className="text-xs font-semibold tracking-wider text-dark-5 uppercase dark:text-dark-6">
                     {field.label}
                   </dt>
                   <dd className="mt-1.5 text-base font-bold text-dark dark:text-white">
@@ -414,7 +465,9 @@ export default async function PrediksiSiswaPage({ params }: PageProps) {
             icon: FiTrendingUp,
             label: "Prediksi Terakhir",
             value: student.latest_prediction?.created_at
-              ? new Date(student.latest_prediction.created_at).toLocaleDateString("id-ID", {
+              ? new Date(
+                  student.latest_prediction.created_at,
+                ).toLocaleDateString("id-ID", {
                   day: "2-digit",
                   month: "short",
                   year: "numeric",
@@ -432,10 +485,12 @@ export default async function PrediksiSiswaPage({ params }: PageProps) {
                 <Icon size={18} />
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-dark-5 dark:text-dark-6">
+                <p className="text-xs font-semibold tracking-wider text-dark-5 uppercase dark:text-dark-6">
                   {item.label}
                 </p>
-                <p className="mt-0.5 font-bold text-dark dark:text-white">{item.value}</p>
+                <p className="mt-0.5 font-bold text-dark dark:text-white">
+                  {item.value}
+                </p>
               </div>
             </div>
           );
@@ -450,9 +505,12 @@ export default async function PrediksiSiswaPage({ params }: PageProps) {
               <FiActivity size={18} />
             </div>
             <div>
-              <h2 className="font-bold text-dark dark:text-white">Analisis Faktor (SHAP)</h2>
+              <h2 className="font-bold text-dark dark:text-white">
+                Analisis Faktor (SHAP)
+              </h2>
               <p className="text-sm text-dark-4 dark:text-dark-6">
-                Faktor yang paling berkontribusi terhadap prediksi skor (Hijau = Positif, Merah = Negatif).
+                Faktor yang paling berkontribusi terhadap prediksi skor (Hijau =
+                Positif, Merah = Negatif).
               </p>
             </div>
           </div>

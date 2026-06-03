@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { FiInfo, FiRotateCcw, FiZap, FiArrowUp, FiArrowDown } from "react-icons/fi";
+import {
+  FiInfo,
+  FiRotateCcw,
+  FiZap,
+  FiArrowUp,
+  FiArrowDown,
+} from "react-icons/fi";
 
 type RiskStatus = "Sangat Beresiko" | "Beresiko" | "Tidak Beresiko";
 
@@ -94,26 +100,122 @@ const DEFAULT_FORM: FormState = {
 };
 
 const NUMERIC_FIELDS: NumericField[] = [
-  { key: "jam_belajar_per_hari", label: "Jam belajar per hari", helper: "Rata-rata waktu belajar mandiri setiap hari.", min: 0, max: 24, step: "0.5" },
-  { key: "presentase_kehadiran", label: "Presentase kehadiran (%)", helper: "Kehadiran aktual dalam proses belajar.", min: 0, max: 100, step: "0.1" },
-  { key: "nilai_rata_rata_raport", label: "Nilai rata-rata raport", helper: "Rata-rata nilai akademik terkini.", min: 0, max: 100, step: "0.1" },
-  { key: "skor_time_management", label: "Skor time management", helper: "Skala kemampuan mengatur waktu (0–10).", min: 0, max: 10, step: "0.1" },
-  { key: "jam_tidur", label: "Jam tidur", helper: "Durasi tidur rata-rata per malam.", min: 0, max: 24, step: "0.5" },
-  { key: "screen_time", label: "Screen time", helper: "Durasi penggunaan layar per hari.", min: 0, max: 24, step: "0.5" },
-  { key: "kehadiran_pelatihan_industry", label: "Kehadiran pelatihan industry (%)", helper: "Persentase kehadiran pada pelatihan relevan.", min: 0, max: 100, step: "0.1" },
-  { key: "motivasi_akademik", label: "Motivasi akademik", helper: "Skala motivasi belajar saat ini (0–10).", min: 0, max: 10, step: "0.1" },
-  { key: "exam_score", label: "Exam score saat ini", helper: "Nilai ujian yang sudah ada, jika tersedia.", min: 0, max: 100, step: "0.1" },
+  {
+    key: "jam_belajar_per_hari",
+    label: "Jam belajar per hari",
+    helper: "Rata-rata waktu belajar mandiri setiap hari.",
+    min: 0,
+    max: 24,
+    step: "0.5",
+  },
+  {
+    key: "presentase_kehadiran",
+    label: "Presentase kehadiran (%)",
+    helper: "Kehadiran aktual dalam proses belajar.",
+    min: 0,
+    max: 100,
+    step: "0.1",
+  },
+  {
+    key: "nilai_rata_rata_raport",
+    label: "Nilai rata-rata raport",
+    helper: "Rata-rata nilai akademik terkini.",
+    min: 0,
+    max: 100,
+    step: "0.1",
+  },
+  {
+    key: "skor_time_management",
+    label: "Skor time management",
+    helper: "Skala kemampuan mengatur waktu (0–10).",
+    min: 0,
+    max: 10,
+    step: "0.1",
+  },
+  {
+    key: "jam_tidur",
+    label: "Jam tidur",
+    helper: "Durasi tidur rata-rata per malam.",
+    min: 0,
+    max: 24,
+    step: "0.5",
+  },
+  {
+    key: "screen_time",
+    label: "Screen time",
+    helper: "Durasi penggunaan layar per hari.",
+    min: 0,
+    max: 24,
+    step: "0.5",
+  },
+  {
+    key: "kehadiran_pelatihan_industry",
+    label: "Kehadiran pelatihan industry (%)",
+    helper: "Persentase kehadiran pada pelatihan relevan.",
+    min: 0,
+    max: 100,
+    step: "0.1",
+  },
+  {
+    key: "motivasi_akademik",
+    label: "Motivasi akademik",
+    helper: "Skala motivasi belajar saat ini (0–10).",
+    min: 0,
+    max: 10,
+    step: "0.1",
+  },
+  {
+    key: "exam_score",
+    label: "Exam score saat ini",
+    helper: "Nilai ujian yang sudah ada, jika tersedia.",
+    min: 0,
+    max: 100,
+    step: "0.1",
+  },
 ];
 
 const SELECT_FIELDS: SelectField[] = [
   { key: "gender", label: "Gender", options: ["Laki-laki", "Perempuan"] },
-  { key: "rata_rata_pemasukan_keluarga", label: "Rata-rata pemasukan keluarga", options: ["< 2 Juta", "2 - 5 Juta", "5 - 10 Juta", "> 10 Juta"] },
-  { key: "pendidikan_terakhir_orang_tua", label: "Pendidikan terakhir orang tua", options: ["SD", "SMP", "SMA/SMK", "Diploma", "Sarjana"] },
-  { key: "kerja_sampingan", label: "Kerja sampingan", options: ["Tidak", "Ya"] },
-  { key: "study_environment", label: "Study environment", options: ["Kurang Kondusif", "Cukup Kondusif", "Kondusif", "Sangat Kondusif"] },
-  { key: "kompetensi_skill_level", label: "Kompetensi / skill level", options: ["Rendah", "Menengah", "Tinggi"] },
-  { key: "industry_readiness", label: "Industry readiness", options: ["Belum Siap", "Siap"] },
-  { key: "stress_level", label: "Stress level", options: ["Rendah", "Sedang", "Berat"] },
+  {
+    key: "rata_rata_pemasukan_keluarga",
+    label: "Rata-rata pemasukan keluarga",
+    options: ["< 2 Juta", "2 - 5 Juta", "5 - 10 Juta", "> 10 Juta"],
+  },
+  {
+    key: "pendidikan_terakhir_orang_tua",
+    label: "Pendidikan terakhir orang tua",
+    options: ["SD", "SMP", "SMA/SMK", "Diploma", "Sarjana"],
+  },
+  {
+    key: "kerja_sampingan",
+    label: "Kerja sampingan",
+    options: ["Tidak", "Ya"],
+  },
+  {
+    key: "study_environment",
+    label: "Study environment",
+    options: [
+      "Kurang Kondusif",
+      "Cukup Kondusif",
+      "Kondusif",
+      "Sangat Kondusif",
+    ],
+  },
+  {
+    key: "kompetensi_skill_level",
+    label: "Kompetensi / skill level",
+    options: ["Rendah", "Menengah", "Tinggi"],
+  },
+  {
+    key: "industry_readiness",
+    label: "Industry readiness",
+    options: ["Belum Siap", "Siap"],
+  },
+  {
+    key: "stress_level",
+    label: "Stress level",
+    options: ["Rendah", "Sedang", "Berat"],
+  },
 ];
 
 function getRiskConfig(status?: RiskStatus) {
@@ -140,7 +242,9 @@ function getRiskConfig(status?: RiskStatus) {
 }
 
 function sortInsights(insights: ShapInsight[]) {
-  return [...insights].sort((a, b) => Math.abs(b.impact_value) - Math.abs(a.impact_value));
+  return [...insights].sort(
+    (a, b) => Math.abs(b.impact_value) - Math.abs(a.impact_value),
+  );
 }
 
 export default function UpdateDataPage() {
@@ -149,7 +253,10 @@ export default function UpdateDataPage() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ResultState | null>(null);
 
-  const topInsights = useMemo(() => sortInsights(result?.shap_analysis ?? []).slice(0, 5), [result]);
+  const topInsights = useMemo(
+    () => sortInsights(result?.shap_analysis ?? []).slice(0, 5),
+    [result],
+  );
   const riskConfig = getRiskConfig(result?.risk_status);
 
   function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
@@ -169,10 +276,14 @@ export default function UpdateDataPage() {
         body: JSON.stringify(form),
       });
 
-      const payload = (await response.json().catch(() => ({}))) as PredictionResponse & { message?: string };
+      const payload = (await response
+        .json()
+        .catch(() => ({}))) as PredictionResponse & { message?: string };
 
       if (!response.ok) {
-        throw new Error(payload.message ?? `Gagal memproses prediksi (${response.status})`);
+        throw new Error(
+          payload.message ?? `Gagal memproses prediksi (${response.status})`,
+        );
       }
 
       if (!payload.student_id) {
@@ -186,10 +297,15 @@ export default function UpdateDataPage() {
         return;
       }
 
-      const insightResponse = await fetch(`/api/predict/insight/${payload.student_id}`, {
-        credentials: "include",
-      });
-      const insightPayload = (await insightResponse.json().catch(() => ({}))) as InsightResponse & { message?: string };
+      const insightResponse = await fetch(
+        `/api/predict/insight/${payload.student_id}`,
+        {
+          credentials: "include",
+        },
+      );
+      const insightPayload = (await insightResponse
+        .json()
+        .catch(() => ({}))) as InsightResponse & { message?: string };
 
       if (!insightResponse.ok) {
         setResult({
@@ -211,7 +327,8 @@ export default function UpdateDataPage() {
         source: "insight",
       });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Gagal menghubungi server";
+      const message =
+        err instanceof Error ? err.message : "Gagal menghubungi server";
       setError(message);
     } finally {
       setLoading(false);
@@ -225,26 +342,31 @@ export default function UpdateDataPage() {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-6 duration-500 ease-out">
       {/* ── Hero Banner ── */}
       <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-indigo-500 to-blue-dark p-8 shadow-1 md:p-10">
-        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
 
         <div className="relative z-10">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
+          <p className="mb-2 text-xs font-semibold tracking-widest text-white/70 uppercase">
             VOCAVISION
           </p>
           <h1 className="text-3xl font-bold text-white md:text-4xl">
             Perbarui Data &amp; Prediksi
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/85 md:text-base">
-            Isi 17 variabel gaya hidup dan akademik untuk mengirim data ke proxy Next.js,
-            memanggil model Flask, lalu menampilkan prediksi skor ujian dan insight SHAP.
+            Isi 17 variabel gaya hidup dan akademik untuk mengirim data ke proxy
+            Next.js, memanggil model Flask, lalu menampilkan prediksi skor ujian
+            dan insight SHAP.
           </p>
 
           <div className="mt-5 flex flex-wrap gap-2">
-            {["Proxy: /api/predict/single", "Insight: /api/predict/insight/[id]", "SSOT DB: Flask SQLAlchemy"].map((tag) => (
+            {[
+              "Proxy: /api/predict/single",
+              "Insight: /api/predict/insight/[id]",
+              "SSOT DB: Flask SQLAlchemy",
+            ].map((tag) => (
               <span
                 key={tag}
                 className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-sm"
@@ -257,14 +379,19 @@ export default function UpdateDataPage() {
       </section>
 
       {/* ── Main Grid ── */}
-      <div className="grid gap-6 xl:items-start xl:grid-cols-[minmax(0,1.4fr)_minmax(300px,0.9fr)]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(300px,0.9fr)] xl:items-start">
         {/* ── Left: Form ── */}
         <section className="rounded-2xl border border-stroke bg-white shadow-1 dark:border-dark-3 dark:bg-gray-dark">
-          <form className="divide-y divide-stroke dark:divide-dark-3" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="divide-y divide-stroke dark:divide-dark-3"
+            onSubmit={(e) => e.preventDefault()}
+          >
             {/* Numeric Fields */}
             <div className="p-6 md:p-8">
               <div className="mb-5">
-                <h2 className="text-xl font-bold text-dark dark:text-white">Data Numerik</h2>
+                <h2 className="text-xl font-bold text-dark dark:text-white">
+                  Data Numerik
+                </h2>
                 <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">
                   Gunakan angka yang paling mendekati kondisi siswa saat ini.
                 </p>
@@ -286,23 +413,32 @@ export default function UpdateDataPage() {
                       step={field.step}
                       value={
                         field.key === "exam_score"
-                          ? form.exam_score ?? ""
-                          : String(form[field.key as Exclude<FieldKey, "exam_score">])
+                          ? (form.exam_score ?? "")
+                          : String(
+                              form[
+                                field.key as Exclude<FieldKey, "exam_score">
+                              ],
+                            )
                       }
                       onChange={(e) => {
                         const raw = e.target.value;
                         if (field.key === "exam_score") {
-                          updateField("exam_score", raw === "" ? null : Number(raw));
+                          updateField(
+                            "exam_score",
+                            raw === "" ? null : Number(raw),
+                          );
                           return;
                         }
                         updateField(
                           field.key as Exclude<FieldKey, "exam_score">,
-                          Number(raw) as FormState[typeof field.key]
+                          Number(raw) as FormState[typeof field.key],
                         );
                       }}
-                      className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-dark outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15 dark:border-dark-3 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
+                      className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-dark transition outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 dark:border-dark-3 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
                     />
-                    <p className="text-xs text-dark-5 dark:text-dark-6">{field.helper}</p>
+                    <p className="text-xs text-dark-5 dark:text-dark-6">
+                      {field.helper}
+                    </p>
                   </label>
                 ))}
               </div>
@@ -311,7 +447,9 @@ export default function UpdateDataPage() {
             {/* Categorical Fields */}
             <div className="p-6 md:p-8">
               <div className="mb-5">
-                <h2 className="text-xl font-bold text-dark dark:text-white">Data Kategorikal</h2>
+                <h2 className="text-xl font-bold text-dark dark:text-white">
+                  Data Kategorikal
+                </h2>
                 <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">
                   Pilih nilai yang paling sesuai dengan kondisi siswa.
                 </p>
@@ -328,8 +466,13 @@ export default function UpdateDataPage() {
                     </span>
                     <select
                       value={String(form[field.key])}
-                      onChange={(e) => updateField(field.key, e.target.value as FormState[typeof field.key])}
-                      className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-dark outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15 dark:border-dark-3 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
+                      onChange={(e) =>
+                        updateField(
+                          field.key,
+                          e.target.value as FormState[typeof field.key],
+                        )
+                      }
+                      className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-dark transition outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 dark:border-dark-3 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
                     >
                       {field.options.map((opt) => (
                         <option key={opt} value={opt}>
@@ -408,15 +551,17 @@ export default function UpdateDataPage() {
           <div className="rounded-2xl border border-stroke bg-white shadow-1 dark:border-dark-3 dark:bg-gray-dark">
             <div className="flex items-start justify-between gap-3 border-b border-stroke p-6 dark:border-dark-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-dark-5 dark:text-dark-6">
+                <p className="text-xs font-semibold tracking-widest text-dark-5 uppercase dark:text-dark-6">
                   Hasil Prediksi
                 </p>
                 <h2 className="mt-1.5 text-2xl font-bold text-dark dark:text-white">
                   Ringkasan Real-time
                 </h2>
               </div>
-              <span className="shrink-0 rounded-lg bg-gray-1 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-dark-5 dark:bg-dark-2 dark:text-dark-6">
-                {result?.source === "insight" ? "Insight Sinkron" : "Menunggu Submit"}
+              <span className="shrink-0 rounded-lg bg-gray-1 px-3 py-1.5 text-xs font-semibold tracking-wider text-dark-5 uppercase dark:bg-dark-2 dark:text-dark-6">
+                {result?.source === "insight"
+                  ? "Insight Sinkron"
+                  : "Menunggu Submit"}
               </span>
             </div>
 
@@ -425,14 +570,16 @@ export default function UpdateDataPage() {
                 <div className="space-y-5">
                   {/* Score Block */}
                   <div className="rounded-xl bg-dark p-5 dark:bg-dark-2">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-white/60">
+                    <p className="text-xs font-semibold tracking-wider text-white/60 uppercase">
                       Predicted Exam Score
                     </p>
                     <div className="mt-2 flex flex-wrap items-end gap-3">
                       <span className="text-4xl font-bold tracking-tight text-white">
                         {result.predicted_exam_score.toFixed(2)}
                       </span>
-                      <span className={`rounded-full px-3 py-1 text-sm font-semibold ${riskConfig.badge}`}>
+                      <span
+                        className={`rounded-full px-3 py-1 text-sm font-semibold ${riskConfig.badge}`}
+                      >
                         {result.risk_status}
                       </span>
                     </div>
@@ -446,15 +593,15 @@ export default function UpdateDataPage() {
                   {/* Metadata */}
                   <div className="grid grid-cols-2 gap-3">
                     <div className="rounded-xl border border-stroke bg-gray-1 p-4 dark:border-dark-3 dark:bg-dark-2">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-dark-5 dark:text-dark-6">
+                      <p className="text-xs font-semibold tracking-wider text-dark-5 uppercase dark:text-dark-6">
                         Student ID
                       </p>
-                      <p className="mt-1.5 break-all text-sm font-semibold text-dark dark:text-white">
+                      <p className="mt-1.5 text-sm font-semibold break-all text-dark dark:text-white">
                         {result.student_id}
                       </p>
                     </div>
                     <div className="rounded-xl border border-stroke bg-gray-1 p-4 dark:border-dark-3 dark:bg-dark-2">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-dark-5 dark:text-dark-6">
+                      <p className="text-xs font-semibold tracking-wider text-dark-5 uppercase dark:text-dark-6">
                         Sumber Data
                       </p>
                       <p className="mt-1.5 text-sm font-semibold text-dark dark:text-white">
@@ -470,7 +617,9 @@ export default function UpdateDataPage() {
                   <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <FiZap size={20} />
                   </div>
-                  <p className="font-semibold text-dark dark:text-white">Belum Ada Hasil</p>
+                  <p className="font-semibold text-dark dark:text-white">
+                    Belum Ada Hasil
+                  </p>
                   <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">
                     Isi form dan tekan tombol prediksi untuk melihat hasil.
                   </p>
@@ -483,8 +632,10 @@ export default function UpdateDataPage() {
           {result && topInsights.length > 0 && (
             <div className="rounded-2xl border border-stroke bg-white shadow-1 dark:border-dark-3 dark:bg-gray-dark">
               <div className="flex items-center justify-between border-b border-stroke p-6 dark:border-dark-3">
-                <h3 className="font-bold text-dark dark:text-white">SHAP Insight Utama</h3>
-                <span className="text-xs font-semibold uppercase tracking-wider text-dark-5 dark:text-dark-6">
+                <h3 className="font-bold text-dark dark:text-white">
+                  SHAP Insight Utama
+                </h3>
+                <span className="text-xs font-semibold tracking-wider text-dark-5 uppercase dark:text-dark-6">
                   Top {topInsights.length}
                 </span>
               </div>
@@ -536,13 +687,16 @@ export default function UpdateDataPage() {
 
           {/* Integration Note */}
           <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 dark:border-primary/30 dark:bg-primary/10">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <FiInfo size={15} className="text-primary" />
-              <h3 className="text-sm font-bold text-dark dark:text-white">Catatan Integrasi</h3>
+              <h3 className="text-sm font-bold text-dark dark:text-white">
+                Catatan Integrasi
+              </h3>
             </div>
             <p className="text-xs leading-relaxed text-dark-4 dark:text-dark-6">
-              Proxy Next.js menjaga frontend tetap seragam, menyembunyikan URL Flask, dan
-              menghindari masalah CORS. Flask SQLAlchemy tetap menjadi sumber kebenaran utama.
+              Proxy Next.js menjaga frontend tetap seragam, menyembunyikan URL
+              Flask, dan menghindari masalah CORS. Flask SQLAlchemy tetap
+              menjadi sumber kebenaran utama.
             </p>
           </div>
         </aside>

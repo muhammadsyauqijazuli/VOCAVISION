@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { backendUrl, getCookieValue, AUTH_COOKIE_NAME } from "@/lib/auth/backend-auth";
+import {
+  backendUrl,
+  getCookieValue,
+  AUTH_COOKIE_NAME,
+} from "@/lib/auth/backend-auth";
 
 const BACKEND_TIMEOUT_MS = 20_000;
 
@@ -34,7 +38,10 @@ export async function POST(request: Request) {
   try {
     bodyText = await request.text();
   } catch (e) {
-    return NextResponse.json({ message: "Invalid request body" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Invalid request body" },
+      { status: 400 },
+    );
   }
 
   const controller = new AbortController();
@@ -60,7 +67,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Backend timeout" }, { status: 504 });
     }
 
-    return NextResponse.json({ message: "Backend tidak merespons" }, { status: 502 });
+    return NextResponse.json(
+      { message: "Backend tidak merespons" },
+      { status: 502 },
+    );
   } finally {
     clearTimeout(timeoutId);
   }

@@ -86,7 +86,7 @@ export function PaymentsOverviewChart({ data }: PropsType) {
   };
 
   return (
-    <div className="-ml-4 -mr-5 h-[310px]">
+    <div className="-mr-5 -ml-4 h-[310px]">
       <Chart
         options={options}
         series={[

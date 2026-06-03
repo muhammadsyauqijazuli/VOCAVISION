@@ -18,7 +18,11 @@ type SavedIntervention = {
   createdAt: string;
 };
 
-export function InterventionForm({ studentId, studentName, recommendations = [] }: InterventionFormProps) {
+export function InterventionForm({
+  studentId,
+  studentName,
+  recommendations = [],
+}: InterventionFormProps) {
   const storageKey = `vocavision-interventions-${studentId}`;
   const [note, setNote] = useState("");
   const [savedCount, setSavedCount] = useState(0);
@@ -64,20 +68,28 @@ export function InterventionForm({ studentId, studentName, recommendations = [] 
   }
 
   return (
-    <section className="rounded-2xl border border-stroke bg-white p-4 shadow-1 dark:border-dark-3 dark:bg-gray-dark sm:p-5">
+    <section className="rounded-2xl border border-stroke bg-white p-4 shadow-1 sm:p-5 dark:border-dark-3 dark:bg-gray-dark">
       <div className="mb-5 space-y-2">
-        <p className="text-sm font-semibold uppercase tracking-wide text-primary">Intervention Form</p>
-        <h2 className="text-lg font-bold text-dark dark:text-white sm:text-xl">Catatan Tindak Lanjut</h2>
+        <p className="text-sm font-semibold tracking-wide text-primary uppercase">
+          Intervention Form
+        </p>
+        <h2 className="text-lg font-bold text-dark sm:text-xl dark:text-white">
+          Catatan Tindak Lanjut
+        </h2>
         <p className="text-sm leading-6 text-dark-4 dark:text-dark-6">
-          {studentName ? `Rekomendasi untuk ${studentName} disusun dari variabel belajar yang tersedia.` : "Simpan catatan intervensi untuk siswa ini sebagai simulasi lokal."}
+          {studentName
+            ? `Rekomendasi untuk ${studentName} disusun dari variabel belajar yang tersedia.`
+            : "Simpan catatan intervensi untuk siswa ini sebagai simulasi lokal."}
         </p>
       </div>
 
       {recommendations.length > 0 && (
-        <div className="mb-5 rounded-2xl border border-brand-accent/20 bg-brand-accent/5 p-4 dark:border-brand-accent/30 dark:bg-brand-accent/10">
+        <div className="border-brand-accent/20 bg-brand-accent/5 dark:border-brand-accent/30 dark:bg-brand-accent/10 mb-5 rounded-2xl border p-4">
           <div className="mb-3 flex items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Rekomendasi</p>
+              <p className="text-xs font-semibold tracking-[0.2em] text-primary uppercase">
+                Rekomendasi
+              </p>
               <h3 className="text-base font-semibold text-dark dark:text-white">
                 Fokus perbaikan performa akademik
               </h3>
@@ -93,7 +105,9 @@ export function InterventionForm({ studentId, studentName, recommendations = [] 
                 key={item.title}
                 className="rounded-xl border border-white/70 bg-white p-3 shadow-sm dark:border-dark-3 dark:bg-dark-2"
               >
-                <h4 className="text-sm font-semibold text-dark dark:text-white">{item.title}</h4>
+                <h4 className="text-sm font-semibold text-dark dark:text-white">
+                  {item.title}
+                </h4>
                 <p className="mt-1 text-sm leading-6 text-dark-4 dark:text-dark-6">
                   {item.description}
                 </p>
@@ -105,13 +119,15 @@ export function InterventionForm({ studentId, studentName, recommendations = [] 
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block">
-          <span className="mb-2 block text-sm font-medium text-dark dark:text-white">Catatan</span>
+          <span className="mb-2 block text-sm font-medium text-dark dark:text-white">
+            Catatan
+          </span>
           <textarea
             value={note}
             onChange={(event) => setNote(event.target.value)}
             rows={5}
             placeholder="Tulis langkah tindak lanjut atau rekomendasi untuk siswa ini"
-            className="min-h-36 w-full rounded-xl border border-stroke bg-transparent px-4 py-3 text-dark outline-none transition placeholder:text-dark-4 focus:border-primary dark:border-dark-3 dark:text-white dark:placeholder:text-dark-6"
+            className="min-h-36 w-full rounded-xl border border-stroke bg-transparent px-4 py-3 text-dark transition outline-none placeholder:text-dark-4 focus:border-primary dark:border-dark-3 dark:text-white dark:placeholder:text-dark-6"
           />
         </label>
 
@@ -123,10 +139,12 @@ export function InterventionForm({ studentId, studentName, recommendations = [] 
         </button>
       </form>
 
-      <div className="mt-5 grid gap-3 rounded-2xl bg-gray-1 p-4 text-sm text-dark-4 dark:bg-dark-2 dark:text-dark-6 sm:grid-cols-2">
+      <div className="mt-5 grid gap-3 rounded-2xl bg-gray-1 p-4 text-sm text-dark-4 sm:grid-cols-2 dark:bg-dark-2 dark:text-dark-6">
         <p className="wrap-break-word">Student ID: {studentId}</p>
         <p className="sm:text-right">Total catatan tersimpan: {savedCount}</p>
-        {message ? <p className="sm:col-span-2 text-dark dark:text-white">{message}</p> : null}
+        {message ? (
+          <p className="text-dark sm:col-span-2 dark:text-white">{message}</p>
+        ) : null}
       </div>
     </section>
   );

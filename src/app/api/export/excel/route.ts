@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { backendUrl, getCookieValue, AUTH_COOKIE_NAME } from "@/lib/auth/backend-auth";
+import {
+  backendUrl,
+  getCookieValue,
+  AUTH_COOKIE_NAME,
+} from "@/lib/auth/backend-auth";
 
 const BACKEND_TIMEOUT_MS = 60_000;
 
@@ -15,7 +19,10 @@ function copyResponseHeaders(response: Response) {
   ]);
 
   response.headers.forEach((value, key) => {
-    if (allowedHeaders.has(key.toLowerCase()) || key.toLowerCase().startsWith("x-")) {
+    if (
+      allowedHeaders.has(key.toLowerCase()) ||
+      key.toLowerCase().startsWith("x-")
+    ) {
       headers.set(key, value);
     }
   });
@@ -49,7 +56,10 @@ export async function GET(request: Request) {
     });
 
     const headers = copyResponseHeaders(resp);
-    headers.set("content-disposition", `attachment; filename="${studentFileName(studentId)}"`);
+    headers.set(
+      "content-disposition",
+      `attachment; filename="${studentFileName(studentId)}"`,
+    );
 
     if (resp.body) {
       return new Response(resp.body, { status: resp.status, headers });
@@ -62,7 +72,10 @@ export async function GET(request: Request) {
       return NextResponse.json({ message: "Backend timeout" }, { status: 504 });
     }
 
-    return NextResponse.json({ message: "Backend tidak merespons" }, { status: 502 });
+    return NextResponse.json(
+      { message: "Backend tidak merespons" },
+      { status: 502 },
+    );
   } finally {
     clearTimeout(timeoutId);
   }

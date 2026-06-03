@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { backendUrl, getCookieValue, AUTH_COOKIE_NAME } from "@/lib/auth/backend-auth";
+import {
+  backendUrl,
+  getCookieValue,
+  AUTH_COOKIE_NAME,
+} from "@/lib/auth/backend-auth";
 
 const BACKEND_TIMEOUT_MS = 60_000;
 
@@ -15,7 +19,10 @@ function copyResponseHeaders(response: Response) {
   ]);
 
   response.headers.forEach((value, key) => {
-    if (allowedHeaders.has(key.toLowerCase()) || key.toLowerCase().startsWith("x-")) {
+    if (
+      allowedHeaders.has(key.toLowerCase()) ||
+      key.toLowerCase().startsWith("x-")
+    ) {
       headers.set(key, value);
     }
   });
@@ -24,7 +31,9 @@ function copyResponseHeaders(response: Response) {
 }
 
 function studentFileName(studentId: string | null) {
-  return studentId ? `laporan-siswa-${studentId}.pdf` : "laporan-analytics-guru.pdf";
+  return studentId
+    ? `laporan-siswa-${studentId}.pdf`
+    : "laporan-analytics-guru.pdf";
 }
 
 export async function GET(request: Request) {
@@ -51,7 +60,7 @@ export async function GET(request: Request) {
     const headers = copyResponseHeaders(resp);
     headers.set(
       "content-disposition",
-      `attachment; filename="${studentFileName(studentId)}"`
+      `attachment; filename="${studentFileName(studentId)}"`,
     );
 
     // Always buffer response to avoid 0KB / incomplete downloads
@@ -62,12 +71,15 @@ export async function GET(request: Request) {
       "bytes=",
       arrayBuffer.byteLength,
       "content-type=",
-      resp.headers.get("content-type")
+      resp.headers.get("content-type"),
     );
 
     // keep content-length if backend provided it
     if (resp.headers.get("content-length")) {
-      headers.set("content-length", resp.headers.get("content-length") as string);
+      headers.set(
+        "content-length",
+        resp.headers.get("content-length") as string,
+      );
     }
 
     return new Response(arrayBuffer, { status: resp.status, headers });
@@ -76,7 +88,10 @@ export async function GET(request: Request) {
       return NextResponse.json({ message: "Backend timeout" }, { status: 504 });
     }
 
-    return NextResponse.json({ message: "Backend tidak merespons" }, { status: 502 });
+    return NextResponse.json(
+      { message: "Backend tidak merespons" },
+      { status: 502 },
+    );
   } finally {
     clearTimeout(timeoutId);
   }

@@ -9,7 +9,7 @@ export async function ChatsCard() {
   const data = await getChatsData();
 
   return (
-    <div className="col-span-12 rounded-[10px] bg-white py-6 shadow-1 dark:bg-gray-dark dark:shadow-card xl:col-span-4">
+    <div className="col-span-12 rounded-[10px] bg-white py-6 shadow-1 xl:col-span-4 dark:bg-gray-dark dark:shadow-card">
       <h2 className="mb-5.5 px-7.5 text-body-2xlg font-bold text-dark dark:text-white">
         Chats
       </h2>
@@ -32,7 +32,7 @@ export async function ChatsCard() {
 
                 <span
                   className={cn(
-                    "absolute bottom-0 right-0 size-3.5 rounded-full ring-2 ring-white dark:ring-dark-2",
+                    "absolute right-0 bottom-0 size-3.5 rounded-full ring-2 ring-white dark:ring-dark-2",
                     chat.isActive ? "bg-green" : "bg-orange-light",
                   )}
                 />
@@ -46,7 +46,7 @@ export async function ChatsCard() {
                 <div className="flex flex-wrap items-center gap-2">
                   <span
                     className={cn(
-                      "truncate text-sm font-medium dark:text-dark-5 xl:max-w-32",
+                      "truncate text-sm font-medium xl:max-w-32 dark:text-dark-5",
                       chat.unreadCount && "text-dark-4 dark:text-dark-6",
                     )}
                   >
@@ -64,7 +64,7 @@ export async function ChatsCard() {
                 </div>
 
                 {!!chat.unreadCount && (
-                  <div className="pointer-events-none absolute right-0 top-1/2 aspect-square max-w-fit -translate-y-1/2 select-none rounded-full bg-primary px-2 py-0.5 text-sm font-medium text-white">
+                  <div className="pointer-events-none absolute top-1/2 right-0 aspect-square max-w-fit -translate-y-1/2 rounded-full bg-primary px-2 py-0.5 text-sm font-medium text-white select-none">
                     {chat.unreadCount}
                   </div>
                 )}

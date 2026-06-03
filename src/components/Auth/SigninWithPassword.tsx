@@ -47,7 +47,9 @@ export default function SigninWithPassword() {
         throw new Error(result.error?.message || "Failed to sign in");
       }
 
-      router.push(callbackURL === "/" ? getRoleHomePath(result.data.role) : callbackURL);
+      router.push(
+        callbackURL === "/" ? getRoleHomePath(result.data.role) : callbackURL,
+      );
       router.refresh();
       toast.success("Sign in successful");
     } catch (err: unknown) {

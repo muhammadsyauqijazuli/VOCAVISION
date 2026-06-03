@@ -73,7 +73,7 @@ export function CampaignVisitorsChart({ data }: PropsType) {
   };
 
   return (
-    <div className="-ml-3.5 px-6 pb-1 pt-7.5">
+    <div className="-ml-3.5 px-6 pt-7.5 pb-1">
       <Chart
         options={options}
         series={[

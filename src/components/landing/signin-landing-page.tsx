@@ -90,7 +90,7 @@ export default function SigninLandingPage() {
   const callbackURL = searchParams.get("callbackUrl") || "/";
 
   const revealDelay = (delayMs: number) =>
-    ({ ["--reveal-delay" as string]: `${delayMs}ms` } as React.CSSProperties);
+    ({ ["--reveal-delay" as string]: `${delayMs}ms` }) as React.CSSProperties;
 
   const completeSignIn = async (
     email: string,
@@ -107,7 +107,9 @@ export default function SigninLandingPage() {
       throw new Error(result.error?.message || "Failed to sign in");
     }
 
-    router.push(callbackURL === "/" ? getRoleHomePath(result.data.role) : callbackURL);
+    router.push(
+      callbackURL === "/" ? getRoleHomePath(result.data.role) : callbackURL,
+    );
     router.refresh();
     toast.success(isDemo ? "Signed in as demo account" : "Sign in successful");
   };
@@ -135,7 +137,8 @@ export default function SigninLandingPage() {
     try {
       await completeSignIn(DEMO_EMAIL, DEMO_PASSWORD, true);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Demo sign in failed";
+      const message =
+        err instanceof Error ? err.message : "Demo sign in failed";
       setError(message);
       toast.error(`Error: ${message}`);
     } finally {
@@ -145,7 +148,9 @@ export default function SigninLandingPage() {
 
   const scrollToLogin = () => {
     const loginSection = document.getElementById("login-section");
-    const emailInput = document.getElementById("email") as HTMLInputElement | null;
+    const emailInput = document.getElementById(
+      "email",
+    ) as HTMLInputElement | null;
 
     loginSection?.scrollIntoView({ behavior: "smooth", block: "start" });
     window.setTimeout(() => {
@@ -158,27 +163,38 @@ export default function SigninLandingPage() {
       <button
         type="button"
         onClick={() => setTheme(isDark ? "light" : "dark")}
-        className="fixed right-4 top-4 z-50 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/90 px-4 py-2 text-sm font-semibold text-gray-700 shadow-lg backdrop-blur transition hover:-translate-y-0.5 hover:bg-white dark:border-gray-700 dark:bg-gray-900/90 dark:text-gray-100 dark:hover:bg-gray-900 sm:right-6 sm:top-6"
+        className="fixed top-4 right-4 z-50 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/90 px-4 py-2 text-sm font-semibold text-gray-700 shadow-lg backdrop-blur transition hover:-translate-y-0.5 hover:bg-white sm:top-6 sm:right-6 dark:border-gray-700 dark:bg-gray-900/90 dark:text-gray-100 dark:hover:bg-gray-900"
         aria-label="Toggle dark mode"
       >
-        {isDark ? <HiSun className="h-5 w-5 text-yellow-400" /> : <HiMoon className="h-5 w-5 text-indigo-500" />}
+        {isDark ? (
+          <HiSun className="h-5 w-5 text-yellow-400" />
+        ) : (
+          <HiMoon className="h-5 w-5 text-indigo-500" />
+        )}
         <span>{isDark ? "Light" : "Dark"} Mode</span>
       </button>
 
-      <section id="login-section" className="relative flex min-h-screen items-center overflow-hidden bg-linear-to-b from-blue-50 via-white to-white px-4 py-20 text-center dark:from-gray-900 dark:via-gray-950 dark:to-gray-950 sm:px-6 lg:px-8">
+      <section
+        id="login-section"
+        className="relative flex min-h-screen items-center overflow-hidden bg-linear-to-b from-blue-50 via-white to-white px-4 py-20 text-center sm:px-6 lg:px-8 dark:from-gray-900 dark:via-gray-950 dark:to-gray-950"
+      >
         <div className="pointer-events-none absolute inset-0 opacity-90 dark:opacity-80">
           <div className="animate-gradient-drift absolute inset-0 bg-[linear-gradient(120deg,rgba(59,130,246,0.14),rgba(99,102,241,0.12),rgba(45,212,191,0.12),rgba(59,130,246,0.14))] bg-size-[300%_300%]" />
           <div className="animate-grid-pan absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.07)_1px,transparent_1px)] bg-size-[72px_72px] opacity-35 mix-blend-soft-light dark:bg-[linear-gradient(rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.12)_1px,transparent_1px)] dark:opacity-20" />
           <div className="animate-noise-drift absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.18)_1px,transparent_0)] bg-size-[12px_12px] opacity-20 mix-blend-overlay dark:opacity-[0.08]" />
-          <div className="animate-aurora-slow absolute -left-24 top-12 h-72 w-72 rounded-full bg-cyan-300/25 blur-3xl dark:bg-cyan-500/12" />
-          <div className="animate-aurora-slow absolute -right-16 top-32 h-80 w-80 rounded-full bg-indigo-300/25 blur-3xl dark:bg-indigo-500/12" />
-          <div className="animate-float-slow absolute -left-20 top-10 h-56 w-56 rounded-full bg-blue-200/40 blur-3xl dark:bg-blue-900/30" />
+          <div className="animate-aurora-slow absolute top-12 -left-24 h-72 w-72 rounded-full bg-cyan-300/25 blur-3xl dark:bg-cyan-500/12" />
+          <div className="animate-aurora-slow absolute top-32 -right-16 h-80 w-80 rounded-full bg-indigo-300/25 blur-3xl dark:bg-indigo-500/12" />
+          <div className="animate-float-slow absolute top-10 -left-20 h-56 w-56 rounded-full bg-blue-200/40 blur-3xl dark:bg-blue-900/30" />
           <div className="animate-float-reverse absolute -right-24 bottom-0 h-64 w-64 rounded-full bg-teal-200/40 blur-3xl dark:bg-teal-900/20" />
-          <div className="animate-float-gentle absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-200/20 blur-3xl dark:bg-indigo-500/10" />
+          <div className="animate-float-gentle absolute top-1/2 left-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-200/20 blur-3xl dark:bg-indigo-500/10" />
         </div>
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 text-left md:grid-cols-2 md:gap-16">
-          <div className="animate-fade-up relative mx-auto w-full max-w-2xl text-center md:mx-0 md:text-left" data-animate-on-scroll style={revealDelay(0)}>
+          <div
+            className="animate-fade-up relative mx-auto w-full max-w-2xl text-center md:mx-0 md:text-left"
+            data-animate-on-scroll
+            style={revealDelay(0)}
+          >
             <div className="mx-auto mb-6 flex items-center justify-center gap-4 md:mx-0 md:justify-start">
               <div className="inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-blue-500/25 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105">
                 <svg
@@ -188,14 +204,50 @@ export default function SigninLandingPage() {
                   stroke="currentColor"
                   aria-label="Random Forest logo"
                 >
-                  <circle cx="6" cy="5" r="2" fill="currentColor" stroke="none" />
-                  <circle cx="12" cy="5" r="2" fill="currentColor" stroke="none" />
-                  <circle cx="18" cy="5" r="2" fill="currentColor" stroke="none" />
+                  <circle
+                    cx="6"
+                    cy="5"
+                    r="2"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                  <circle
+                    cx="12"
+                    cy="5"
+                    r="2"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                  <circle
+                    cx="18"
+                    cy="5"
+                    r="2"
+                    fill="currentColor"
+                    stroke="none"
+                  />
 
-                  <circle cx="9" cy="11" r="2" fill="currentColor" stroke="none" />
-                  <circle cx="15" cy="11" r="2" fill="currentColor" stroke="none" />
+                  <circle
+                    cx="9"
+                    cy="11"
+                    r="2"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                  <circle
+                    cx="15"
+                    cy="11"
+                    r="2"
+                    fill="currentColor"
+                    stroke="none"
+                  />
 
-                  <circle cx="12" cy="18" r="2.5" fill="currentColor" stroke="none" />
+                  <circle
+                    cx="12"
+                    cy="18"
+                    r="2.5"
+                    fill="currentColor"
+                    stroke="none"
+                  />
 
                   <path
                     d="M6 7L9 9M12 7L9 9M12 7L15 9M18 7L15 9M9 13L12 15.5M15 13L12 15.5"
@@ -207,24 +259,46 @@ export default function SigninLandingPage() {
                 </svg>
               </div>
 
-              <h1 data-animate-on-scroll className="text-4xl font-extrabold tracking-tight text-blue-700 dark:text-blue-300 sm:text-5xl lg:text-6xl" style={revealDelay(80)}>
+              <h1
+                data-animate-on-scroll
+                className="text-4xl font-extrabold tracking-tight text-blue-700 sm:text-5xl lg:text-6xl dark:text-blue-300"
+                style={revealDelay(80)}
+              >
                 Vocavision
               </h1>
             </div>
 
-            <p data-animate-on-scroll className="mt-4 text-xl font-medium text-gray-600 dark:text-gray-300 sm:text-2xl" style={revealDelay(140)}>
+            <p
+              data-animate-on-scroll
+              className="mt-4 text-xl font-medium text-gray-600 sm:text-2xl dark:text-gray-300"
+              style={revealDelay(140)}
+            >
               Vocational Student Predictive Analytics
             </p>
-            <p data-animate-on-scroll className="mx-auto mt-4 max-w-2xl text-base text-gray-500 dark:text-gray-400 sm:text-lg" style={revealDelay(200)}>
-              Platform prediksi performa akademik siswa menggunakan <span className="font-semibold text-primary">Random Forest</span>. Masuk untuk melihat analisis faktor dominan, saran cerdas, dan progres siswa dalam satu dasbor.
+            <p
+              data-animate-on-scroll
+              className="mx-auto mt-4 max-w-2xl text-base text-gray-500 sm:text-lg dark:text-gray-400"
+              style={revealDelay(200)}
+            >
+              Platform prediksi performa akademik siswa menggunakan{" "}
+              <span className="font-semibold text-primary">Random Forest</span>.
+              Masuk untuk melihat analisis faktor dominan, saran cerdas, dan
+              progres siswa dalam satu dasbor.
             </p>
           </div>
 
-          <div className="w-full max-w-xl md:justify-self-end" data-animate-on-scroll style={revealDelay(260)}>
+          <div
+            className="w-full max-w-xl md:justify-self-end"
+            data-animate-on-scroll
+            style={revealDelay(260)}
+          >
             <div className="rounded-2xl border border-blue-100/80 bg-white/95 p-5 text-left shadow-2xl shadow-blue-100/60 backdrop-blur transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl md:p-7 dark:border-gray-700 dark:bg-gray-900/90 dark:shadow-none">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="email" className="mb-1.5 block text-sm font-semibold text-gray-700 dark:text-gray-200">
+                  <label
+                    htmlFor="email"
+                    className="mb-1.5 block text-sm font-semibold text-gray-700 dark:text-gray-200"
+                  >
                     Email
                   </label>
                   <input
@@ -238,13 +312,16 @@ export default function SigninLandingPage() {
                       }))
                     }
                     placeholder="Masukkan email"
-                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] placeholder:text-gray-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:border-gray-700 dark:bg-gray-950 dark:text-white dark:placeholder:text-gray-500 dark:focus:ring-offset-gray-950"
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] outline-none placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white focus:outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-white dark:placeholder:text-gray-500 dark:focus:ring-offset-gray-950"
                     required
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="password" className="mb-1.5 block text-sm font-semibold text-gray-700 dark:text-gray-200">
+                  <label
+                    htmlFor="password"
+                    className="mb-1.5 block text-sm font-semibold text-gray-700 dark:text-gray-200"
+                  >
                     Password
                   </label>
                   <input
@@ -258,7 +335,7 @@ export default function SigninLandingPage() {
                       }))
                     }
                     placeholder="Masukkan password"
-                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] placeholder:text-gray-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:border-gray-700 dark:bg-gray-950 dark:text-white dark:placeholder:text-gray-500 dark:focus:ring-offset-gray-950"
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] outline-none placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white focus:outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-white dark:placeholder:text-gray-500 dark:focus:ring-offset-gray-950"
                     required
                   />
                 </div>
@@ -266,7 +343,7 @@ export default function SigninLandingPage() {
                 <button
                   type="submit"
                   disabled={loading || demoLoading}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:bg-blue-700 hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-950"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-semibold text-white transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:bg-blue-700 hover:shadow-lg focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white focus:outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 dark:focus:ring-offset-gray-950"
                 >
                   Sign In
                   {loading ? (
@@ -280,7 +357,7 @@ export default function SigninLandingPage() {
                   type="button"
                   onClick={handleDemoSignIn}
                   disabled={loading || demoLoading}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-5 py-3 font-semibold text-blue-700 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:bg-blue-100 hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white dark:border-gray-700 dark:bg-gray-800 dark:text-blue-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-950"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-5 py-3 font-semibold text-blue-700 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:bg-blue-100 hover:shadow-lg focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white focus:outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 dark:border-gray-700 dark:bg-gray-800 dark:text-blue-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-950"
                 >
                   Sign in as Demo/Guest
                   {demoLoading && (
@@ -305,63 +382,106 @@ export default function SigninLandingPage() {
 
       <section className="relative overflow-hidden bg-linear-to-b from-slate-50 via-white to-blue-50/40 py-20 transition-colors duration-300 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-8 top-10 h-48 w-48 rounded-full bg-blue-200/30 blur-3xl dark:bg-blue-900/20" />
-          <div className="absolute right-0 top-1/3 h-72 w-72 rounded-full bg-cyan-200/20 blur-3xl dark:bg-cyan-500/10" />
-          <div className="absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 rounded-full bg-indigo-200/20 blur-3xl dark:bg-indigo-500/10" />
+          <div className="absolute top-10 left-8 h-48 w-48 rounded-full bg-blue-200/30 blur-3xl dark:bg-blue-900/20" />
+          <div className="absolute top-1/3 right-0 h-72 w-72 rounded-full bg-cyan-200/20 blur-3xl dark:bg-cyan-500/10" />
+          <div className="absolute top-0 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-indigo-200/20 blur-3xl dark:bg-indigo-500/10" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div data-animate-on-scroll style={revealDelay(0)} className="mx-auto mb-6 inline-flex w-full justify-center">
-            <span className="rounded-full border border-blue-100 bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-blue-700 shadow-sm backdrop-blur dark:border-gray-700 dark:bg-gray-900/70 dark:text-blue-300">
+          <div
+            data-animate-on-scroll
+            style={revealDelay(0)}
+            className="mx-auto mb-6 inline-flex w-full justify-center"
+          >
+            <span className="rounded-full border border-blue-100 bg-white/80 px-4 py-2 text-xs font-semibold tracking-[0.3em] text-blue-700 uppercase shadow-sm backdrop-blur dark:border-gray-700 dark:bg-gray-900/70 dark:text-blue-300">
               Alur & Nilai Utama
             </span>
           </div>
 
-          <h2 data-animate-on-scroll style={revealDelay(40)} className="mb-6 text-center text-3xl font-bold text-gray-800 dark:text-white sm:text-4xl">
+          <h2
+            data-animate-on-scroll
+            style={revealDelay(40)}
+            className="mb-6 text-center text-3xl font-bold text-gray-800 sm:text-4xl dark:text-white"
+          >
             Bagaimana Vocavision Bekerja?
           </h2>
 
-          <p data-animate-on-scroll style={revealDelay(70)} className="mx-auto max-w-3xl text-center text-sm leading-7 text-gray-600 dark:text-gray-400 sm:text-base">
-            Vocavision membantu siswa dan guru memahami data, melihat prediksi, lalu mengambil tindakan — semuanya dalam satu alur yang sederhana.
+          <p
+            data-animate-on-scroll
+            style={revealDelay(70)}
+            className="mx-auto max-w-3xl text-center text-sm leading-7 text-gray-600 sm:text-base dark:text-gray-400"
+          >
+            Vocavision membantu siswa dan guru memahami data, melihat prediksi,
+            lalu mengambil tindakan — semuanya dalam satu alur yang sederhana.
           </p>
 
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
-            <div data-animate-on-scroll style={revealDelay(140)} className="group flex flex-col items-center rounded-2xl border border-gray-100 bg-white/85 p-6 text-center shadow-sm transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-950/70">
+            <div
+              data-animate-on-scroll
+              style={revealDelay(140)}
+              className="group flex flex-col items-center rounded-2xl border border-gray-100 bg-white/85 p-6 text-center shadow-sm transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-950/70"
+            >
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-cyan-500 text-white shadow-lg shadow-blue-500/20 transition-transform duration-500 group-hover:scale-105">
                 <HiClipboardList className="h-7 w-7" />
               </div>
-              <h4 className="mt-4 font-semibold text-gray-800 dark:text-white">1. Isi Data</h4>
+              <h4 className="mt-4 font-semibold text-gray-800 dark:text-white">
+                1. Isi Data
+              </h4>
               <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400">
-                Jawab 17 pertanyaan singkat tentang kebiasaan belajar & lingkungan.
+                Jawab 17 pertanyaan singkat tentang kebiasaan belajar &
+                lingkungan.
               </p>
             </div>
 
-            <div data-animate-on-scroll style={revealDelay(200)} className="group flex flex-col items-center rounded-2xl border border-gray-100 bg-white/85 p-6 text-center shadow-sm transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-950/70">
+            <div
+              data-animate-on-scroll
+              style={revealDelay(200)}
+              className="group flex flex-col items-center rounded-2xl border border-gray-100 bg-white/85 p-6 text-center shadow-sm transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-950/70"
+            >
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-cyan-500 text-white shadow-lg shadow-blue-500/20 transition-transform duration-500 group-hover:scale-105">
                 <HiLightBulb className="h-7 w-7" />
               </div>
-              <h4 className="mt-4 font-semibold text-gray-800 dark:text-white">2. Lihat Prediksi</h4>
+              <h4 className="mt-4 font-semibold text-gray-800 dark:text-white">
+                2. Lihat Prediksi
+              </h4>
               <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400">
-                Skor, status risiko, dan faktor dominan ditampilkan dengan jelas.
+                Skor, status risiko, dan faktor dominan ditampilkan dengan
+                jelas.
               </p>
             </div>
 
-            <div data-animate-on-scroll style={revealDelay(260)} className="group flex flex-col items-center rounded-2xl border border-gray-100 bg-white/85 p-6 text-center shadow-sm transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-950/70">
+            <div
+              data-animate-on-scroll
+              style={revealDelay(260)}
+              className="group flex flex-col items-center rounded-2xl border border-gray-100 bg-white/85 p-6 text-center shadow-sm transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-950/70"
+            >
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-cyan-500 text-white shadow-lg shadow-blue-500/20 transition-transform duration-500 group-hover:scale-105">
                 <HiCheckCircle className="h-7 w-7" />
               </div>
-              <h4 className="mt-4 font-semibold text-gray-800 dark:text-white">3. Tindak Lanjut</h4>
+              <h4 className="mt-4 font-semibold text-gray-800 dark:text-white">
+                3. Tindak Lanjut
+              </h4>
               <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400">
                 Ikuti saran praktis dan pantau perubahan secara berkala.
               </p>
             </div>
           </div>
 
-          <div data-animate-on-scroll style={revealDelay(300)} className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            data-animate-on-scroll
+            style={revealDelay(300)}
+            className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {[
-              { icon: HiShieldCheck, text: "Autentikasi JWT & RBAC (Admin/Guru/Siswa)" },
+              {
+                icon: HiShieldCheck,
+                text: "Autentikasi JWT & RBAC (Admin/Guru/Siswa)",
+              },
               { icon: HiDatabase, text: "Penyimpanan MySQL dengan SQLAlchemy" },
-              { icon: HiChartBar, text: "Model Random Forest & SHAP Explainability" },
+              {
+                icon: HiChartBar,
+                text: "Model Random Forest & SHAP Explainability",
+              },
               { icon: HiDocumentReport, text: "Laporan PDF/Excel siap unduh" },
               { icon: HiServer, text: "Backend Flask dengan API RESTful" },
               { icon: HiVariable, text: "17 variabel prediktor tervalidasi" },
@@ -375,27 +495,49 @@ export default function SigninLandingPage() {
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-primary dark:bg-gray-900">
                   <item.icon className="h-5 w-5" />
                 </div>
-                <p className="pt-0.5 text-sm leading-6 text-gray-700 dark:text-gray-300">{item.text}</p>
+                <p className="pt-0.5 text-sm leading-6 text-gray-700 dark:text-gray-300">
+                  {item.text}
+                </p>
               </div>
             ))}
           </div>
 
           <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            <div data-animate-on-scroll style={revealDelay(100)} className="rounded-2xl border border-gray-100 bg-white/80 px-6 py-8 text-center shadow-sm backdrop-blur transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/70">
+            <div
+              data-animate-on-scroll
+              style={revealDelay(100)}
+              className="rounded-2xl border border-gray-100 bg-white/80 px-6 py-8 text-center shadow-sm backdrop-blur transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/70"
+            >
               <span className="block text-4xl font-bold text-primary">17</span>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">Variabel prediktor</p>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
+                Variabel prediktor
+              </p>
             </div>
-            <div data-animate-on-scroll style={revealDelay(160)} className="rounded-2xl border border-gray-100 bg-white/80 px-6 py-8 text-center shadow-sm backdrop-blur transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/70">
+            <div
+              data-animate-on-scroll
+              style={revealDelay(160)}
+              className="rounded-2xl border border-gray-100 bg-white/80 px-6 py-8 text-center shadow-sm backdrop-blur transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/70"
+            >
               <span className="block text-4xl font-bold text-primary">3</span>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">Peran pengguna</p>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
+                Peran pengguna
+              </p>
             </div>
-            <div data-animate-on-scroll style={revealDelay(220)} className="rounded-2xl border border-gray-100 bg-white/80 px-6 py-8 text-center shadow-sm backdrop-blur transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/70">
-              <span className="block text-4xl font-bold text-primary">&gt;85%</span>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">Akurasi model</p>
+            <div
+              data-animate-on-scroll
+              style={revealDelay(220)}
+              className="rounded-2xl border border-gray-100 bg-white/80 px-6 py-8 text-center shadow-sm backdrop-blur transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/70"
+            >
+              <span className="block text-4xl font-bold text-primary">
+                &gt;85%
+              </span>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
+                Akurasi model
+              </p>
             </div>
           </div>
 
-          <p className="mt-10 text-center text-sm italic text-gray-500 dark:text-gray-400">
+          <p className="mt-10 text-center text-sm text-gray-500 italic dark:text-gray-400">
             Mudah, cepat, dan langsung bisa diterapkan oleh guru maupun siswa.
           </p>
         </div>
@@ -403,7 +545,9 @@ export default function SigninLandingPage() {
 
       <footer className="border-t border-white/10 bg-gray-950 py-6 text-white dark:bg-black">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 text-sm sm:flex-row">
-          <span>© {new Date().getFullYear()} Vocavision. All rights reserved.</span>
+          <span>
+            © {new Date().getFullYear()} Vocavision. All rights reserved.
+          </span>
           <button
             type="button"
             onClick={scrollToLogin}

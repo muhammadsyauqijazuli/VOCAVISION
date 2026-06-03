@@ -3,7 +3,11 @@ import { Sidebar } from "@/components/Layouts/sidebar";
 import { SidebarProvider } from "@/components/Layouts/sidebar/sidebar-context";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-export default async function WithLayout({ children }: { children: React.ReactNode }) {
+export default async function WithLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const session = await auth.api.getSession({ headers: await headers() });
   const role = session?.user?.role ?? "siswa";
 

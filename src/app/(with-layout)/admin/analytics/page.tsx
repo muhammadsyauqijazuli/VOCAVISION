@@ -1,6 +1,9 @@
 import { auth } from "@/lib/auth";
 import { backendUrl, getRoleHomePath } from "@/lib/auth/backend-auth";
-import type { AnalyticsStudentRecord, DashboardStatsResponse } from "@/types/analytics";
+import type {
+  AnalyticsStudentRecord,
+  DashboardStatsResponse,
+} from "@/types/analytics";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AnalyticsDashboard } from "./_components/analytics-dashboard";
@@ -31,7 +34,10 @@ async function fetchManyStudentDetails(
     const chunk = ids.slice(index, index + chunkSize);
     const chunkRecords = await Promise.all(
       chunk.map(async (id) => {
-        const detail = await fetchJson<AnalyticsStudentRecord>(backendUrl(`/students/${id}`), token);
+        const detail = await fetchJson<AnalyticsStudentRecord>(
+          backendUrl(`/students/${id}`),
+          token,
+        );
         return detail;
       }),
     );
@@ -64,12 +70,19 @@ export default async function AdminAnalyticsPage() {
   if (token) {
     const [statsPayload, studentsPayload] = await Promise.all([
       fetchJson<DashboardStatsResponse>(backendUrl("/dashboard/stats"), token),
-      fetchJson<{ items?: Array<{ id: string }> }>(backendUrl("/students?page_size=80"), token),
+      fetchJson<{ items?: Array<{ id: string }> }>(
+        backendUrl("/students?page_size=80"),
+        token,
+      ),
     ]);
 
     stats = statsPayload ?? {};
-    const studentIds = studentsPayload?.items?.map((student) => student.id).filter(Boolean) ?? [];
-    students = studentIds.length ? await fetchManyStudentDetails(studentIds, token) : [];
+    const studentIds =
+      studentsPayload?.items?.map((student) => student.id).filter(Boolean) ??
+      [];
+    students = studentIds.length
+      ? await fetchManyStudentDetails(studentIds, token)
+      : [];
   }
 
   return <AnalyticsDashboard stats={stats} students={students} />;

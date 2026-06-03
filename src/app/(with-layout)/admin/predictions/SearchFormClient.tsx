@@ -8,7 +8,10 @@ type Props = {
   initialRiskStatus?: string;
 };
 
-export default function SearchFormClient({ initialSearch = "", initialRiskStatus = "" }: Props) {
+export default function SearchFormClient({
+  initialSearch = "",
+  initialRiskStatus = "",
+}: Props) {
   const router = useRouter();
   const [search, setSearch] = useState(initialSearch);
   const [riskStatus, setRiskStatus] = useState(initialRiskStatus);
@@ -28,24 +31,28 @@ export default function SearchFormClient({ initialSearch = "", initialRiskStatus
   return (
     <div className="grid gap-4 md:grid-cols-[1fr_220px_auto] md:items-end">
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-dark dark:text-white">Cari siswa</span>
+        <span className="mb-2 block text-sm font-medium text-dark dark:text-white">
+          Cari siswa
+        </span>
         <input
           type="text"
           name="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Nama atau NISN"
-          className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none transition focus:border-primary dark:border-dark-3 dark:text-white"
+          className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark transition outline-none focus:border-primary dark:border-dark-3 dark:text-white"
         />
       </label>
 
       <label className="block">
-        <span className="mb-2 block text-sm font-medium text-dark dark:text-white">Filter risiko</span>
+        <span className="mb-2 block text-sm font-medium text-dark dark:text-white">
+          Filter risiko
+        </span>
         <select
           name="risk_status"
           value={riskStatus}
           onChange={(e) => setRiskStatus(e.target.value)}
-          className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark outline-none transition focus:border-primary dark:border-dark-3 dark:text-white"
+          className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark transition outline-none focus:border-primary dark:border-dark-3 dark:text-white"
         >
           <option value="">Semua</option>
           <option value="Beresiko">Beresiko</option>

@@ -3,13 +3,7 @@
 import { RiskBadge } from "@/components/guru/RiskBadge";
 import type { RiskStatus } from "@/lib/utils";
 import type { DashboardStatsResponse } from "@/types/analytics";
-import {
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import {
   FiAlertTriangle,
   FiBarChart2,
@@ -128,7 +122,9 @@ function buildRiskSegments(stats: DashboardStatsResponse): RiskSegment[] {
     {
       label: "Sangat Beresiko (Intervensi Segera)",
       count: veryHighCount,
-      share: totalStudents ? Math.round((veryHighCount / totalStudents) * 100) : 0,
+      share: totalStudents
+        ? Math.round((veryHighCount / totalStudents) * 100)
+        : 0,
       color: "#E74C3C",
       description: "Butuh intervensi akademik dan komunikasi wali kelas.",
     },
@@ -145,7 +141,10 @@ export function TeacherDashboard({
   const riskSegments = buildRiskSegments(stats);
   const totalStudents = stats.total_siswa ?? 0;
   const alertCount = alertRows.length;
-  const alertTitle = alertCount > 0 ? `${alertCount} siswa beresiko` : "Tidak ada siswa beresiko";
+  const alertTitle =
+    alertCount > 0
+      ? `${alertCount} siswa beresiko`
+      : "Tidak ada siswa beresiko";
   const chartData = riskSegments.map((segment) => ({
     name: segment.label,
     value: segment.count,
@@ -160,24 +159,25 @@ export function TeacherDashboard({
   }).format(new Date());
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-6 duration-500 ease-out">
       {/* ── Hero Banner ── */}
       <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-indigo-500 to-blue-dark p-8 shadow-1 md:p-10">
         {/* decorative blobs */}
-        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
 
         <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3 text-white">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
+            <p className="mb-2 text-xs font-semibold tracking-widest text-white/70 uppercase">
               Teacher Dashboard
             </p>
-            <h1 className="mb-2 text-3xl font-bold leading-tight md:text-4xl">
+            <h1 className="mb-2 text-3xl leading-tight font-bold md:text-4xl">
               Selamat pagi, Pak/Bu {teacherName}! 👋
             </h1>
             <p className="max-w-xl text-sm leading-relaxed text-white/85">
-              Pantau performa siswa, sorot risiko akademik lebih cepat, dan ambil tindakan
-              dari siswa yang paling membutuhkan perhatian hari ini.
+              Pantau performa siswa, sorot risiko akademik lebih cepat, dan
+              ambil tindakan dari siswa yang paling membutuhkan perhatian hari
+              ini.
             </p>
           </div>
 
@@ -186,9 +186,9 @@ export function TeacherDashboard({
               <FiCalendar className="text-lg" />
               <span>{dateLabel}</span>
             </div>
-            
-            <div className="rounded-xl border border-white/20 bg-white/10 px-5 py-4 text-white backdrop-blur-md shadow-lg">
-              <p className="text-xs font-semibold uppercase tracking-widest text-white/70">
+
+            <div className="rounded-xl border border-white/20 bg-white/10 px-5 py-4 text-white shadow-lg backdrop-blur-md">
+              <p className="text-xs font-semibold tracking-widest text-white/70 uppercase">
                 Last sync
               </p>
               <p className="mt-1 text-2xl font-bold">{lastUpdatedLabel}</p>
@@ -206,13 +206,23 @@ export function TeacherDashboard({
               key={stat.label}
               className="group relative overflow-hidden rounded-2xl border border-stroke bg-white p-6 shadow-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-3 dark:border-dark-3 dark:bg-gray-dark"
             >
-              <div className={`pointer-events-none absolute -right-8 -top-8 h-28 w-28 scale-100 rounded-full blur-2xl transition-all duration-300 group-hover:scale-125 ${stat.accentClass.split(' ')[0]}`} />
-              <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${stat.accentClass}`}>
+              <div
+                className={`pointer-events-none absolute -top-8 -right-8 h-28 w-28 scale-100 rounded-full blur-2xl transition-all duration-300 group-hover:scale-125 ${stat.accentClass.split(" ")[0]}`}
+              />
+              <div
+                className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${stat.accentClass}`}
+              >
                 <Icon size={22} />
               </div>
-              <p className="text-sm text-dark-4 dark:text-dark-6">{stat.label}</p>
-              <h2 className="mt-1 text-3xl font-bold text-dark dark:text-white">{stat.value}</h2>
-              <p className="mt-2 text-sm text-dark-4 dark:text-dark-6">{stat.helper}</p>
+              <p className="text-sm text-dark-4 dark:text-dark-6">
+                {stat.label}
+              </p>
+              <h2 className="mt-1 text-3xl font-bold text-dark dark:text-white">
+                {stat.value}
+              </h2>
+              <p className="mt-2 text-sm text-dark-4 dark:text-dark-6">
+                {stat.helper}
+              </p>
             </article>
           );
         })}
@@ -222,10 +232,10 @@ export function TeacherDashboard({
         <article className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+              <p className="text-sm font-semibold tracking-[0.2em] text-primary uppercase">
                 Risk distribution
               </p>
-              <h2 className="mt-1 text-xl font-bold text-dark dark:text-white sm:text-2xl">
+              <h2 className="mt-1 text-xl font-bold text-dark sm:text-2xl dark:text-white">
                 Distribusi risiko siswa
               </h2>
             </div>
@@ -243,12 +253,18 @@ export function TeacherDashboard({
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="font-semibold text-dark dark:text-white">{segment.label}</p>
-                      <p className="text-sm text-dark-4 dark:text-dark-6">{segment.description}</p>
+                      <p className="font-semibold text-dark dark:text-white">
+                        {segment.label}
+                      </p>
+                      <p className="text-sm text-dark-4 dark:text-dark-6">
+                        {segment.description}
+                      </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-bold text-dark dark:text-white">{segment.count}</p>
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-dark-4 dark:text-dark-6">
+                      <p className="text-lg font-bold text-dark dark:text-white">
+                        {segment.count}
+                      </p>
+                      <p className="text-xs font-semibold tracking-[0.18em] text-dark-4 uppercase dark:text-dark-6">
                         {segment.share}%
                       </p>
                     </div>
@@ -269,7 +285,7 @@ export function TeacherDashboard({
 
             <div className="rounded-2xl border border-stroke/70 bg-gray-50 p-5 dark:border-dark-3 dark:bg-dark-2/60">
               <div className="mb-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+                <p className="text-sm font-semibold tracking-[0.18em] text-primary uppercase">
                   Summary chart
                 </p>
                 <h3 className="mt-1 text-lg font-bold text-dark dark:text-white">
@@ -323,24 +339,26 @@ export function TeacherDashboard({
         <article className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
           <div className="flex items-start justify-between gap-5">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+              <p className="text-sm font-semibold tracking-[0.2em] text-primary uppercase">
                 Quick action / alerts
               </p>
-              <h2 className="mt-1 text-xl font-bold text-dark dark:text-white sm:text-2xl">
+              <h2 className="mt-1 text-xl font-bold text-dark sm:text-2xl dark:text-white">
                 {alertTitle}
               </h2>
             </div>
 
             <div className="rounded-2xl bg-red-50 px-3 py-2 text-right dark:bg-red-500/10">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-600 dark:text-red-300">
+              <p className="text-xs font-semibold tracking-[0.18em] text-red-600 uppercase dark:text-red-300">
                 Prioritas
               </p>
-              <p className="text-lg font-bold text-red-700 dark:text-red-200">Hari ini</p>
+              <p className="text-lg font-bold text-red-700 dark:text-red-200">
+                Hari ini
+              </p>
             </div>
           </div>
 
           <div className="mt-6 overflow-hidden rounded-2xl border border-stroke/70 dark:border-dark-3">
-            <div className="grid grid-cols-[1.6fr_0.75fr_0.6fr_1fr] gap-4 border-b border-stroke/70 bg-gray-50 px-5 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-dark-4 dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6">
+            <div className="grid grid-cols-[1.6fr_0.75fr_0.6fr_1fr] gap-4 border-b border-stroke/70 bg-gray-50 px-5 py-4 text-xs font-semibold tracking-[0.18em] text-dark-4 uppercase dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6">
               <span>Nama Siswa</span>
               <span>Kelas</span>
               <span>Skor</span>
@@ -355,12 +373,20 @@ export function TeacherDashboard({
                     className="grid grid-cols-[1.6fr_0.75fr_0.6fr_1fr] items-center gap-4 px-5 py-5"
                   >
                     <div>
-                      <p className="font-semibold text-dark dark:text-white">{row.name}</p>
-                      <p className="text-sm text-dark-4 dark:text-dark-6">ID siswa: {row.studentId}</p>
+                      <p className="font-semibold text-dark dark:text-white">
+                        {row.name}
+                      </p>
+                      <p className="text-sm text-dark-4 dark:text-dark-6">
+                        ID siswa: {row.studentId}
+                      </p>
                     </div>
 
-                    <span className="text-sm font-medium text-dark-4 dark:text-dark-6">{row.className}</span>
-                    <span className="text-sm font-bold text-dark dark:text-white">{formatNumber(row.score)}</span>
+                    <span className="text-sm font-medium text-dark-4 dark:text-dark-6">
+                      {row.className}
+                    </span>
+                    <span className="text-sm font-bold text-dark dark:text-white">
+                      {formatNumber(row.score)}
+                    </span>
                     <div>
                       <RiskBadge status={row.status} score={row.score} />
                     </div>
@@ -375,17 +401,22 @@ export function TeacherDashboard({
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl bg-brand-header/5 p-5 dark:bg-brand-header/10">
-              <p className="text-sm font-semibold text-brand-header">Catatan kelas</p>
+            <div className="bg-brand-header/5 dark:bg-brand-header/10 rounded-2xl p-5">
+              <p className="text-brand-header text-sm font-semibold">
+                Catatan kelas
+              </p>
               <p className="mt-2 text-sm leading-6 text-dark-4 dark:text-dark-6">
                 Kolom kelas akan tampil otomatis saat data kelas tersedia.
               </p>
             </div>
 
-            <div className="rounded-2xl bg-brand-warning/10 p-5 dark:bg-brand-warning/15">
-              <p className="text-sm font-semibold text-brand-header">Sumber data</p>
+            <div className="bg-brand-warning/10 dark:bg-brand-warning/15 rounded-2xl p-5">
+              <p className="text-brand-header text-sm font-semibold">
+                Sumber data
+              </p>
               <p className="mt-2 text-sm leading-6 text-dark-4 dark:text-dark-6">
-                Seluruh angka di halaman ini mengikuti data terbaru yang tersimpan di sistem.
+                Seluruh angka di halaman ini mengikuti data terbaru yang
+                tersimpan di sistem.
               </p>
             </div>
           </div>

@@ -1,4 +1,8 @@
-import { backendUrl, getCookieValue, AUTH_COOKIE_NAME } from "@/lib/auth/backend-auth";
+import {
+  backendUrl,
+  getCookieValue,
+  AUTH_COOKIE_NAME,
+} from "@/lib/auth/backend-auth";
 import { NextResponse } from "next/server";
 
 type RouteContext = {

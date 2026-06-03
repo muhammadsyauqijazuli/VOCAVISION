@@ -3,7 +3,9 @@
 VOCAVISION is a vocational student predictive analytics platform for early risk detection, performance insight, and academic intervention.
 
 ---
+
 ## Project Links
+
 - Local app: http://localhost:3000
 - Backend API: http://localhost:5000
 
@@ -40,7 +42,6 @@ Works out of the box on Vercel and Netlify.
 
 This workspace ships with a Flask backend and a Next.js frontend. Use the backend README for API and database setup details.
 
-
 ## Update Logs
 
 ### Version 1.3.0 - [April 30, 2026]
@@ -56,9 +57,9 @@ This workspace ships with a Flask backend and a Next.js frontend. Use the backen
 
 - Frontend: Redesigned sign-in landing page (responsive, 100vh hero, merged info sections).
 - Frontend: Implemented `Guru` (teacher) Dashboard UI with live data integration.
-	- Server page now fetches `/api/dashboard/stats` and `/api/students` and passes props to a client component.
-	- Added `src/app/(with-layout)/guru/dashboard/_components/teacher-dashboard.tsx` and updated `page.tsx` to use real backend data.
-	- Charts use Recharts; summary cards and alerts table show live counts and top-risk students.
+  - Server page now fetches `/api/dashboard/stats` and `/api/students` and passes props to a client component.
+  - Added `src/app/(with-layout)/guru/dashboard/_components/teacher-dashboard.tsx` and updated `page.tsx` to use real backend data.
+  - Charts use Recharts; summary cards and alerts table show live counts and top-risk students.
 - Repo hygiene: Added `.gitignore` entries for Python caches and virtualenvs; removed tracked `__pycache__` and `.pyc` files.
 
 If you want more detail on any of these items (files changed, API contracts, or how to run the backend), tell me which area to expand.

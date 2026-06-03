@@ -40,8 +40,7 @@ async function requestJson<T>(
       data: null,
       error: {
         message:
-          (payload as { message?: string }).message ??
-          "Request gagal diproses",
+          (payload as { message?: string }).message ?? "Request gagal diproses",
       },
     };
   }
@@ -64,9 +63,7 @@ async function loadSession(): Promise<SessionResult> {
     return {
       data: null,
       error: {
-        message:
-          (payload as { message?: string }).message ??
-          "Belum login",
+        message: (payload as { message?: string }).message ?? "Belum login",
       },
     };
   }

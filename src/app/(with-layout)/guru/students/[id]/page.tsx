@@ -88,21 +88,31 @@ const numericFields: Array<{ key: StudentNumericKey; label: string }> = [
   { key: "skor_time_management", label: "Skor time management" },
   { key: "jam_tidur", label: "Jam tidur" },
   { key: "screen_time", label: "Screen time" },
-  { key: "kehadiran_pelatihan_industry", label: "Kehadiran pelatihan industry" },
+  {
+    key: "kehadiran_pelatihan_industry",
+    label: "Kehadiran pelatihan industry",
+  },
   { key: "motivasi_akademik", label: "Motivasi akademik" },
   { key: "exam_score", label: "Exam score" },
 ] as const;
 
-const categoricalFields: Array<{ key: StudentCategoricalKey; label: string }> = [
-  { key: "gender", label: "Gender" },
-  { key: "rata_rata_pemasukan_keluarga", label: "Rata-rata pemasukan keluarga" },
-  { key: "pendidikan_terakhir_orang_tua", label: "Pendidikan terakhir orang tua" },
-  { key: "kerja_sampingan", label: "Kerja sampingan" },
-  { key: "study_environment", label: "Study environment" },
-  { key: "kompetensi_skill_level", label: "Kompetensi skill level" },
-  { key: "industry_readiness", label: "Industry readiness" },
-  { key: "stress_level", label: "Stress level" },
-] as const;
+const categoricalFields: Array<{ key: StudentCategoricalKey; label: string }> =
+  [
+    { key: "gender", label: "Gender" },
+    {
+      key: "rata_rata_pemasukan_keluarga",
+      label: "Rata-rata pemasukan keluarga",
+    },
+    {
+      key: "pendidikan_terakhir_orang_tua",
+      label: "Pendidikan terakhir orang tua",
+    },
+    { key: "kerja_sampingan", label: "Kerja sampingan" },
+    { key: "study_environment", label: "Study environment" },
+    { key: "kompetensi_skill_level", label: "Kompetensi skill level" },
+    { key: "industry_readiness", label: "Industry readiness" },
+    { key: "stress_level", label: "Stress level" },
+  ] as const;
 
 function formatValue(value: number | string | null | undefined) {
   if (value === null || value === undefined || value === "") {
@@ -141,7 +151,9 @@ function toNumber(value: number | string | null | undefined) {
   return Number.isNaN(parsedValue) ? null : parsedValue;
 }
 
-function buildRecommendations(student: StudentDetailResponse): InterventionRecommendation[] {
+function buildRecommendations(
+  student: StudentDetailResponse,
+): InterventionRecommendation[] {
   const recommendations: InterventionRecommendation[] = [];
   const studentName = student.nama;
 
@@ -149,8 +161,7 @@ function buildRecommendations(student: StudentDetailResponse): InterventionRecom
   if (studyHours !== null && studyHours < 3) {
     recommendations.push({
       title: "Tingkatkan jam belajar harian",
-      description:
-        `${studentName} saat ini belajar sekitar ${studyHours.toFixed(1)} jam per hari. Dorong target belajar rutin 3-4 jam per hari dengan jadwal yang konsisten agar pemahaman materi lebih stabil.`,
+      description: `${studentName} saat ini belajar sekitar ${studyHours.toFixed(1)} jam per hari. Dorong target belajar rutin 3-4 jam per hari dengan jadwal yang konsisten agar pemahaman materi lebih stabil.`,
     });
   }
 
@@ -158,8 +169,7 @@ function buildRecommendations(student: StudentDetailResponse): InterventionRecom
   if (attendance !== null && attendance < 80) {
     recommendations.push({
       title: "Perbaiki kehadiran kelas",
-      description:
-        `Kehadiran ${studentName} berada di ${attendance.toFixed(0)}%. Pantau absensi mingguan dan berikan pengingat agar tidak tertinggal materi penting.`,
+      description: `Kehadiran ${studentName} berada di ${attendance.toFixed(0)}%. Pantau absensi mingguan dan berikan pengingat agar tidak tertinggal materi penting.`,
     });
   }
 
@@ -167,8 +177,7 @@ function buildRecommendations(student: StudentDetailResponse): InterventionRecom
   if (timeManagement !== null && timeManagement < 70) {
     recommendations.push({
       title: "Latih manajemen waktu",
-      description:
-        `Skor time management ${studentName} masih ${timeManagement.toFixed(0)}. Buat jadwal belajar yang lebih terstruktur, target harian, dan evaluasi progres mingguan.`,
+      description: `Skor time management ${studentName} masih ${timeManagement.toFixed(0)}. Buat jadwal belajar yang lebih terstruktur, target harian, dan evaluasi progres mingguan.`,
     });
   }
 
@@ -176,8 +185,7 @@ function buildRecommendations(student: StudentDetailResponse): InterventionRecom
   if (screenTime !== null && screenTime > 4) {
     recommendations.push({
       title: "Batasi screen time",
-      description:
-        `Screen time ${studentName} mencapai ${screenTime.toFixed(1)} jam. Arahkan penggunaan gawai untuk kebutuhan belajar dan batasi distraksi di luar jam belajar.`,
+      description: `Screen time ${studentName} mencapai ${screenTime.toFixed(1)} jam. Arahkan penggunaan gawai untuk kebutuhan belajar dan batasi distraksi di luar jam belajar.`,
     });
   }
 
@@ -185,8 +193,7 @@ function buildRecommendations(student: StudentDetailResponse): InterventionRecom
   if (sleepHours !== null && sleepHours < 7) {
     recommendations.push({
       title: "Perbaiki pola tidur",
-      description:
-        `${studentName} hanya tidur sekitar ${sleepHours.toFixed(1)} jam. Dorong tidur cukup 7-8 jam per malam agar fokus dan daya serap meningkat.`,
+      description: `${studentName} hanya tidur sekitar ${sleepHours.toFixed(1)} jam. Dorong tidur cukup 7-8 jam per malam agar fokus dan daya serap meningkat.`,
     });
   }
 
@@ -194,57 +201,61 @@ function buildRecommendations(student: StudentDetailResponse): InterventionRecom
   if (motivation !== null && motivation < 70) {
     recommendations.push({
       title: "Bangun motivasi akademik",
-      description:
-        `Motivasi akademik ${studentName} berada di ${motivation.toFixed(0)}. Gunakan target jangka pendek, umpan balik positif, dan pendampingan belajar yang lebih personal.`,
+      description: `Motivasi akademik ${studentName} berada di ${motivation.toFixed(0)}. Gunakan target jangka pendek, umpan balik positif, dan pendampingan belajar yang lebih personal.`,
     });
   }
 
-  if (student.study_environment && student.study_environment.toLowerCase() !== "baik") {
+  if (
+    student.study_environment &&
+    student.study_environment.toLowerCase() !== "baik"
+  ) {
     recommendations.push({
       title: "Benahi lingkungan belajar",
-      description:
-        `Study environment ${studentName} masih ${student.study_environment}. Pastikan ruang belajar tenang, pencahayaan cukup, dan minim gangguan saat belajar.`,
+      description: `Study environment ${studentName} masih ${student.study_environment}. Pastikan ruang belajar tenang, pencahayaan cukup, dan minim gangguan saat belajar.`,
     });
   }
 
   if (student.stress_level && student.stress_level.toLowerCase() !== "rendah") {
     recommendations.push({
       title: "Kelola tingkat stres",
-      description:
-        `Tingkat stres ${studentName} terdeteksi ${student.stress_level}. Lakukan monitoring ringan, konseling, atau dukungan emosional secara berkala.`,
+      description: `Tingkat stres ${studentName} terdeteksi ${student.stress_level}. Lakukan monitoring ringan, konseling, atau dukungan emosional secara berkala.`,
     });
   }
 
-  if (student.kompetensi_skill_level && student.kompetensi_skill_level.toLowerCase() !== "tinggi") {
+  if (
+    student.kompetensi_skill_level &&
+    student.kompetensi_skill_level.toLowerCase() !== "tinggi"
+  ) {
     recommendations.push({
       title: "Tingkatkan skill inti",
-      description:
-        `Kompetensi skill level ${studentName} masih ${student.kompetensi_skill_level}. Berikan latihan tambahan, proyek kecil, atau modul penguatan konsep.`,
+      description: `Kompetensi skill level ${studentName} masih ${student.kompetensi_skill_level}. Berikan latihan tambahan, proyek kecil, atau modul penguatan konsep.`,
     });
   }
 
-  if (student.industry_readiness && student.industry_readiness.toLowerCase() !== "siap") {
+  if (
+    student.industry_readiness &&
+    student.industry_readiness.toLowerCase() !== "siap"
+  ) {
     recommendations.push({
       title: "Bangun kesiapan industri",
-      description:
-        `Industry readiness ${studentName} masih ${student.industry_readiness}. Ajak mengikuti pelatihan, simulasi praktik, atau kegiatan berbasis proyek.`,
+      description: `Industry readiness ${studentName} masih ${student.industry_readiness}. Ajak mengikuti pelatihan, simulasi praktik, atau kegiatan berbasis proyek.`,
     });
   }
 
-  const industryTrainingAttendance = toNumber(student.kehadiran_pelatihan_industry);
+  const industryTrainingAttendance = toNumber(
+    student.kehadiran_pelatihan_industry,
+  );
   if (industryTrainingAttendance !== null && industryTrainingAttendance < 1) {
     recommendations.push({
       title: "Dorong ikut pelatihan industri",
-      description:
-        `Kehadiran pelatihan industry ${studentName} masih ${industryTrainingAttendance.toFixed(0)}. Dorong partisipasi agar mendapat pengalaman praktik dan eksposur yang relevan.`,
+      description: `Kehadiran pelatihan industry ${studentName} masih ${industryTrainingAttendance.toFixed(0)}. Dorong partisipasi agar mendapat pengalaman praktik dan eksposur yang relevan.`,
     });
   }
 
   if (!recommendations.length) {
     recommendations.push({
       title: "Pertahankan kebiasaan belajar yang baik",
-      description:
-        `Variabel ${studentName} saat ini relatif mendukung performa akademik. Fokus pada konsistensi belajar, kehadiran, dan evaluasi rutin untuk menjaga hasil tetap stabil.`,
+      description: `Variabel ${studentName} saat ini relatif mendukung performa akademik. Fokus pada konsistensi belajar, kehadiran, dan evaluasi rutin untuk menjaga hasil tetap stabil.`,
     });
   }
 
@@ -272,7 +283,9 @@ async function fetchJson<T>(url: string, cookie: string) {
     cache: "no-store",
   });
 
-  const payload = (await response.json().catch(() => ({}))) as T & { message?: string };
+  const payload = (await response.json().catch(() => ({}))) as T & {
+    message?: string;
+  };
   return { response, payload };
 }
 
@@ -300,7 +313,9 @@ export default async function GuruStudentDetailPage({ params }: PageProps) {
   }
 
   if (!studentResult.response.ok) {
-    throw new Error(studentResult.payload?.message ?? "Gagal mengambil detail siswa");
+    throw new Error(
+      studentResult.payload?.message ?? "Gagal mengambil detail siswa",
+    );
   }
 
   const student = studentResult.payload;
@@ -309,11 +324,19 @@ export default async function GuruStudentDetailPage({ params }: PageProps) {
   if (insightResult.response.ok) {
     insight = insightResult.payload;
   } else if (insightResult.response.status !== 404) {
-    console.error("Gagal mengambil insight prediksi terbaru:", insightResult.payload?.message);
+    console.error(
+      "Gagal mengambil insight prediksi terbaru:",
+      insightResult.payload?.message,
+    );
   }
 
-  const predictedScore = insight.predicted_exam_score ?? student.latest_prediction?.predicted_exam_score;
-  const riskStatus = getRiskStatus(predictedScore) ?? insight.risk_status ?? student.latest_prediction?.risk_status;
+  const predictedScore =
+    insight.predicted_exam_score ??
+    student.latest_prediction?.predicted_exam_score;
+  const riskStatus =
+    getRiskStatus(predictedScore) ??
+    insight.risk_status ??
+    student.latest_prediction?.risk_status;
   const recommendations = buildRecommendations(student);
 
   return (
@@ -323,14 +346,24 @@ export default async function GuruStudentDetailPage({ params }: PageProps) {
       <section className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-primary">Guru access</p>
-            <h1 className="text-heading-3 mb-2 font-bold text-dark dark:text-white">{student.nama}</h1>
-            <p className="text-sm text-dark-4 dark:text-dark-6">NISN: {student.nisn}</p>
+            <p className="text-sm font-semibold tracking-wide text-primary uppercase">
+              Guru access
+            </p>
+            <h1 className="mb-2 text-heading-3 font-bold text-dark dark:text-white">
+              {student.nama}
+            </h1>
+            <p className="text-sm text-dark-4 dark:text-dark-6">
+              NISN: {student.nisn}
+            </p>
           </div>
 
-          <div className="rounded-2xl border border-stroke bg-gray-1 px-5 py-4 text-left dark:border-dark-3 dark:bg-dark-2 lg:text-right">
-            <p className="text-sm text-dark-4 dark:text-dark-6">Prediksi skor ujian</p>
-            <p className="mt-1 text-3xl font-bold text-dark dark:text-white">{formatScore(predictedScore)}</p>
+          <div className="rounded-2xl border border-stroke bg-gray-1 px-5 py-4 text-left lg:text-right dark:border-dark-3 dark:bg-dark-2">
+            <p className="text-sm text-dark-4 dark:text-dark-6">
+              Prediksi skor ujian
+            </p>
+            <p className="mt-1 text-3xl font-bold text-dark dark:text-white">
+              {formatScore(predictedScore)}
+            </p>
             <div className="mt-3">
               <RiskBadge status={riskStatus} score={predictedScore} />
             </div>
@@ -348,19 +381,29 @@ export default async function GuruStudentDetailPage({ params }: PageProps) {
 
       <section className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
         <div className="mb-5">
-          <h2 className="text-xl font-bold text-dark dark:text-white">Data 17 Variabel</h2>
+          <h2 className="text-xl font-bold text-dark dark:text-white">
+            Data 17 Variabel
+          </h2>
           <p className="text-sm text-dark-4 dark:text-dark-6">
-            Informasi numerik dan kategorikal yang digunakan untuk prediksi siswa.
+            Informasi numerik dan kategorikal yang digunakan untuk prediksi
+            siswa.
           </p>
         </div>
 
         <div className="grid gap-6 xl:grid-cols-2">
           <div className="rounded-2xl border border-stroke p-5 dark:border-dark-3">
-            <h3 className="mb-4 text-lg font-semibold text-dark dark:text-white">Data Numerik</h3>
+            <h3 className="mb-4 text-lg font-semibold text-dark dark:text-white">
+              Data Numerik
+            </h3>
             <dl className="grid gap-4 sm:grid-cols-2">
               {numericFields.map((field) => (
-                <div key={field.key} className="rounded-xl bg-gray-1 p-4 dark:bg-dark-2">
-                  <dt className="text-sm text-dark-4 dark:text-dark-6">{field.label}</dt>
+                <div
+                  key={field.key}
+                  className="rounded-xl bg-gray-1 p-4 dark:bg-dark-2"
+                >
+                  <dt className="text-sm text-dark-4 dark:text-dark-6">
+                    {field.label}
+                  </dt>
                   <dd className="mt-1 text-base font-semibold text-dark dark:text-white">
                     {formatValue(student[field.key])}
                   </dd>
@@ -370,11 +413,18 @@ export default async function GuruStudentDetailPage({ params }: PageProps) {
           </div>
 
           <div className="rounded-2xl border border-stroke p-5 dark:border-dark-3">
-            <h3 className="mb-4 text-lg font-semibold text-dark dark:text-white">Data Kategorikal</h3>
+            <h3 className="mb-4 text-lg font-semibold text-dark dark:text-white">
+              Data Kategorikal
+            </h3>
             <dl className="grid gap-4 sm:grid-cols-2">
               {categoricalFields.map((field) => (
-                <div key={field.key} className="rounded-xl bg-gray-1 p-4 dark:bg-dark-2">
-                  <dt className="text-sm text-dark-4 dark:text-dark-6">{field.label}</dt>
+                <div
+                  key={field.key}
+                  className="rounded-xl bg-gray-1 p-4 dark:bg-dark-2"
+                >
+                  <dt className="text-sm text-dark-4 dark:text-dark-6">
+                    {field.label}
+                  </dt>
                   <dd className="mt-1 text-base font-semibold text-dark dark:text-white">
                     {formatValue(student[field.key])}
                   </dd>
@@ -393,9 +443,12 @@ export default async function GuruStudentDetailPage({ params }: PageProps) {
               <FiActivity size={18} />
             </div>
             <div>
-              <h2 className="font-bold text-dark dark:text-white">Analisis Faktor (SHAP)</h2>
+              <h2 className="font-bold text-dark dark:text-white">
+                Analisis Faktor (SHAP)
+              </h2>
               <p className="text-sm text-dark-4 dark:text-dark-6">
-                Faktor yang paling berkontribusi terhadap prediksi skor siswa ini.
+                Faktor yang paling berkontribusi terhadap prediksi skor siswa
+                ini.
               </p>
             </div>
           </div>

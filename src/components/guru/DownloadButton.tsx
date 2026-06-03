@@ -25,13 +25,13 @@ export default function DownloadButton({
         {
           // cookie will be automatically included for same-origin requests in Next/Browser
           cache: "no-store",
-        }
+        },
       );
 
       if (!response.ok) {
-        const error = (await response.json().catch(() => null)) as
-          | { message?: string }
-          | null;
+        const error = (await response.json().catch(() => null)) as {
+          message?: string;
+        } | null;
 
         alert(error?.message || "Gagal mengunduh");
         return;

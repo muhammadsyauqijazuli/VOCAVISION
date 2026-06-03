@@ -73,7 +73,9 @@ export async function proxy(request: NextRequest) {
           : "siswa";
 
       if (targetRole !== role) {
-        return NextResponse.redirect(new URL(getRoleHomePath(role), request.url));
+        return NextResponse.redirect(
+          new URL(getRoleHomePath(role), request.url),
+        );
       }
     }
   } catch (error) {

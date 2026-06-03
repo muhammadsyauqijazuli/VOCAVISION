@@ -42,7 +42,11 @@ export function DatasetUploadForm() {
   const [progressPhase, setProgressPhase] = useState<string>("idle");
   const [progressLabel, setProgressLabel] = useState<string>("");
   const [progressMessage, setProgressMessage] = useState<string>("");
-  const [status, setStatus] = useState<{ type: "success" | "warning" | "error"; title: string; description: string } | null>(null);
+  const [status, setStatus] = useState<{
+    type: "success" | "warning" | "error";
+    title: string;
+    description: string;
+  } | null>(null);
 
   const fileInfo = useMemo(() => {
     if (!file) {
@@ -74,10 +78,12 @@ export function DatasetUploadForm() {
       return;
     }
 
-    setPreviewRows([[
-      "Preview untuk XLSX tidak ditampilkan di browser ini.",
-      "File tetap bisa diupload ke backend.",
-    ]]);
+    setPreviewRows([
+      [
+        "Preview untuk XLSX tidak ditampilkan di browser ini.",
+        "File tetap bisa diupload ke backend.",
+      ],
+    ]);
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -96,7 +102,8 @@ export function DatasetUploadForm() {
     setProgressLabel("Dataset diterima");
     setProgressMessage("Menyiapkan proses upload");
 
-    const sleep = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
+    const sleep = (ms: number) =>
+      new Promise((resolve) => window.setTimeout(resolve, ms));
 
     async function pollDatasetStatus(datasetId: string, expectedRows: number) {
       while (true) {
@@ -109,7 +116,9 @@ export function DatasetUploadForm() {
         const payload = (await response.json()) as DatasetProgressPayload;
 
         if (!response.ok) {
-          throw new Error(payload.message || "Gagal membaca status proses dataset");
+          throw new Error(
+            payload.message || "Gagal membaca status proses dataset",
+          );
         }
 
         const processed = Number(payload.row_count ?? 0);
@@ -119,7 +128,9 @@ export function DatasetUploadForm() {
         setTotalRows(total);
         setProgressPhase(payload.phase ?? payload.status ?? "processing");
         setProgressLabel(payload.phase_label ?? payload.phase ?? "Memproses");
-        setProgressMessage(payload.message ?? "Menunggu pembaruan status dari backend");
+        setProgressMessage(
+          payload.message ?? "Menunggu pembaruan status dari backend",
+        );
 
         if (payload.status === "completed") {
           return payload;
@@ -150,7 +161,9 @@ export function DatasetUploadForm() {
       }
 
       const datasetId = (payload as { dataset_id?: string }).dataset_id;
-      const expectedRows = Number((payload as { total_rows?: number }).total_rows ?? 0);
+      const expectedRows = Number(
+        (payload as { total_rows?: number }).total_rows ?? 0,
+      );
 
       if (!datasetId) {
         throw new Error("Backend tidak mengembalikan dataset_id");
@@ -159,16 +172,21 @@ export function DatasetUploadForm() {
       setStatus({
         type: "warning",
         title: "Dataset diterima",
-        description: payload.message || "Menunggu backend menyelesaikan pembuatan akun dan prediksi siswa.",
+        description:
+          payload.message ||
+          "Menunggu backend menyelesaikan pembuatan akun dan prediksi siswa.",
       });
 
       const finalStatus = await pollDatasetStatus(datasetId, expectedRows);
-      const processedRows = Number(finalStatus.row_count ?? finalStatus.current ?? expectedRows);
+      const processedRows = Number(
+        finalStatus.row_count ?? finalStatus.current ?? expectedRows,
+      );
 
       setStatus({
         type: "success",
         title: "Upload selesai",
-        description: `${file.name} sudah selesai diproses. ${processedRows}/${expectedRows || processedRows} baris diproses.`.trim(),
+        description:
+          `${file.name} sudah selesai diproses. ${processedRows}/${expectedRows || processedRows} baris diproses.`.trim(),
       });
       setProgressPhase("completed");
       setProgressLabel("Selesai diproses");
@@ -200,27 +218,34 @@ export function DatasetUploadForm() {
               className="block w-full cursor-pointer rounded-lg border border-stroke bg-white px-4 py-3 text-sm file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:font-medium file:text-white hover:border-primary/40 dark:border-dark-3 dark:bg-dark-3"
             />
             <p className="mt-3 text-sm text-dark-4 dark:text-dark-6">
-              Upload file CSV atau Excel yang berisi data siswa. Preview akan muncul untuk CSV.
+              Upload file CSV atau Excel yang berisi data siswa. Preview akan
+              muncul untuk CSV.
             </p>
           </div>
 
           {fileInfo && (
             <div className="grid gap-3 sm:grid-cols-3">
               <div className="min-w-0 rounded-xl bg-gray-2 p-4 dark:bg-dark-2">
-                <p className="text-xs uppercase tracking-wide text-dark-4 dark:text-dark-6">Nama File</p>
-                <p className="mt-1 break-all text-sm font-medium text-dark dark:text-white sm:wrap-break-word sm:text-base">
+                <p className="text-xs tracking-wide text-dark-4 uppercase dark:text-dark-6">
+                  Nama File
+                </p>
+                <p className="mt-1 text-sm font-medium break-all text-dark sm:text-base sm:wrap-break-word dark:text-white">
                   {fileInfo.name}
                 </p>
               </div>
               <div className="min-w-0 rounded-xl bg-gray-2 p-4 dark:bg-dark-2">
-                <p className="text-xs uppercase tracking-wide text-dark-4 dark:text-dark-6">Ukuran</p>
-                <p className="mt-1 wrap-break-word text-sm font-medium text-dark dark:text-white sm:text-base">
+                <p className="text-xs tracking-wide text-dark-4 uppercase dark:text-dark-6">
+                  Ukuran
+                </p>
+                <p className="mt-1 text-sm font-medium wrap-break-word text-dark sm:text-base dark:text-white">
                   {fileInfo.size}
                 </p>
               </div>
               <div className="min-w-0 rounded-xl bg-gray-2 p-4 dark:bg-dark-2">
-                <p className="text-xs uppercase tracking-wide text-dark-4 dark:text-dark-6">Tipe</p>
-                <p className="mt-1 wrap-break-word text-sm font-medium text-dark dark:text-white sm:text-base">
+                <p className="text-xs tracking-wide text-dark-4 uppercase dark:text-dark-6">
+                  Tipe
+                </p>
+                <p className="mt-1 text-sm font-medium wrap-break-word text-dark sm:text-base dark:text-white">
                   {fileInfo.type}
                 </p>
               </div>
@@ -254,7 +279,13 @@ export function DatasetUploadForm() {
 
           {status && (
             <Alert
-              variant={status.type === "success" ? "success" : status.type === "warning" ? "warning" : "error"}
+              variant={
+                status.type === "success"
+                  ? "success"
+                  : status.type === "warning"
+                    ? "warning"
+                    : "error"
+              }
               title={status.title}
               description={status.description}
               className="shadow-none"
@@ -270,15 +301,22 @@ export function DatasetUploadForm() {
               <div className="h-2 overflow-hidden rounded-full bg-gray-2 dark:bg-dark-3">
                 <div
                   className="h-full rounded-full bg-primary transition-all duration-300"
-                  style={{ width: `${Math.min(100, (processingRows / totalRows) * 100)}%` }}
+                  style={{
+                    width: `${Math.min(100, (processingRows / totalRows) * 100)}%`,
+                  }}
                 />
               </div>
-              <p className="text-sm text-dark-4 dark:text-dark-6">{progressMessage}</p>
+              <p className="text-sm text-dark-4 dark:text-dark-6">
+                {progressMessage}
+              </p>
 
               <div className="grid gap-2 pt-2 sm:grid-cols-2 lg:grid-cols-5">
                 {PROGRESS_STEPS.map((step, index) => {
-                  const activeIndex = PROGRESS_STEPS.findIndex((item) => item.key === progressPhase);
-                  const isDone = activeIndex > index || progressPhase === "completed";
+                  const activeIndex = PROGRESS_STEPS.findIndex(
+                    (item) => item.key === progressPhase,
+                  );
+                  const isDone =
+                    activeIndex > index || progressPhase === "completed";
                   const isActive = activeIndex === index;
 
                   return (
@@ -292,9 +330,15 @@ export function DatasetUploadForm() {
                             : "border-stroke bg-white text-dark-4 dark:border-dark-3 dark:bg-dark-3 dark:text-dark-6"
                       }`}
                     >
-                      <p className="font-medium">{index + 1}. {step.label}</p>
+                      <p className="font-medium">
+                        {index + 1}. {step.label}
+                      </p>
                       <p className="mt-1">
-                        {isDone ? "Selesai" : isActive ? "Sedang berjalan" : "Menunggu"}
+                        {isDone
+                          ? "Selesai"
+                          : isActive
+                            ? "Sedang berjalan"
+                            : "Menunggu"}
                       </p>
                     </div>
                   );
@@ -312,9 +356,15 @@ export function DatasetUploadForm() {
               <table className="min-w-full divide-y divide-stroke dark:divide-dark-3">
                 <tbody className="divide-y divide-stroke dark:divide-dark-3">
                   {previewRows.map((row, rowIndex) => (
-                    <tr key={`${row.join("-")}-${rowIndex}`} className="hover:bg-gray-1 dark:hover:bg-dark-2/60">
+                    <tr
+                      key={`${row.join("-")}-${rowIndex}`}
+                      className="hover:bg-gray-1 dark:hover:bg-dark-2/60"
+                    >
                       {row.map((cell, cellIndex) => (
-                        <td key={`${cell}-${cellIndex}`} className="px-4 py-3 text-sm text-dark dark:text-white">
+                        <td
+                          key={`${cell}-${cellIndex}`}
+                          className="px-4 py-3 text-sm text-dark dark:text-white"
+                        >
                           {cell || "-"}
                         </td>
                       ))}
@@ -327,7 +377,9 @@ export function DatasetUploadForm() {
         ) : (
           <div className="flex min-h-60 items-center justify-center rounded-xl border border-dashed border-stroke bg-gray-1 text-center dark:border-dark-3 dark:bg-dark-2">
             <div>
-              <p className="font-medium text-dark dark:text-white">Belum ada file dipilih</p>
+              <p className="font-medium text-dark dark:text-white">
+                Belum ada file dipilih
+              </p>
               <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">
                 Preview akan muncul setelah Anda memilih file CSV.
               </p>

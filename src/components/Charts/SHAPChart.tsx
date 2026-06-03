@@ -25,17 +25,25 @@ export function SHAPChart({ data }: SHAPChartProps) {
   if (!data || data.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center rounded-xl border border-stroke bg-gray-1 dark:border-dark-3 dark:bg-dark-2">
-        <p className="text-sm text-dark-4 dark:text-dark-6">Data SHAP tidak tersedia.</p>
+        <p className="text-sm text-dark-4 dark:text-dark-6">
+          Data SHAP tidak tersedia.
+        </p>
       </div>
     );
   }
 
   // Ensure data is sorted by absolute impact
   const sortedData = [...data].sort(
-    (a, b) => Math.abs(b.impact_value) - Math.abs(a.impact_value)
+    (a, b) => Math.abs(b.impact_value) - Math.abs(a.impact_value),
   );
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({
+    active,
+    payload,
+  }: {
+    active?: boolean;
+    payload?: { payload: SHAPDataItem }[];
+  }) => {
     if (active && payload && payload.length) {
       const dataPoint = payload[0].payload as SHAPDataItem;
       const isPositive = dataPoint.impact_value > 0;
@@ -52,7 +60,7 @@ export function SHAPChart({ data }: SHAPChartProps) {
             Dampak: {dataPoint.impact_value.toFixed(4)}
           </p>
           {dataPoint.suggestion_text && (
-            <p className="mt-2 text-xs text-dark-4 dark:text-dark-6 max-w-xs">
+            <p className="mt-2 max-w-xs text-xs text-dark-4 dark:text-dark-6">
               {dataPoint.suggestion_text}
             </p>
           )}
@@ -70,7 +78,11 @@ export function SHAPChart({ data }: SHAPChartProps) {
           layout="vertical"
           margin={{ top: 20, right: 30, left: 100, bottom: 5 }}
         >
-          <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
+          <CartesianGrid
+            strokeDasharray="3 3"
+            horizontal={false}
+            stroke="#E2E8F0"
+          />
           <XAxis
             type="number"
             tick={{ fill: "#64748B", fontSize: 12 }}
@@ -83,7 +95,10 @@ export function SHAPChart({ data }: SHAPChartProps) {
             axisLine={{ stroke: "#E2E8F0" }}
             width={120}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.05)" }} />
+          <Tooltip
+            content={<CustomTooltip />}
+            cursor={{ fill: "rgba(0,0,0,0.05)" }}
+          />
           <Bar dataKey="impact_value" radius={[0, 4, 4, 0]}>
             {sortedData.map((entry, index) => (
               <Cell

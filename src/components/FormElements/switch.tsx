@@ -20,7 +20,7 @@ export function Switch({
   return (
     <label
       htmlFor={id}
-      className="flex max-w-fit cursor-pointer select-none items-center"
+      className="flex max-w-fit cursor-pointer items-center select-none"
     >
       <div className="relative">
         <input type="checkbox" name={name} id={id} className="peer sr-only" />
@@ -33,7 +33,7 @@ export function Switch({
 
         <div
           className={cn(
-            "absolute left-1 top-1 flex size-6 items-center justify-center rounded-full bg-white shadow-switch-1 transition peer-checked:right-1 peer-checked:translate-x-full peer-checked:[&_.check-icon]:block peer-checked:[&_.x-icon]:hidden",
+            "absolute top-1 left-1 flex size-6 items-center justify-center rounded-full bg-white shadow-switch-1 transition peer-checked:right-1 peer-checked:translate-x-full peer-checked:[&_.check-icon]:block peer-checked:[&_.x-icon]:hidden",
             {
               "-top-1 left-0 size-7 shadow-switch-2": backgroundSize === "sm",
               "peer-checked:bg-primary peer-checked:dark:bg-white":

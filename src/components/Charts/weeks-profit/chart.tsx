@@ -92,7 +92,7 @@ export function WeeksProfitChart({ data }: PropsType) {
     },
   };
   return (
-    <div className="-ml-3.5 mt-3">
+    <div className="mt-3 -ml-3.5">
       <Chart
         options={options}
         series={[

@@ -17,7 +17,9 @@ type StudentsResponse = {
   items?: DashboardStudentRow[];
 };
 
-async function fetchDashboardStats(token: string): Promise<DashboardStatsResponse> {
+async function fetchDashboardStats(
+  token: string,
+): Promise<DashboardStatsResponse> {
   const response = await fetch(backendUrl("/dashboard/stats"), {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -66,7 +68,10 @@ export default async function GuruDashboardPage() {
 
   const alertRows = students
     .filter((student) => student.risk_status === "Sangat Beresiko")
-    .sort((left, right) => (left.predicted_score ?? 999) - (right.predicted_score ?? 999))
+    .sort(
+      (left, right) =>
+        (left.predicted_score ?? 999) - (right.predicted_score ?? 999),
+    )
     .slice(0, 5)
     .map((student) => ({
       studentId: student.id,

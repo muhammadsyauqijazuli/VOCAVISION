@@ -23,14 +23,20 @@ export default async function AdminReportsPage() {
 
       <section className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
         <div className="mb-6">
-          <p className="text-sm font-semibold uppercase tracking-wide text-primary">Admin access</p>
-          <h1 className="text-heading-3 mt-1 font-bold text-dark dark:text-white">Laporan Analitik Global</h1>
-          <p className="mt-2 text-sm text-dark-4 dark:text-dark-6 max-w-3xl">
-            Unduh laporan analitik komprehensif (EDA Dashboard) yang berisi ringkasan prediksi skor ujian, status risiko siswa, dan analisis berbagai variabel secara keseluruhan.
+          <p className="text-sm font-semibold tracking-wide text-primary uppercase">
+            Admin access
+          </p>
+          <h1 className="mt-1 text-heading-3 font-bold text-dark dark:text-white">
+            Laporan Analitik Global
+          </h1>
+          <p className="mt-2 max-w-3xl text-sm text-dark-4 dark:text-dark-6">
+            Unduh laporan analitik komprehensif (EDA Dashboard) yang berisi
+            ringkasan prediksi skor ujian, status risiko siswa, dan analisis
+            berbagai variabel secara keseluruhan.
           </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { icon: FiPieChart, label: "Distribusi Risiko" },
             { icon: FiBarChart2, label: "Skor vs Stres" },
@@ -39,11 +45,16 @@ export default async function AdminReportsPage() {
           ].map((item, idx) => {
             const Icon = item.icon;
             return (
-              <div key={idx} className="flex flex-col items-center justify-center gap-3 rounded-xl border border-stroke bg-gray-1 p-5 text-center dark:border-dark-3 dark:bg-dark-2">
+              <div
+                key={idx}
+                className="flex flex-col items-center justify-center gap-3 rounded-xl border border-stroke bg-gray-1 p-5 text-center dark:border-dark-3 dark:bg-dark-2"
+              >
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary dark:bg-primary/20">
                   <Icon size={20} />
                 </div>
-                <span className="text-sm font-semibold text-dark dark:text-white">{item.label}</span>
+                <span className="text-sm font-semibold text-dark dark:text-white">
+                  {item.label}
+                </span>
               </div>
             );
           })}
@@ -54,13 +65,13 @@ export default async function AdminReportsPage() {
             studentId=""
             format="pdf"
             label="Unduh Laporan PDF"
-            className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 font-semibold text-white shadow-1 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 font-semibold text-white shadow-1 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
           />
           <DownloadButton
             studentId=""
             format="excel"
             label="Unduh Data Excel"
-            className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl border border-stroke bg-white px-6 py-3.5 font-semibold text-dark-4 transition hover:border-dark-3 hover:bg-gray-1 dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6 dark:hover:border-dark-2 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-stroke bg-white px-6 py-3.5 font-semibold text-dark-4 transition hover:border-dark-3 hover:bg-gray-1 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6 dark:hover:border-dark-2"
           />
         </div>
       </section>

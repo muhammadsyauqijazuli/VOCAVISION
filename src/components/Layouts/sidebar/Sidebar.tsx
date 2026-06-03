@@ -64,14 +64,16 @@ export function Sidebar({ role }: SidebarProps) {
       <aside
         className={cn(
           "overflow-hidden border-r border-gray-200 bg-white transition-width duration-200 ease-linear dark:border-gray-800 dark:bg-gray-dark",
-          isMobile ? "fixed bottom-0 top-0 z-50" : "sticky top-0 h-screen shrink-0",
+          isMobile
+            ? "fixed top-0 bottom-0 z-50"
+            : "sticky top-0 h-screen shrink-0",
           isMobile ? (isOpen ? "w-72 max-w-[85vw]" : "w-0") : "w-72",
         )}
         aria-label="Main navigation"
         aria-hidden={!isOpen}
         inert={!isOpen}
       >
-        <div className="flex h-full flex-col py-10 pl-6 pr-2">
+        <div className="flex h-full flex-col py-10 pr-2 pl-6">
           <div className="relative pr-4.5">
             <Link
               href={"/"}
@@ -84,7 +86,7 @@ export function Sidebar({ role }: SidebarProps) {
             {isMobile && (
               <button
                 onClick={toggleSidebar}
-                className="absolute left-3/4 right-4.5 top-1/2 -translate-y-1/2 text-right"
+                className="absolute top-1/2 right-4.5 left-3/4 -translate-y-1/2 text-right"
               >
                 <span className="sr-only">Close Menu</span>
 
@@ -123,7 +125,8 @@ export function Sidebar({ role }: SidebarProps) {
                               <ChevronUp
                                 className={cn(
                                   "ml-auto rotate-180 transition-transform duration-200",
-                                  expandedItems.includes(item.title) && "rotate-0",
+                                  expandedItems.includes(item.title) &&
+                                    "rotate-0",
                                 )}
                                 aria-hidden="true"
                               />
@@ -131,7 +134,7 @@ export function Sidebar({ role }: SidebarProps) {
 
                             {expandedItems.includes(item.title) && (
                               <ul
-                                className="ml-9 mr-0 space-y-1.5 pb-4 pr-0 pt-2"
+                                className="mr-0 ml-9 space-y-1.5 pt-2 pr-0 pb-4"
                                 role="menu"
                               >
                                 {item.items.map((subItem) => (
