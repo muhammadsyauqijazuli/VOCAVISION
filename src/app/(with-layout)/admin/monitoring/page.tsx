@@ -1,4 +1,4 @@
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+
 import { auth } from "@/lib/auth";
 import { getRoleHomePath } from "@/lib/auth/backend-auth";
 import { headers } from "next/headers";
@@ -16,23 +16,30 @@ export default async function AdminMonitoringPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-270 space-y-6">
-      <Breadcrumb pageName="Monitoring Sistem" />
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+      {/* ── Hero Banner ── */}
+      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-indigo-500 to-blue-dark p-8 shadow-1 md:p-10">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
 
-      <div className="bg-white p-6 rounded-md shadow-sm">
-        <h1 className="text-heading-4 mb-2 font-bold text-dark dark:text-white">
-          Monitoring Sistem
-        </h1>
+        <div className="relative z-10 text-white">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
+            Admin access
+          </p>
+          <h1 className="text-3xl font-bold md:text-4xl">
+            Monitoring Sistem
+          </h1>
+          <p className="mt-3 max-w-4xl text-sm leading-relaxed text-white/90 md:text-base">
+            Halaman ini menampilkan metrik sistem dan log operasi.
+          </p>
+        </div>
+      </section>
 
-        <p className="text-sm text-dark-4 mb-4">
-          Halaman ini akan menampilkan metrik sistem dan log operasi. Endpoint
-          backend yang akan dipanggil: GET /api/dashboard/stats
-        </p>
-
-        <div className="h-48 flex items-center justify-center rounded-md border border-dashed border-gray-200 text-dark-4">
+      <section className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
+        <div className="flex h-48 items-center justify-center rounded-xl border border-dashed border-stroke bg-gray-1 text-sm text-dark-4 dark:border-dark-3 dark:bg-dark-2">
           Placeholder: charts & system metrics
         </div>
-      </div>
+      </section>
     </div>
   );
 }

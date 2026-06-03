@@ -59,7 +59,7 @@ const COLORS = {
 };
 
 function cardClassName() {
-  return "rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-dark-3 dark:bg-gray-dark";
+  return "rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark";
 }
 
 function isNumber(value: unknown): value is number {
@@ -275,16 +275,19 @@ export function AnalyticsDashboard({ stats, students }: AnalyticsDashboardProps)
   const lowRiskCount = stats.tidak_beresiko ?? riskData.find((item) => item.name === "Tidak Beresiko")?.value ?? 0;
 
   return (
-    <div className="space-y-6 bg-brand-light/40 text-slate-900 dark:bg-[#020d1a] dark:text-white">
-      <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-dark-3 dark:bg-gray-dark">
-        <div
-          className="px-6 py-8 text-white md:px-8"
-          style={{
-            backgroundImage: "linear-gradient(90deg, #1F6F5F 0%, #3BA99C 50%, #1F6F5F 100%)",
-          }}
-        >
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/80">Analytics</p>
-          <h1 className="mt-2 text-3xl font-bold md:text-4xl">EDA Dashboard</h1>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+      {/* ── Hero Banner ── */}
+      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-indigo-500 to-blue-dark p-8 shadow-1 md:p-10">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
+
+        <div className="relative z-10 text-white">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
+            Analytics
+          </p>
+          <h1 className="text-3xl font-bold md:text-4xl">
+            EDA Dashboard
+          </h1>
           <p className="mt-3 max-w-4xl text-sm leading-6 text-white/90 md:text-base">
             Visualisasi eksploratif yang dibangun dari data siswa dan hasil analisis backend, bukan lagi mock data.
           </p>

@@ -1,4 +1,3 @@
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import StudentsTableClient from "./StudentsTableClient";
 import { auth } from "@/lib/auth";
 import { backendUrl, getRoleHomePath } from "@/lib/auth/backend-auth";
@@ -75,15 +74,23 @@ export default async function AdminPredictionsPage({ searchParams }: AdminPredic
   const resolvedRiskStatus = riskStatus;
 
   return (
-    <div className="space-y-6">
-      <Breadcrumb pageName="Student Predictions" />
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+      {/* ── Hero Banner ── */}
+      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-indigo-500 to-blue-dark p-8 shadow-1 md:p-10">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
 
-      <section className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
-        <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary">Admin access</p>
-        <h1 className="text-heading-4 mb-2 font-bold text-dark dark:text-white">Prediksi Per Siswa</h1>
-        <p className="text-dark-4 dark:text-dark-6">
-          Lihat skor prediksi terbaru, status risiko, dan data per siswa yang dihitung dari model Random Forest di backend.
-        </p>
+        <div className="relative z-10 text-white">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
+            Admin access
+          </p>
+          <h1 className="text-3xl font-bold md:text-4xl">
+            Prediksi Per Siswa
+          </h1>
+          <p className="mt-3 max-w-4xl text-sm leading-relaxed text-white/90 md:text-base">
+            Lihat skor prediksi terbaru, status risiko, dan data per siswa yang dihitung dari model Random Forest di backend.
+          </p>
+        </div>
       </section>
 
       {/* Summary cards removed: counts are provided live by the table component which fetches paged data */}

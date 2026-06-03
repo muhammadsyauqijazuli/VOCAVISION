@@ -127,7 +127,10 @@ def get_students():
 def get_student_detail(student_id):
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
+    # Try primary key first, then fallback to user_id lookup
     student = Student.query.get(student_id)
+    if not student:
+        student = Student.query.filter_by(user_id=student_id).first()
 
     if not student:
         return jsonify({'message': 'Siswa tidak ditemukan'}), 404

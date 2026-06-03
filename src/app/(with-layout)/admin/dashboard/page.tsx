@@ -4,6 +4,14 @@ import { RiskDistributionChart } from "@/components/admin/risk-distribution-char
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { RiskBadge } from "@/components/guru/RiskBadge";
+import {
+  FiUsers,
+  FiBarChart2,
+  FiAlertTriangle,
+  FiUser,
+  FiDatabase,
+  FiSettings,
+} from "react-icons/fi";
 
 type DashboardStats = {
   total_siswa?: number;
@@ -58,44 +66,76 @@ export default async function AdminDashboardPage() {
   const topStudents = stats.top_risky_students ?? [];
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
-        <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary">
-          Admin access
-        </p>
-        <h1 className="text-heading-4 mb-2 font-bold text-dark dark:text-white">
-          Admin Dashboard
-        </h1>
-        <p className="text-dark-4 dark:text-dark-6">
-          Login berhasil sebagai <strong>{session.user.name}</strong> dengan role <strong>{session.user.role}</strong>.
-        </p>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+      {/* ── Hero Banner ── */}
+      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-indigo-500 to-blue-dark p-8 shadow-1 md:p-10">
+        {/* decorative blobs */}
+        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
+
+        <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="text-white">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
+              Admin Dashboard
+            </p>
+            <h1 className="mb-2 text-3xl font-bold leading-tight md:text-4xl">
+              Halo, {session.user.name}! 👋
+            </h1>
+            <p className="max-w-md text-sm leading-relaxed text-white/85">
+              Selamat datang di pusat kendali admin. Pantau keseluruhan data, distribusi risiko,
+              dan kelola sistem dari sini.
+            </p>
+          </div>
+
+          <div className="flex w-fit items-center gap-3 rounded-2xl bg-white/15 px-5 py-3 backdrop-blur-md">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/25 text-white">
+              <FiUser size={20} />
+            </div>
+            <div>
+              <p className="text-xs text-white/75">Role Akses</p>
+              <p className="font-semibold capitalize text-white">{session.user.role}</p>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl bg-white p-5 shadow-1 dark:bg-gray-dark">
+      {/* ── Stats Row ── */}
+      <section className="grid gap-5 md:grid-cols-3">
+        <div className="group relative overflow-hidden rounded-2xl border border-stroke bg-white p-6 shadow-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-3 dark:border-dark-3 dark:bg-gray-dark">
+          <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 scale-100 rounded-full bg-primary/10 blur-2xl transition-all duration-300 group-hover:scale-125" />
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary dark:bg-primary/20">
+            <FiUsers size={22} />
+          </div>
           <p className="text-sm text-dark-4 dark:text-dark-6">Total Siswa</p>
-          <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">
+          <h2 className="mt-1 text-3xl font-bold text-dark dark:text-white">
             {stats.total_siswa ?? 0}
           </h2>
           <p className="mt-2 text-sm text-dark-4 dark:text-dark-6">
             Total data siswa di sistem
           </p>
         </div>
-        <div className="rounded-2xl bg-white p-5 shadow-1 dark:bg-gray-dark">
+        
+        <div className="group relative overflow-hidden rounded-2xl border border-stroke bg-white p-6 shadow-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-3 dark:border-dark-3 dark:bg-gray-dark">
+          <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 scale-100 rounded-full bg-blue/10 blur-2xl transition-all duration-300 group-hover:scale-125" />
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue/10 text-blue dark:bg-blue/20">
+            <FiBarChart2 size={22} />
+          </div>
           <p className="text-sm text-dark-4 dark:text-dark-6">Rata-rata Skor</p>
-          <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">
+          <h2 className="mt-1 text-3xl font-bold text-dark dark:text-white">
             {Number(averageScore).toFixed(2)}
           </h2>
-          <p className="mt-2 text-sm text-dark-4 dark:text-dark-6">
-            Rata-rata skor berdasarkan data yang tersedia
-          </p>
-          <p className="mt-1 text-xs text-dark-4 dark:text-dark-6">
+          <p className="mt-2 text-xs text-dark-4 dark:text-dark-6">
             {averageBasis}
           </p>
         </div>
-        <div className="rounded-2xl bg-white p-5 shadow-1 dark:bg-gray-dark">
+        
+        <div className="group relative overflow-hidden rounded-2xl border border-stroke bg-white p-6 shadow-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-3 dark:border-dark-3 dark:bg-gray-dark">
+          <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 scale-100 rounded-full bg-red/10 blur-2xl transition-all duration-300 group-hover:scale-125" />
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red/10 text-red dark:bg-red/20">
+            <FiAlertTriangle size={22} />
+          </div>
           <p className="text-sm text-dark-4 dark:text-dark-6">Distribusi Risiko</p>
-          <h2 className="mt-2 text-xl font-bold text-dark dark:text-white">
+          <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">
             {stats.sangat_beresiko ?? 0} / {stats.beresiko ?? 0} / {stats.tidak_beresiko ?? 0}
           </h2>
           <p className="mt-2 text-sm text-dark-4 dark:text-dark-6">
@@ -104,11 +144,12 @@ export default async function AdminDashboardPage() {
         </div>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
-        <div className="rounded-2xl border border-stroke bg-white p-5 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
-          <div className="mb-4 flex items-center justify-between gap-4">
+      {/* ── Main Content ── */}
+      <section className="grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
+        <div className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
+          <div className="mb-5 flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm text-dark-4 dark:text-dark-6">Grafik Risiko</p>
+              <p className="text-sm font-semibold uppercase tracking-widest text-primary">Grafik Risiko</p>
               <h2 className="text-xl font-bold text-dark dark:text-white">Distribusi Risiko Akademik</h2>
             </div>
           </div>
@@ -122,10 +163,10 @@ export default async function AdminDashboardPage() {
           />
         </div>
 
-        <div className="rounded-2xl border border-stroke bg-white p-5 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
-          <div className="mb-4 flex items-center justify-between gap-4">
+        <div className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
+          <div className="mb-5 flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm text-dark-4 dark:text-dark-6">Daftar Prioritas</p>
+              <p className="text-sm font-semibold uppercase tracking-widest text-primary">Daftar Prioritas</p>
               <h2 className="text-xl font-bold text-dark dark:text-white">Siswa Berisiko Tertinggi</h2>
             </div>
           </div>
@@ -167,20 +208,27 @@ export default async function AdminDashboardPage() {
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-2xl border border-stroke bg-white p-5 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
-          <p className="text-sm text-dark-4 dark:text-dark-6">Kelola User</p>
-          <h2 className="mt-2 text-xl font-bold text-dark dark:text-white">Admin only</h2>
-          <a href="/admin/users" className="mt-4 inline-flex text-sm font-semibold text-primary">
-            Open user manager
+      {/* ── Admin Controls ── */}
+      <section className="grid gap-5 md:grid-cols-2">
+        <div className="group relative overflow-hidden rounded-2xl border border-stroke bg-white p-6 shadow-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-3 dark:border-dark-3 dark:bg-gray-dark">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple/10 text-purple dark:bg-purple/20">
+            <FiSettings size={22} />
+          </div>
+          <h2 className="text-xl font-bold text-dark dark:text-white">Kelola User</h2>
+          <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">Manajemen akun admin, guru, dan siswa.</p>
+          <a href="/admin/users" className="mt-5 inline-flex text-sm font-semibold text-primary hover:underline">
+            Buka User Manager &rarr;
           </a>
         </div>
 
-        <div className="rounded-2xl border border-stroke bg-white p-5 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
-          <p className="text-sm text-dark-4 dark:text-dark-6">Upload Dataset</p>
-          <h2 className="mt-2 text-xl font-bold text-dark dark:text-white">Admin only</h2>
-          <a href="/admin/dataset" className="mt-4 inline-flex text-sm font-semibold text-primary">
-            Open dataset uploader
+        <div className="group relative overflow-hidden rounded-2xl border border-stroke bg-white p-6 shadow-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-3 dark:border-dark-3 dark:bg-gray-dark">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green/10 text-green dark:bg-green-dark/20">
+            <FiDatabase size={22} />
+          </div>
+          <h2 className="text-xl font-bold text-dark dark:text-white">Upload Dataset</h2>
+          <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">Perbarui dataset ML untuk prediksi terbaru.</p>
+          <a href="/admin/dataset" className="mt-5 inline-flex text-sm font-semibold text-primary hover:underline">
+            Buka Dataset Uploader &rarr;
           </a>
         </div>
       </section>

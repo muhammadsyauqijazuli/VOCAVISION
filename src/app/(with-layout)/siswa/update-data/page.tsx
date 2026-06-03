@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import { FiInfo, FiRotateCcw, FiZap, FiArrowUp, FiArrowDown } from "react-icons/fi";
 
 type RiskStatus = "Sangat Beresiko" | "Beresiko" | "Tidak Beresiko";
 
@@ -96,11 +97,11 @@ const NUMERIC_FIELDS: NumericField[] = [
   { key: "jam_belajar_per_hari", label: "Jam belajar per hari", helper: "Rata-rata waktu belajar mandiri setiap hari.", min: 0, max: 24, step: "0.5" },
   { key: "presentase_kehadiran", label: "Presentase kehadiran (%)", helper: "Kehadiran aktual dalam proses belajar.", min: 0, max: 100, step: "0.1" },
   { key: "nilai_rata_rata_raport", label: "Nilai rata-rata raport", helper: "Rata-rata nilai akademik terkini.", min: 0, max: 100, step: "0.1" },
-  { key: "skor_time_management", label: "Skor time management", helper: "Skala kemampuan mengatur waktu.", min: 0, max: 10, step: "0.1" },
+  { key: "skor_time_management", label: "Skor time management", helper: "Skala kemampuan mengatur waktu (0–10).", min: 0, max: 10, step: "0.1" },
   { key: "jam_tidur", label: "Jam tidur", helper: "Durasi tidur rata-rata per malam.", min: 0, max: 24, step: "0.5" },
   { key: "screen_time", label: "Screen time", helper: "Durasi penggunaan layar per hari.", min: 0, max: 24, step: "0.5" },
   { key: "kehadiran_pelatihan_industry", label: "Kehadiran pelatihan industry (%)", helper: "Persentase kehadiran pada pelatihan relevan.", min: 0, max: 100, step: "0.1" },
-  { key: "motivasi_akademik", label: "Motivasi akademik", helper: "Skala motivasi belajar saat ini.", min: 0, max: 10, step: "0.1" },
+  { key: "motivasi_akademik", label: "Motivasi akademik", helper: "Skala motivasi belajar saat ini (0–10).", min: 0, max: 10, step: "0.1" },
   { key: "exam_score", label: "Exam score saat ini", helper: "Nilai ujian yang sudah ada, jika tersedia.", min: 0, max: 100, step: "0.1" },
 ];
 
@@ -115,19 +116,31 @@ const SELECT_FIELDS: SelectField[] = [
   { key: "stress_level", label: "Stress level", options: ["Rendah", "Sedang", "Berat"] },
 ];
 
-function getRiskClass(status?: RiskStatus) {
+function getRiskConfig(status?: RiskStatus) {
   switch (status) {
     case "Tidak Beresiko":
-      return "bg-emerald-50 text-emerald-700 ring-emerald-200";
+      return {
+        badge: "bg-green-light-7 text-green ring-1 ring-green/20",
+        bar: "bg-green",
+        dot: "bg-green",
+      };
     case "Beresiko":
-      return "bg-amber-50 text-amber-700 ring-amber-200";
+      return {
+        badge: "bg-yellow-light-4 text-yellow-dark ring-1 ring-yellow-dark/20",
+        bar: "bg-yellow-dark",
+        dot: "bg-yellow-dark",
+      };
     default:
-      return "bg-rose-50 text-rose-700 ring-rose-200";
+      return {
+        badge: "bg-red-light-6 text-red ring-1 ring-red/20",
+        bar: "bg-red",
+        dot: "bg-red",
+      };
   }
 }
 
 function sortInsights(insights: ShapInsight[]) {
-  return [...insights].sort((left, right) => Math.abs(right.impact_value) - Math.abs(left.impact_value));
+  return [...insights].sort((a, b) => Math.abs(b.impact_value) - Math.abs(a.impact_value));
 }
 
 export default function UpdateDataPage() {
@@ -137,9 +150,10 @@ export default function UpdateDataPage() {
   const [result, setResult] = useState<ResultState | null>(null);
 
   const topInsights = useMemo(() => sortInsights(result?.shap_analysis ?? []).slice(0, 5), [result]);
+  const riskConfig = getRiskConfig(result?.risk_status);
 
   function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm((current) => ({ ...current, [key]: value }));
+    setForm((prev) => ({ ...prev, [key]: value }));
   }
 
   async function handlePredict() {
@@ -196,8 +210,8 @@ export default function UpdateDataPage() {
         shap_analysis: insightPayload.shap_analysis ?? [],
         source: "insight",
       });
-    } catch (exception) {
-      const message = exception instanceof Error ? exception.message : "Gagal menghubungi server";
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Gagal menghubungi server";
       setError(message);
     } finally {
       setLoading(false);
@@ -211,207 +225,327 @@ export default function UpdateDataPage() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-light px-4 py-6 text-slate-900 md:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl space-y-6">
-        <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-          <div className="bg-linear-to-r from-brand-header via-brand-accent to-teal-500 px-6 py-8 text-white md:px-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/80">VOCAVISION</p>
-            <h1 className="mt-2 text-3xl font-bold md:text-4xl">Perbarui Data & Prediksi</h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-white/90 md:text-base">
-              Isi 17 variabel gaya hidup dan akademik untuk mengirim data ke proxy Next.js, memanggil model Flask, lalu menampilkan prediksi skor ujian dan insight SHAP yang lebih mudah dibaca.
-            </p>
-          </div>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+      {/* ── Hero Banner ── */}
+      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-indigo-500 to-blue-dark p-8 shadow-1 md:p-10">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
 
-          <div className="flex flex-wrap gap-3 px-6 py-5 text-sm text-slate-600 md:px-8">
-            <span className="rounded-full bg-slate-100 px-3 py-1">Proxy: /api/predict/single</span>
-            <span className="rounded-full bg-slate-100 px-3 py-1">Insight: /api/predict/insight/[id]</span>
-            <span className="rounded-full bg-slate-100 px-3 py-1">SSOT DB: Flask SQLAlchemy</span>
+        <div className="relative z-10">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
+            VOCAVISION
+          </p>
+          <h1 className="text-3xl font-bold text-white md:text-4xl">
+            Perbarui Data &amp; Prediksi
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/85 md:text-base">
+            Isi 17 variabel gaya hidup dan akademik untuk mengirim data ke proxy Next.js,
+            memanggil model Flask, lalu menampilkan prediksi skor ujian dan insight SHAP.
+          </p>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            {["Proxy: /api/predict/single", "Insight: /api/predict/insight/[id]", "SSOT DB: Flask SQLAlchemy"].map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-sm"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Main Grid ── */}
+      <div className="grid gap-6 xl:items-start xl:grid-cols-[minmax(0,1.4fr)_minmax(300px,0.9fr)]">
+        {/* ── Left: Form ── */}
+        <section className="rounded-2xl border border-stroke bg-white shadow-1 dark:border-dark-3 dark:bg-gray-dark">
+          <form className="divide-y divide-stroke dark:divide-dark-3" onSubmit={(e) => e.preventDefault()}>
+            {/* Numeric Fields */}
+            <div className="p-6 md:p-8">
+              <div className="mb-5">
+                <h2 className="text-xl font-bold text-dark dark:text-white">Data Numerik</h2>
+                <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">
+                  Gunakan angka yang paling mendekati kondisi siswa saat ini.
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                {NUMERIC_FIELDS.map((field) => (
+                  <label
+                    key={String(field.key)}
+                    className="group block space-y-2 rounded-xl border border-stroke bg-gray-1 p-4 transition-all hover:border-primary/40 hover:bg-white dark:border-dark-3 dark:bg-dark-2 dark:hover:border-primary/40 dark:hover:bg-dark-2"
+                  >
+                    <span className="block text-sm font-semibold text-dark dark:text-white">
+                      {field.label}
+                    </span>
+                    <input
+                      type="number"
+                      min={field.min}
+                      max={field.max}
+                      step={field.step}
+                      value={
+                        field.key === "exam_score"
+                          ? form.exam_score ?? ""
+                          : String(form[field.key as Exclude<FieldKey, "exam_score">])
+                      }
+                      onChange={(e) => {
+                        const raw = e.target.value;
+                        if (field.key === "exam_score") {
+                          updateField("exam_score", raw === "" ? null : Number(raw));
+                          return;
+                        }
+                        updateField(
+                          field.key as Exclude<FieldKey, "exam_score">,
+                          Number(raw) as FormState[typeof field.key]
+                        );
+                      }}
+                      className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-dark outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15 dark:border-dark-3 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
+                    />
+                    <p className="text-xs text-dark-5 dark:text-dark-6">{field.helper}</p>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Categorical Fields */}
+            <div className="p-6 md:p-8">
+              <div className="mb-5">
+                <h2 className="text-xl font-bold text-dark dark:text-white">Data Kategorikal</h2>
+                <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">
+                  Pilih nilai yang paling sesuai dengan kondisi siswa.
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                {SELECT_FIELDS.map((field) => (
+                  <label
+                    key={String(field.key)}
+                    className="group block space-y-2 rounded-xl border border-stroke bg-gray-1 p-4 transition-all hover:border-primary/40 hover:bg-white dark:border-dark-3 dark:bg-dark-2 dark:hover:border-primary/40 dark:hover:bg-dark-2"
+                  >
+                    <span className="block text-sm font-semibold text-dark dark:text-white">
+                      {field.label}
+                    </span>
+                    <select
+                      value={String(form[field.key])}
+                      onChange={(e) => updateField(field.key, e.target.value as FormState[typeof field.key])}
+                      className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-dark outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15 dark:border-dark-3 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
+                    >
+                      {field.options.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-col gap-3 p-6 sm:flex-row md:p-8">
+              <button
+                type="button"
+                id="btn-predict"
+                onClick={handlePredict}
+                disabled={loading}
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-white shadow-1 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+              >
+                {loading ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />
+                    <span>Memproses prediksi...</span>
+                  </>
+                ) : (
+                  <>
+                    <FiZap size={16} />
+                    <span>Lihat Prediksi Sekarang</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                id="btn-reset"
+                onClick={resetForm}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-stroke bg-white px-6 py-3 font-semibold text-dark-4 transition hover:border-dark-3 hover:bg-gray-1 dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6 dark:hover:border-dark-2"
+              >
+                <FiRotateCcw size={15} />
+                <span>Reset Form</span>
+              </button>
+            </div>
+          </form>
+
+          {/* Error */}
+          {error && (
+            <div className="mx-6 mb-6 flex items-start gap-3 rounded-xl border border-red/20 bg-red-light-6 px-4 py-3 text-sm text-red md:mx-8 md:mb-8">
+              <FiInfo size={16} className="mt-0.5 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Loading State */}
+          {loading && (
+            <div className="mx-6 mb-6 rounded-xl border border-primary/20 bg-primary/5 p-4 md:mx-8 md:mb-8">
+              <div className="flex items-center gap-3">
+                <span className="h-5 w-5 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+                <div>
+                  <p className="font-semibold text-dark dark:text-white">
+                    Menghubungkan ke backend Flask
+                  </p>
+                  <p className="text-sm text-dark-4 dark:text-dark-6">
+                    Data sedang diproses dan insight SHAP sedang disiapkan.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
 
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.85fr)]">
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-            <form className="space-y-8" onSubmit={(event) => event.preventDefault()}>
-              <div className="space-y-4">
-                <div>
-                  <h2 className="text-xl font-semibold text-slate-900">Data Numerik</h2>
-                  <p className="mt-1 text-sm text-slate-600">Gunakan angka yang paling mendekati kondisi siswa saat ini.</p>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2">
-                  {NUMERIC_FIELDS.map((field) => (
-                    <label key={String(field.key)} className="space-y-2 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 transition hover:border-brand-accent/50 hover:bg-white">
-                      <span className="block text-sm font-medium text-slate-800">{field.label}</span>
-                      <input
-                        type="number"
-                        min={field.min}
-                        max={field.max}
-                        step={field.step}
-                        value={field.key === "exam_score" ? form.exam_score ?? "" : String(form[field.key as Exclude<FieldKey, "exam_score">])}
-                        onChange={(event) => {
-                          const rawValue = event.target.value;
-                          if (field.key === "exam_score") {
-                            updateField("exam_score", rawValue === "" ? null : Number(rawValue));
-                            return;
-                          }
-
-                          updateField(field.key as Exclude<FieldKey, "exam_score">, Number(rawValue) as FormState[typeof field.key]);
-                        }}
-                        className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none transition focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
-                      />
-                      <p className="text-xs leading-5 text-slate-500">{field.helper}</p>
-                    </label>
-                  ))}
-                </div>
+        {/* ── Right: Result Panel ── */}
+        <aside className="space-y-5 xl:sticky xl:top-6 xl:self-start">
+          {/* Result Summary Card */}
+          <div className="rounded-2xl border border-stroke bg-white shadow-1 dark:border-dark-3 dark:bg-gray-dark">
+            <div className="flex items-start justify-between gap-3 border-b border-stroke p-6 dark:border-dark-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-dark-5 dark:text-dark-6">
+                  Hasil Prediksi
+                </p>
+                <h2 className="mt-1.5 text-2xl font-bold text-dark dark:text-white">
+                  Ringkasan Real-time
+                </h2>
               </div>
+              <span className="shrink-0 rounded-lg bg-gray-1 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-dark-5 dark:bg-dark-2 dark:text-dark-6">
+                {result?.source === "insight" ? "Insight Sinkron" : "Menunggu Submit"}
+              </span>
+            </div>
 
-              <div className="space-y-4">
-                <div>
-                  <h2 className="text-xl font-semibold text-slate-900">Data Kategorikal</h2>
-                  <p className="mt-1 text-sm text-slate-600">Pilih nilai yang paling sesuai dengan kondisi siswa.</p>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2">
-                  {SELECT_FIELDS.map((field) => (
-                    <label key={String(field.key)} className="space-y-2 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 transition hover:border-brand-accent/50 hover:bg-white">
-                      <span className="block text-sm font-medium text-slate-800">{field.label}</span>
-                      <select
-                        value={String(form[field.key])}
-                        onChange={(event) => updateField(field.key, event.target.value as FormState[typeof field.key])}
-                        className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none transition focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20"
-                      >
-                        {field.options.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={handlePredict}
-                  disabled={loading}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-header px-5 py-3 font-semibold text-white transition hover:bg-brand-accent disabled:cursor-not-allowed disabled:opacity-70"
-                >
-                  {loading && <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-transparent" />}
-                  <span>{loading ? "Memproses prediksi..." : "Lihat Prediksi Sekarang"}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
-                >
-                  Reset Form
-                </button>
-              </div>
-
-              {error && (
-                <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                  {error}
-                </div>
-              )}
-
-              {loading && (
-                <div className="rounded-3xl border border-dashed border-brand-accent/40 bg-brand-light/60 p-5">
-                  <div className="flex items-center gap-3">
-                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-brand-header border-t-transparent" />
-                    <div>
-                      <p className="font-semibold text-slate-900">Menghubungkan ke backend Flask</p>
-                      <p className="text-sm text-slate-600">Data sedang diproses dan insight SHAP sedang dipersiapkan.</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </form>
-          </section>
-
-          <section className="space-y-6">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Hasil Prediksi</p>
-                  <h2 className="mt-2 text-2xl font-bold text-slate-900">Ringkasan real-time</h2>
-                </div>
-                <div className="rounded-2xl bg-slate-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
-                  {result?.source === "insight" ? "Insight Sinkron" : "Menunggu submit"}
-                </div>
-              </div>
-
+            <div className="p-6">
               {result ? (
-                <div className="mt-6 space-y-5">
-                  <div className="rounded-3xl bg-slate-900 p-5 text-white">
-                    <p className="text-sm text-white/70">Predicted exam score</p>
+                <div className="space-y-5">
+                  {/* Score Block */}
+                  <div className="rounded-xl bg-dark p-5 dark:bg-dark-2">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-white/60">
+                      Predicted Exam Score
+                    </p>
                     <div className="mt-2 flex flex-wrap items-end gap-3">
-                      <span className="text-4xl font-bold tracking-tight">{result.predicted_exam_score.toFixed(2)}</span>
-                      <span className={`rounded-full px-3 py-1 text-sm font-semibold ring-1 ring-inset ${getRiskClass(result.risk_status)}`}>
+                      <span className="text-4xl font-bold tracking-tight text-white">
+                        {result.predicted_exam_score.toFixed(2)}
+                      </span>
+                      <span className={`rounded-full px-3 py-1 text-sm font-semibold ${riskConfig.badge}`}>
                         {result.risk_status}
                       </span>
                     </div>
-                    <p className="mt-3 text-sm leading-6 text-white/80">
-                      {result.student_name ? `Insight untuk ${result.student_name}.` : "Prediksi berhasil diterima dari backend Flask melalui proxy Next.js."}
+                    <p className="mt-3 text-sm text-white/75">
+                      {result.student_name
+                        ? `Insight untuk ${result.student_name}.`
+                        : "Prediksi berhasil diterima dari backend Flask melalui proxy Next.js."}
                     </p>
                   </div>
 
-                  <div className="rounded-3xl border border-slate-200 bg-brand-light/50 p-5">
-                    <div className="flex items-center justify-between gap-3">
-                      <h3 className="text-lg font-semibold text-slate-900">SHAP insight utama</h3>
-                      <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Top {Math.min(topInsights.length, 5)}</span>
+                  {/* Metadata */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="rounded-xl border border-stroke bg-gray-1 p-4 dark:border-dark-3 dark:bg-dark-2">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-dark-5 dark:text-dark-6">
+                        Student ID
+                      </p>
+                      <p className="mt-1.5 break-all text-sm font-semibold text-dark dark:text-white">
+                        {result.student_id}
+                      </p>
                     </div>
-
-                    <div className="mt-4 space-y-3">
-                      {topInsights.length > 0 ? (
-                        topInsights.map((insight) => (
-                          <article key={`${insight.feature_name}-${insight.impact_value}`} className="rounded-2xl border border-white bg-white p-4 shadow-sm">
-                            <div className="flex items-start justify-between gap-4">
-                              <div>
-                                <p className="font-semibold text-slate-900">{insight.feature_name}</p>
-                                <p className="mt-1 text-sm leading-6 text-slate-600">{insight.suggestion_text}</p>
-                              </div>
-                              <div className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${insight.impact_value >= 0 ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"}`}>
-                                {insight.impact_value >= 0 ? "+" : ""}{insight.impact_value.toFixed(3)}
-                              </div>
-                            </div>
-                          </article>
-                        ))
-                      ) : (
-                        <p className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-6 text-sm text-slate-500">
-                          Hasil SHAP akan muncul di sini setelah prediksi berhasil dijalankan.
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Student ID</p>
-                      <p className="mt-2 break-all text-sm font-medium text-slate-900">{result.student_id}</p>
-                    </div>
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Sumber data</p>
-                      <p className="mt-2 text-sm font-medium text-slate-900">{result.source === "insight" ? "GET /api/predict/insight/[id]" : "POST /api/predict/single"}</p>
+                    <div className="rounded-xl border border-stroke bg-gray-1 p-4 dark:border-dark-3 dark:bg-dark-2">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-dark-5 dark:text-dark-6">
+                        Sumber Data
+                      </p>
+                      <p className="mt-1.5 text-sm font-semibold text-dark dark:text-white">
+                        {result.source === "insight"
+                          ? "GET /insight/[id]"
+                          : "POST /predict/single"}
+                      </p>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm leading-6 text-slate-600">
-                  Belum ada hasil yang ditampilkan. Setelah tombol prediksi ditekan, halaman ini akan menampilkan skor, status risiko, dan insight SHAP secara responsif.
+                <div className="rounded-xl border border-dashed border-stroke bg-gray-1 p-6 text-center dark:border-dark-3 dark:bg-dark-2">
+                  <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <FiZap size={20} />
+                  </div>
+                  <p className="font-semibold text-dark dark:text-white">Belum Ada Hasil</p>
+                  <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">
+                    Isi form dan tekan tombol prediksi untuk melihat hasil.
+                  </p>
                 </div>
               )}
             </div>
+          </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-linear-to-br from-brand-header to-brand-accent p-6 text-white shadow-sm">
-              <h3 className="text-lg font-semibold">Catatan integrasi</h3>
-              <p className="mt-2 text-sm leading-6 text-white/85">
-                Proxy Next.js menjaga frontend tetap seragam, menyembunyikan URL Flask, dan menghindari masalah CORS. Untuk database, implementasi ini tetap menganggap Flask SQLAlchemy sebagai sumber kebenaran utama.
-              </p>
+          {/* SHAP Insights */}
+          {result && topInsights.length > 0 && (
+            <div className="rounded-2xl border border-stroke bg-white shadow-1 dark:border-dark-3 dark:bg-gray-dark">
+              <div className="flex items-center justify-between border-b border-stroke p-6 dark:border-dark-3">
+                <h3 className="font-bold text-dark dark:text-white">SHAP Insight Utama</h3>
+                <span className="text-xs font-semibold uppercase tracking-wider text-dark-5 dark:text-dark-6">
+                  Top {topInsights.length}
+                </span>
+              </div>
+
+              <div className="divide-y divide-stroke p-4 dark:divide-dark-3">
+                {topInsights.map((insight) => (
+                  <article
+                    key={`${insight.feature_name}-${insight.impact_value}`}
+                    className="flex items-start gap-3 py-4 first:pt-2 last:pb-2"
+                  >
+                    <div
+                      className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
+                        insight.impact_value >= 0
+                          ? "bg-green-light-7 text-green"
+                          : "bg-red-light-6 text-red"
+                      }`}
+                    >
+                      {insight.impact_value >= 0 ? (
+                        <FiArrowUp size={13} />
+                      ) : (
+                        <FiArrowDown size={13} />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-semibold text-dark dark:text-white">
+                          {insight.feature_name}
+                        </p>
+                        <span
+                          className={`shrink-0 text-xs font-bold ${
+                            insight.impact_value >= 0
+                              ? "text-green"
+                              : "text-red"
+                          }`}
+                        >
+                          {insight.impact_value >= 0 ? "+" : ""}
+                          {insight.impact_value.toFixed(3)}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs leading-relaxed text-dark-4 dark:text-dark-6">
+                        {insight.suggestion_text}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
-          </section>
-        </div>
+          )}
+
+          {/* Integration Note */}
+          <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 dark:border-primary/30 dark:bg-primary/10">
+            <div className="flex items-center gap-2 mb-2">
+              <FiInfo size={15} className="text-primary" />
+              <h3 className="text-sm font-bold text-dark dark:text-white">Catatan Integrasi</h3>
+            </div>
+            <p className="text-xs leading-relaxed text-dark-4 dark:text-dark-6">
+              Proxy Next.js menjaga frontend tetap seragam, menyembunyikan URL Flask, dan
+              menghindari masalah CORS. Flask SQLAlchemy tetap menjadi sumber kebenaran utama.
+            </p>
+          </div>
+        </aside>
       </div>
     </div>
   );

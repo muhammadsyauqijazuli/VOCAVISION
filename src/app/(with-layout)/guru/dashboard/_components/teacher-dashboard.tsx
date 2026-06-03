@@ -85,21 +85,21 @@ function buildSummaryStats(stats: DashboardStatsResponse): SummaryStat[] {
       value: formatNumber(stats.total_siswa ?? 0),
       helper: "Total siswa aktif yang diampu",
       icon: FiUsers,
-      accentClass: "from-brand-header to-brand-accent",
+      accentClass: "bg-primary/10 text-primary dark:bg-primary/20",
     },
     {
       label: "Rata-rata Skor",
       value: formatNumber(getAverageScore(stats)),
       helper: getAverageHelper(stats),
       icon: FiBarChart2,
-      accentClass: "from-sky-500 to-cyan-400",
+      accentClass: "bg-blue/10 text-blue dark:bg-blue/20",
     },
     {
       label: "Total Siswa Berisiko",
       value: formatNumber(getRiskCount(stats)),
       helper: "Siswa yang perlu perhatian khusus",
       icon: FiAlertTriangle,
-      accentClass: "from-amber-500 to-rose-500",
+      accentClass: "bg-red/10 text-red dark:bg-red/20",
     },
   ];
 }
@@ -160,41 +160,39 @@ export function TeacherDashboard({
   }).format(new Date());
 
   return (
-    <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-[28px] border border-stroke bg-white p-7 shadow-1 dark:border-dark-3 dark:bg-gray-dark sm:p-10">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[28px]">
-          <div className="absolute -left-24 top-0 h-48 w-48 rounded-full bg-brand-accent/15 blur-3xl" />
-          <div className="absolute right-0 top-10 h-36 w-36 rounded-full bg-brand-warning/15 blur-3xl" />
-          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-brand-accent/40 to-transparent" />
-        </div>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+      {/* ── Hero Banner ── */}
+      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-indigo-500 to-blue-dark p-8 shadow-1 md:p-10">
+        {/* decorative blobs */}
+        <div className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
 
-        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand-accent/20 bg-brand-accent/10 px-4 py-2 text-sm font-semibold text-brand-header">
-              <FiCalendar className="text-base" />
-              <span>{dateLabel}</span>
-            </div>
-
-            <div className="max-w-3xl space-y-4">
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
-                Teacher dashboard
-              </p>
-              <h1 className="text-3xl font-bold text-dark dark:text-white sm:text-4xl xl:text-5xl">
-                Selamat pagi, Pak/Bu Guru {teacherName ? `• ${teacherName}` : ""}!
-              </h1>
-              <p className="max-w-2xl text-base leading-7 text-dark-4 dark:text-dark-6 sm:text-lg">
-                Pantau performa siswa, sorot risiko akademik lebih cepat, dan ambil tindakan
-                dari siswa yang paling membutuhkan perhatian hari ini.
-              </p>
-            </div>
+        <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="space-y-3 text-white">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
+              Teacher Dashboard
+            </p>
+            <h1 className="mb-2 text-3xl font-bold leading-tight md:text-4xl">
+              Selamat pagi, Pak/Bu {teacherName}! 👋
+            </h1>
+            <p className="max-w-xl text-sm leading-relaxed text-white/85">
+              Pantau performa siswa, sorot risiko akademik lebih cepat, dan ambil tindakan
+              dari siswa yang paling membutuhkan perhatian hari ini.
+            </p>
           </div>
 
-          <div className="rounded-2xl border border-brand-accent/20 bg-brand-header px-6 py-5 text-dark shadow-[0_18px_40px_rgba(31,111,95,0.18)] dark:text-white">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-dark/70 dark:text-white/70">
-              Last sync
-            </p>
-            <p className="mt-1 text-3xl font-bold">{lastUpdatedLabel}</p>
-            <p className="mt-1 text-sm text-dark/80 dark:text-white/80">Data terbaru dari backend</p>
+          <div className="flex flex-col gap-3">
+            <div className="inline-flex w-fit items-center gap-2 rounded-xl bg-white/15 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur-md">
+              <FiCalendar className="text-lg" />
+              <span>{dateLabel}</span>
+            </div>
+            
+            <div className="rounded-xl border border-white/20 bg-white/10 px-5 py-4 text-white backdrop-blur-md shadow-lg">
+              <p className="text-xs font-semibold uppercase tracking-widest text-white/70">
+                Last sync
+              </p>
+              <p className="mt-1 text-2xl font-bold">{lastUpdatedLabel}</p>
+            </div>
           </div>
         </div>
       </section>
@@ -206,28 +204,22 @@ export function TeacherDashboard({
           return (
             <article
               key={stat.label}
-              className="group relative overflow-hidden rounded-[24px] border border-stroke bg-white p-6 shadow-1 transition-transform duration-300 hover:-translate-y-1 dark:border-dark-3 dark:bg-gray-dark"
+              className="group relative overflow-hidden rounded-2xl border border-stroke bg-white p-6 shadow-1 transition-all duration-300 hover:-translate-y-1 hover:shadow-3 dark:border-dark-3 dark:bg-gray-dark"
             >
-              <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${stat.accentClass}`} />
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm font-medium text-dark-4 dark:text-dark-6">{stat.label}</p>
-                  <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">{stat.value}</h2>
-                </div>
-
-                <div className={`rounded-2xl bg-gradient-to-br ${stat.accentClass} p-3 text-dark dark:text-white shadow-lg`}>
-                  <Icon className="text-xl" />
-                </div>
+              <div className={`pointer-events-none absolute -right-8 -top-8 h-28 w-28 scale-100 rounded-full blur-2xl transition-all duration-300 group-hover:scale-125 ${stat.accentClass.split(' ')[0]}`} />
+              <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${stat.accentClass}`}>
+                <Icon size={22} />
               </div>
-
-              <p className="mt-5 text-sm leading-6 text-dark-4 dark:text-dark-6">{stat.helper}</p>
+              <p className="text-sm text-dark-4 dark:text-dark-6">{stat.label}</p>
+              <h2 className="mt-1 text-3xl font-bold text-dark dark:text-white">{stat.value}</h2>
+              <p className="mt-2 text-sm text-dark-4 dark:text-dark-6">{stat.helper}</p>
             </article>
           );
         })}
       </section>
 
-      <section className="space-y-8">
-        <article className="rounded-[28px] border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark sm:p-8">
+      <section className="space-y-6">
+        <article className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
@@ -328,7 +320,7 @@ export function TeacherDashboard({
           </div>
         </article>
 
-        <article className="rounded-[28px] border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark sm:p-8">
+        <article className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
           <div className="flex items-start justify-between gap-5">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">

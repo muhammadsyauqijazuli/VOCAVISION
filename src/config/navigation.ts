@@ -99,6 +99,13 @@ export const NAV_CONFIG: NavConfigItem[] = [
     allowedRoles: ["siswa"],
     section: "MAIN MENU",
   },
+  {
+    title: "Detail Prediksi",
+    href: "/siswa/prediksi",
+    icon: Icons.Table,
+    allowedRoles: ["siswa"],
+    section: "MAIN MENU",
+  },
 ];
 
 export default NAV_CONFIG;

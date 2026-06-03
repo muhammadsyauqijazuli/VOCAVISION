@@ -87,7 +87,10 @@ def predict_single():
 def get_insight(student_id):
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
+    # Try primary key first, then fallback to user_id lookup
     student = Student.query.get(student_id)
+    if not student:
+        student = Student.query.filter_by(user_id=student_id).first()
 
     if not student:
         return jsonify({'message': 'Siswa tidak ditemukan'}), 404
@@ -95,7 +98,7 @@ def get_insight(student_id):
     if user and user.role == 'siswa' and student.user_id != user_id:
         return jsonify({'message': 'Akses ditolak'}), 403
 
-    prediction = Prediction.query.filter_by(student_id=student_id).order_by(Prediction.created_at.desc()).first()
+    prediction = Prediction.query.filter_by(student_id=student.id).order_by(Prediction.created_at.desc()).first()
     if not prediction:
         return jsonify({'message': 'Prediksi tidak ditemukan'}), 404
 
