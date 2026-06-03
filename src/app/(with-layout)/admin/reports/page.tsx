@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import { getRoleHomePath } from "@/lib/auth/backend-auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import DownloadButton from "@/components/guru/DownloadButton";
+import { FiPieChart, FiBarChart2, FiUsers, FiFileText } from "react-icons/fi";
 
 export default async function AdminReportsPage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -19,18 +21,49 @@ export default async function AdminReportsPage() {
     <div className="mx-auto w-full max-w-270 space-y-6">
       <Breadcrumb pageName="Laporan Global" />
 
-      <div className="bg-white p-6 rounded-md shadow-sm">
-        <h1 className="text-heading-4 mb-2 font-bold text-dark dark:text-white">Laporan Global</h1>
-
-        <p className="text-sm text-dark-4 mb-4">
-          Halaman ini nantinya akan menampilkan laporan agregat dan eksport CSV/PDF.
-          Endpoint: GET /api/dashboard/reports
-        </p>
-
-        <div className="h-48 flex items-center justify-center rounded-md border border-dashed border-gray-200 text-dark-4">
-          Placeholder: report filters & export actions
+      <section className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
+        <div className="mb-6">
+          <p className="text-sm font-semibold uppercase tracking-wide text-primary">Admin access</p>
+          <h1 className="text-heading-3 mt-1 font-bold text-dark dark:text-white">Laporan Analitik Global</h1>
+          <p className="mt-2 text-sm text-dark-4 dark:text-dark-6 max-w-3xl">
+            Unduh laporan analitik komprehensif (EDA Dashboard) yang berisi ringkasan prediksi skor ujian, status risiko siswa, dan analisis berbagai variabel secara keseluruhan.
+          </p>
         </div>
-      </div>
+
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+          {[
+            { icon: FiPieChart, label: "Distribusi Risiko" },
+            { icon: FiBarChart2, label: "Skor vs Stres" },
+            { icon: FiUsers, label: "Kehadiran Tertinggi" },
+            { icon: FiFileText, label: "Tabel Data Lengkap" },
+          ].map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div key={idx} className="flex flex-col items-center justify-center gap-3 rounded-xl border border-stroke bg-gray-1 p-5 text-center dark:border-dark-3 dark:bg-dark-2">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary dark:bg-primary/20">
+                  <Icon size={20} />
+                </div>
+                <span className="text-sm font-semibold text-dark dark:text-white">{item.label}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <DownloadButton
+            studentId=""
+            format="pdf"
+            label="Unduh Laporan PDF"
+            className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 font-semibold text-white shadow-1 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          />
+          <DownloadButton
+            studentId=""
+            format="excel"
+            label="Unduh Data Excel"
+            className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl border border-stroke bg-white px-6 py-3.5 font-semibold text-dark-4 transition hover:border-dark-3 hover:bg-gray-1 dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6 dark:hover:border-dark-2 disabled:cursor-not-allowed disabled:opacity-60"
+          />
+        </div>
+      </section>
     </div>
   );
 }

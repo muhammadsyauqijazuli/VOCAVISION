@@ -13,7 +13,9 @@ import {
   FiBarChart2,
   FiList,
   FiArrowLeft,
+  FiActivity,
 } from "react-icons/fi";
+import { SHAPChart } from "@/components/Charts/SHAPChart";
 
 type StudentDetailResponse = {
   id: string;
@@ -49,6 +51,11 @@ type InsightResponse = {
   student_name: string;
   predicted_exam_score: number | string | null;
   risk_status: string | null;
+  shap_analysis?: {
+    feature_name: string;
+    impact_value: number;
+    suggestion_text: string;
+  }[];
 };
 
 type PageProps = {
@@ -266,12 +273,15 @@ export default async function PrediksiSiswaPage({ params }: PageProps) {
     throw new Error(studentResult.payload?.message ?? "Gagal mengambil detail siswa");
   }
 
-  if (!insightResult.response.ok) {
-    throw new Error(insightResult.payload?.message ?? "Gagal mengambil insight prediksi terbaru");
+  const student = studentResult.payload;
+  
+  let insight: Partial<InsightResponse> = {};
+  if (insightResult.response.ok) {
+    insight = insightResult.payload;
+  } else if (insightResult.response.status !== 404) {
+    console.error("Gagal mengambil insight prediksi terbaru:", insightResult.payload?.message);
   }
 
-  const student = studentResult.payload;
-  const insight = insightResult.payload;
   const predictedScore = insight.predicted_exam_score ?? student.latest_prediction?.predicted_exam_score;
   const riskStatus = getRiskStatus(predictedScore) ?? insight.risk_status ?? student.latest_prediction?.risk_status;
   const recommendations = buildRecommendations(student);
@@ -431,6 +441,24 @@ export default async function PrediksiSiswaPage({ params }: PageProps) {
           );
         })}
       </section>
+
+      {/* ── SHAP Insight Chart ── */}
+      {insight.shap_analysis && insight.shap_analysis.length > 0 && (
+        <section className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
+          <div className="mb-5 flex items-center gap-3 border-b border-stroke pb-5 dark:border-dark-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue/10 text-blue dark:bg-blue-dark/20">
+              <FiActivity size={18} />
+            </div>
+            <div>
+              <h2 className="font-bold text-dark dark:text-white">Analisis Faktor (SHAP)</h2>
+              <p className="text-sm text-dark-4 dark:text-dark-6">
+                Faktor yang paling berkontribusi terhadap prediksi skor (Hijau = Positif, Merah = Negatif).
+              </p>
+            </div>
+          </div>
+          <SHAPChart data={insight.shap_analysis} />
+        </section>
+      )}
 
       {/* ── Intervention Form (guru only) ── */}
       {session.user.role === "guru" && (

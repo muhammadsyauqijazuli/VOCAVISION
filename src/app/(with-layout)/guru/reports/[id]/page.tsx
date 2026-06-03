@@ -117,16 +117,19 @@ export default async function GuruStudentReportPage({ params }: PageProps) {
     throw new Error(studentResult.payload?.message ?? "Gagal mengambil data siswa");
   }
 
-  if (!insightResult.response.ok) {
-    throw new Error(insightResult.payload?.message ?? "Gagal mengambil insight prediksi");
-  }
-
   if (!interventionResult.response.ok) {
     throw new Error(interventionResult.payload?.message ?? "Gagal mengambil riwayat intervensi");
   }
 
   const student = studentResult.payload;
-  const insight = insightResult.payload;
+
+  let insight: Partial<InsightResponse> = {};
+  if (insightResult.response.ok) {
+    insight = insightResult.payload;
+  } else if (insightResult.response.status !== 404) {
+    console.error("Gagal mengambil insight prediksi:", insightResult.payload?.message);
+  }
+
   const interventions = interventionResult.payload ?? [];
   const predictedScore = insight.predicted_exam_score ?? student.latest_prediction?.predicted_exam_score ?? null;
   const riskStatus = getRiskStatus(predictedScore) ?? insight.risk_status ?? student.latest_prediction?.risk_status ?? null;
