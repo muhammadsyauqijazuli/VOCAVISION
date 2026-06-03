@@ -6,7 +6,6 @@ import "jsvectormap/dist/jsvectormap.css";
 
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
-import type { PropsWithChildren } from "react";
 import { Toaster } from "sonner";
 import { Providers } from "./providers";
 
@@ -19,7 +18,7 @@ export const metadata: Metadata = {
     "VOCAVISION is a vocational student predictive analytics platform for risk detection, insight generation, and academic intervention.",
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
