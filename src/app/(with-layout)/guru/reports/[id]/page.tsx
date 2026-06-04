@@ -7,6 +7,7 @@ import { getRiskStatus } from "@/lib/utils";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { InterventionItem } from "@/components/guru/InterventionItem";
 
 type StudentReportResponse = {
   id: string;
@@ -34,6 +35,7 @@ type InsightResponse = {
 type InterventionRecord = {
   id: string;
   guru: string;
+  guru_id?: string;
   note: string;
   date: string;
 };
@@ -55,10 +57,11 @@ function CardField({ label, value }: { label: string; value: string }) {
   );
 }
 
-async function fetchJson<T>(url: string, cookie: string) {
+async function fetchJson<T>(url: string, cookie: string, nextConfig?: RequestInit["next"]) {
   const response = await fetch(url, {
     headers: cookie ? { cookie } : undefined,
-    cache: "no-store",
+    cache: nextConfig ? undefined : "no-store",
+    next: nextConfig,
   });
 
   const payload = (await response.json().catch(() => ({}))) as T & {
@@ -111,7 +114,7 @@ export default async function GuruStudentReportPage({ params }: PageProps) {
 
   const [studentResult, insightResult, interventionResult] = await Promise.all([
     fetchJson<StudentReportResponse>(`${origin}/api/students/${id}`, cookie),
-    fetchJson<InsightResponse>(`${origin}/api/predict/insight/${id}`, cookie),
+    fetchJson<InsightResponse>(`${origin}/api/predict/insight/${id}`, cookie, { revalidate: 3600 }),
     fetchJson<InterventionRecord[]>(
       `${origin}/api/interventions/${id}`,
       cookie,
@@ -322,24 +325,11 @@ export default async function GuruStudentReportPage({ params }: PageProps) {
             <div className="mt-5 space-y-4">
               {interventions.length ? (
                 interventions.map((item) => (
-                  <article
+                  <InterventionItem
                     key={item.id}
-                    className="rounded-xl border border-stroke p-4 dark:border-dark-3"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-sm font-semibold text-dark dark:text-white">
-                          {item.guru}
-                        </p>
-                        <p className="text-xs text-dark-4 dark:text-dark-6">
-                          {new Date(item.date).toLocaleString("id-ID")}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="mt-3 text-sm leading-6 text-dark-4 dark:text-dark-6">
-                      {item.note}
-                    </p>
-                  </article>
+                    item={item}
+                    currentUserId={session.user.id}
+                  />
                 ))
               ) : (
                 <p className="text-sm text-dark-4 dark:text-dark-6">

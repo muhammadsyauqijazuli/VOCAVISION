@@ -1,6 +1,14 @@
 /** @type {import("next").NextConfig} */
 const nextConfig = {
+  compress: true,
+  experimental: {
+    optimizePackageImports: ["react-icons", "recharts", "apexcharts", "dayjs"],
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
   images: {
+    formats: ["image/avif", "image/webp"],
     qualities: [75, 100],
     remotePatterns: [
       {

@@ -244,8 +244,8 @@ class MLService:
                 'onehot_encoder': onehot_encoder,
                 'nominal_cols': nominal_cols,
             }
-            # Explainer is optional - will be created on demand if needed
-            self.explainer = None
+            # Menginisialisasi SHAP Explainer
+            self.explainer = shap.TreeExplainer(self.model)
             print("Model loaded successfully")
         except Exception as e:
             print(f"Could not load model: {e}")
@@ -428,12 +428,13 @@ class MLService:
         # SHAP (jika explainer tersedia)
         shap_values = None
         if self.explainer:
-            shap_values = self.explainer.shap_values(processed)
-            shap_values = shap_values[0]  # untuk satu sampel
-            # Ambil nama fitur asli
-            feature_names = list(processed.columns)
+            shap_result = self.explainer.shap_values(processed)
+            if isinstance(shap_result, list):
+                shap_values = shap_result[0][0] if len(shap_result[0].shape) > 1 else shap_result[0]
+            else:
+                shap_values = shap_result[0] if len(shap_result.shape) > 1 else shap_result
         else:
-            # Dummy SHAP (random)
+            # Dummy SHAP (random) fallback untuk dummy model
             shap_values = np.random.randn(processed.shape[1]) * 2
 
         shap_list = []

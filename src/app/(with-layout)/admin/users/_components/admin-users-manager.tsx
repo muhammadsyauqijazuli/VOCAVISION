@@ -47,6 +47,7 @@ export function AdminUsersManager({
     linked_students: number;
     orphan_students: number;
   } | null>(null);
+  const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>(scopeRole ?? "");
   const [page, setPage] = useState<number>(1);
@@ -146,8 +147,8 @@ export function AdminUsersManager({
 
   function handleSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setSearch(searchInput);
     setPage(1);
-    void fetchUsers();
   }
 
   async function fetchStudentSyncSummary() {
@@ -195,27 +196,29 @@ export function AdminUsersManager({
     }
   }
 
+  // Auto-search (debounce)
   useEffect(() => {
-    // when search or role filter changes, reset to first page
-    setPage(1);
-    // fetch will be triggered by page effect
-    // avoid double fetching here
-    // void fetchUsers();
-  }, [search, roleFilter, scopeRole]);
+    const handler = setTimeout(() => {
+      if (search !== searchInput) {
+        setSearch(searchInput);
+        setPage(1);
+      }
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchInput, search]);
 
   useEffect(() => {
-    // refetch when page changes (perPage is fixed at 25)
-    void fetchUsers();
-  }, [page]);
-
-  useEffect(() => {
-    if (!scopeRole) {
-      return;
+    if (scopeRole) {
+      setRoleFilter(scopeRole);
+      setFormData((current) => ({ ...current, role: scopeRole }));
     }
-
-    setRoleFilter(scopeRole);
-    setFormData((current) => ({ ...current, role: scopeRole }));
   }, [scopeRole]);
+
+  useEffect(() => {
+    void fetchUsers();
+  }, [search, roleFilter, page, scopeRole]); // Trigger fetch when any dependency changes
+
+
 
   useEffect(() => {
     if (!showStudentSyncPanel) {
@@ -592,8 +595,8 @@ export function AdminUsersManager({
               className="flex w-full items-center gap-3"
             >
               <input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
                 placeholder="Cari nama atau email"
                 className="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 transition-all duration-200 ease-out outline-none placeholder:text-dark-4/60 hover:border-primary/40 hover:shadow-sm focus:border-primary focus:shadow-md dark:border-dark-3 dark:hover:border-primary/50"
               />
@@ -665,8 +668,8 @@ export function AdminUsersManager({
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-stroke dark:divide-dark-3">
-                  {isLoading ? (
+                <tbody className={`divide-y divide-stroke transition-opacity dark:divide-dark-3 ${isLoading && users.length > 0 ? "opacity-50" : ""}`}>
+                  {isLoading && users.length === 0 ? (
                     <tr>
                       <td
                         className="px-4 py-8 text-center text-dark-4"

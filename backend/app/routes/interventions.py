@@ -27,6 +27,7 @@ def get_my_notes():
     return jsonify([{
         'id': i.id,
         'guru': User.query.get(i.guru_id).nama if User.query.get(i.guru_id) else 'Guru',
+        'guru_id': i.guru_id,
         'note': i.note,
         'date': i.action_date.isoformat()
     } for i in interventions]), 200
@@ -53,6 +54,30 @@ def add_intervention(student_id):
     db.session.commit()
     return jsonify({'message': 'Intervensi disimpan'}), 201
 
+@interventions_bp.route('/edit/<intervention_id>', methods=['PUT'])
+@jwt_required()
+def edit_intervention(intervention_id):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if user.role != 'guru':
+        return jsonify({'message': 'Hanya guru yang dapat mengedit intervensi'}), 403
+
+    intervention = Intervention.query.get(intervention_id)
+    if not intervention:
+        return jsonify({'message': 'Catatan tidak ditemukan'}), 404
+
+    if intervention.guru_id != user_id:
+        return jsonify({'message': 'Anda hanya dapat mengedit catatan Anda sendiri'}), 403
+
+    data = request.get_json()
+    note = data.get('note')
+    if not note:
+        return jsonify({'message': 'Catatan diperlukan'}), 400
+
+    intervention.note = note
+    db.session.commit()
+    return jsonify({'message': 'Catatan berhasil diperbarui'}), 200
+
 @interventions_bp.route('/<student_id>', methods=['GET'])
 @jwt_required()
 def get_interventions(student_id):
@@ -60,6 +85,7 @@ def get_interventions(student_id):
     return jsonify([{
         'id': i.id,
         'guru': User.query.get(i.guru_id).nama,
+        'guru_id': i.guru_id,
         'note': i.note,
         'date': i.action_date.isoformat()
     } for i in interventions]), 200

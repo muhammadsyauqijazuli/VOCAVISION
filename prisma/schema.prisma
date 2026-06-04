@@ -6,8 +6,13 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-// Prisma schema retained only for optional NextAuth usage.
+// ============================================================================
+// PERHATIAN / WARNING:
+// Prisma schema retained ONLY for optional better-auth / NextAuth usage.
 // Primary application DB is managed by Flask/SQLAlchemy (backend/app/models.py).
+// DO NOT add core business logic tables (students, predictions, etc) here,
+// and DO NOT run `prisma migrate` for anything other than Auth schemas.
+// ============================================================================
 
 model User {
   id        String   @id @default(uuid())

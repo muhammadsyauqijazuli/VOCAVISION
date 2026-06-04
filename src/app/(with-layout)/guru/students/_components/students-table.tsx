@@ -35,6 +35,18 @@ export function StudentsTable() {
   const [pageSize] = useState(20);
   const [total, setTotal] = useState(0);
 
+  // Auto-search (debounce) effect
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (query !== search) {
+        setQuery(search);
+        setPage(1); // Reset to page 1 on new search
+      }
+    }, 300); // 300ms delay
+
+    return () => clearTimeout(handler);
+  }, [search, query]);
+
   useEffect(() => {
     let ignore = false;
 
@@ -94,11 +106,13 @@ export function StudentsTable() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setQuery(search);
+    setPage(1);
   }
 
   function handleReset() {
     setSearch("");
     setQuery("");
+    setPage(1);
   }
 
   function prevPage() {
@@ -162,8 +176,8 @@ export function StudentsTable() {
       </div>
 
       <div className="p-4 sm:p-5">
-        <div className="grid gap-3 md:hidden">
-          {loading ? (
+        <div className={`grid gap-3 md:hidden ${loading && items.length > 0 ? "opacity-50 transition-opacity" : ""}`}>
+          {loading && items.length === 0 ? (
             <div className="rounded-2xl border border-stroke bg-gray-1 p-5 text-center text-dark-4 dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6">
               Memuat data siswa...
             </div>
@@ -271,8 +285,8 @@ export function StudentsTable() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-stroke dark:divide-dark-3">
-                {loading ? (
+              <tbody className={`divide-y divide-stroke transition-opacity dark:divide-dark-3 ${loading && items.length > 0 ? "opacity-50" : ""}`}>
+                {loading && items.length === 0 ? (
                   <tr>
                     <td
                       colSpan={5}

@@ -71,6 +71,17 @@ export default function StudentsTableClient({ initialSearch = "" }: Props) {
     load();
   }, [search, sortBy, sortDir, page]);
 
+  // Debounced search input -> commit to `search` automatically
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (search !== searchInput) {
+        setSearch(searchInput);
+        setPage(1);
+      }
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchInput, search]);
+
   // Debounced search input -> commit to `search` when user submits or presses Enter
   function handleSearchSubmit(e?: React.FormEvent) {
     if (e) e.preventDefault();
@@ -193,10 +204,10 @@ export default function StudentsTableClient({ initialSearch = "" }: Props) {
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-stroke dark:divide-dark-3">
-            {loading ? (
+          <tbody className={`divide-y divide-stroke transition-opacity dark:divide-dark-3 ${loading && items.length > 0 ? "opacity-50" : ""}`}>
+            {loading && items.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-5 py-8 text-center">
+                <td colSpan={4} className="px-5 py-8 text-center text-dark-4 dark:text-dark-6">
                   Memuat...
                 </td>
               </tr>
