@@ -106,6 +106,13 @@ export const NAV_CONFIG: NavConfigItem[] = [
     allowedRoles: ["siswa"],
     section: "MAIN MENU",
   },
+  {
+    title: "Catatan Guru",
+    href: "/siswa/catatan-guru",
+    icon: Icons.Calendar,
+    allowedRoles: ["siswa"],
+    section: "MAIN MENU",
+  },
 ];
 
 export default NAV_CONFIG;

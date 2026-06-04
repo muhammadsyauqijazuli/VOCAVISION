@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 type InterventionFormProps = {
   studentId: string;
@@ -11,59 +12,50 @@ type InterventionFormProps = {
   }>;
 };
 
-type SavedIntervention = {
-  id: string;
-  studentId: string;
-  note: string;
-  createdAt: string;
-};
-
 export function InterventionForm({
   studentId,
   studentName,
   recommendations = [],
 }: InterventionFormProps) {
-  const storageKey = `vocavision-interventions-${studentId}`;
   const [note, setNote] = useState("");
   const [savedCount, setSavedCount] = useState(0);
-  const [message, setMessage] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem(storageKey);
-      const parsed = stored ? (JSON.parse(stored) as SavedIntervention[]) : [];
-      setSavedCount(parsed.length);
-    } catch {
-      setSavedCount(0);
-    }
-  }, [storageKey]);
-
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const trimmedNote = note.trim();
     if (!trimmedNote) {
-      setMessage("Catatan intervensi tidak boleh kosong.");
+      toast.error("Catatan intervensi tidak boleh kosong.");
       return;
     }
 
-    const intervention: SavedIntervention = {
-      id: crypto.randomUUID(),
-      studentId,
-      note: trimmedNote,
-      createdAt: new Date().toISOString(),
-    };
+    setSubmitting(true);
 
     try {
-      const stored = window.localStorage.getItem(storageKey);
-      const parsed = stored ? (JSON.parse(stored) as SavedIntervention[]) : [];
-      const next = [intervention, ...parsed].slice(0, 20);
-      window.localStorage.setItem(storageKey, JSON.stringify(next));
-      setSavedCount(next.length);
+      const response = await fetch(`/api/interventions/${studentId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ note: trimmedNote }),
+      });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(
+          (payload as { message?: string }).message ??
+            "Gagal menyimpan intervensi",
+        );
+      }
+
+      setSavedCount((prev) => prev + 1);
       setNote("");
-      setMessage("Catatan intervensi tersimpan di perangkat ini.");
-    } catch {
-      setMessage("Gagal menyimpan catatan intervensi.");
+      toast.success("Catatan intervensi berhasil dikirim dan tersimpan.");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Gagal menyimpan intervensi";
+      toast.error(`Error: ${message}`);
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -78,8 +70,8 @@ export function InterventionForm({
         </h2>
         <p className="text-sm leading-6 text-dark-4 dark:text-dark-6">
           {studentName
-            ? `Rekomendasi untuk ${studentName} disusun dari variabel belajar yang tersedia.`
-            : "Simpan catatan intervensi untuk siswa ini sebagai simulasi lokal."}
+            ? `Rekomendasi untuk ${studentName} disusun dari variabel belajar yang tersedia. Catatan akan dikirim langsung ke siswa.`
+            : "Simpan catatan intervensi untuk siswa ini. Catatan akan tersimpan di server dan dapat dilihat oleh siswa."}
         </p>
       </div>
 
@@ -128,23 +120,31 @@ export function InterventionForm({
             rows={5}
             placeholder="Tulis langkah tindak lanjut atau rekomendasi untuk siswa ini"
             className="min-h-36 w-full rounded-xl border border-stroke bg-transparent px-4 py-3 text-dark transition outline-none placeholder:text-dark-4 focus:border-primary dark:border-dark-3 dark:text-white dark:placeholder:text-dark-6"
+            disabled={submitting}
           />
         </label>
 
         <button
           type="submit"
-          className="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95"
+          disabled={submitting}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Simpan Intervensi
+          {submitting ? (
+            <>
+              <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              Mengirim...
+            </>
+          ) : (
+            "Kirim Catatan ke Siswa"
+          )}
         </button>
       </form>
 
       <div className="mt-5 grid gap-3 rounded-2xl bg-gray-1 p-4 text-sm text-dark-4 sm:grid-cols-2 dark:bg-dark-2 dark:text-dark-6">
         <p className="wrap-break-word">Student ID: {studentId}</p>
-        <p className="sm:text-right">Total catatan tersimpan: {savedCount}</p>
-        {message ? (
-          <p className="text-dark sm:col-span-2 dark:text-white">{message}</p>
-        ) : null}
+        <p className="sm:text-right">
+          Catatan terkirim sesi ini: {savedCount}
+        </p>
       </div>
     </section>
   );
