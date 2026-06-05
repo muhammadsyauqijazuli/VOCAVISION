@@ -156,22 +156,22 @@ function buildRiskData(
   students: AnalyticsStudentRecord[],
 ) {
   const hasStats =
-    typeof stats.sangat_beresiko === "number" ||
-    typeof stats.beresiko === "number" ||
-    typeof stats.tidak_beresiko === "number";
+    typeof stats.rendah === "number" ||
+    typeof stats.netral === "number" ||
+    typeof stats.tinggi === "number";
 
   if (hasStats) {
     return [
-      { name: "Sangat Beresiko", value: stats.sangat_beresiko ?? 0 },
-      { name: "Beresiko", value: stats.beresiko ?? 0 },
-      { name: "Tidak Beresiko", value: stats.tidak_beresiko ?? 0 },
+      { name: "Rendah", value: stats.rendah ?? 0 },
+      { name: "Netral", value: stats.netral ?? 0 },
+      { name: "Tinggi", value: stats.tinggi ?? 0 },
     ];
   }
 
   const counts = {
-    "Sangat Beresiko": 0,
-    Beresiko: 0,
-    "Tidak Beresiko": 0,
+    Rendah: 0,
+    Netral: 0,
+    Tinggi: 0,
   };
 
   for (const student of students) {
@@ -183,9 +183,9 @@ function buildRiskData(
   }
 
   return [
-    { name: "Sangat Beresiko", value: counts["Sangat Beresiko"] },
-    { name: "Beresiko", value: counts.Beresiko },
-    { name: "Tidak Beresiko", value: counts["Tidak Beresiko"] },
+    { name: "Rendah", value: counts.Rendah },
+    { name: "Netral", value: counts.Netral },
+    { name: "Tinggi", value: counts.Tinggi },
   ];
 }
 
@@ -201,6 +201,56 @@ function buildAttendanceTrendData(students: AnalyticsStudentRecord[]) {
       presentase_kehadiran: student.presentase_kehadiran,
       exam_score: student.exam_score,
     }));
+}
+
+function buildReadinessData(students: AnalyticsStudentRecord[]) {
+  const counts = { Siap: 0, "Belum Siap": 0 };
+  for (const student of students) {
+    if (student.industry_readiness === "Siap" || student.industry_readiness === "Belum Siap") {
+      counts[student.industry_readiness]++;
+    }
+  }
+  if (counts.Siap === 0 && counts["Belum Siap"] === 0) return [];
+  return [
+    { name: "Siap", value: counts.Siap },
+    { name: "Belum Siap", value: counts["Belum Siap"] },
+  ];
+}
+
+function getBubbleInsight(data: ReturnType<typeof buildBubbleData>) {
+  if (!data.length) return null;
+  const avgStudy = data.reduce((acc, curr) => acc + curr.jam_belajar_per_hari, 0) / data.length;
+  const avgScore = data.reduce((acc, curr) => acc + curr.exam_score, 0) / data.length;
+  return `Rata-rata jam belajar siswa pada populasi ini adalah ${avgStudy.toFixed(1)} jam/hari dengan pencapaian nilai rata-rata ${avgScore.toFixed(1)}.`;
+}
+
+function getStressInsight(data: ReturnType<typeof buildStressData>) {
+  if (!data.length) return null;
+  const highestScore = [...data].sort((a, b) => b.avg_exam_score - a.avg_exam_score)[0];
+  return `Performa nilai tertinggi rata-rata diraih oleh kelompok siswa dengan tingkat stres '${highestScore.stress_level}'.`;
+}
+
+function getRiskInsight(data: ReturnType<typeof buildRiskData>) {
+  const total = data.reduce((acc, curr) => acc + curr.value, 0);
+  if (total === 0) return null;
+  const rendah = data.find(d => d.name === "Rendah")?.value || 0;
+  const netral = data.find(d => d.name === "Netral")?.value || 0;
+  const pct = (((rendah + netral) / total) * 100).toFixed(1);
+  return `Dari total siswa, terdapat ${pct}% yang terdeteksi pada kategori Rendah dan Netral yang membutuhkan perhatian.`;
+}
+
+function getAttendanceInsight(data: ReturnType<typeof buildAttendanceTrendData>) {
+  if (!data.length) return null;
+  const avgAtt = data.reduce((acc, curr) => acc + curr.presentase_kehadiran, 0) / data.length;
+  return `Sampel menunjukkan rata-rata kehadiran sebesar ${avgAtt.toFixed(0)}%. Kehadiran yang tinggi konsisten dengan pencapaian nilai ujian yang baik.`;
+}
+
+function getReadinessInsight(data: ReturnType<typeof buildReadinessData>) {
+  if (!data.length) return null;
+  const total = data.reduce((acc, curr) => acc + curr.value, 0);
+  const siap = data.find(d => d.name === "Siap")?.value || 0;
+  const pct = ((siap / total) * 100).toFixed(1);
+  return `Sebanyak ${pct}% siswa dikategorikan "Siap Industri". Tingkatkan pelatihan praktik bagi siswa yang belum siap.`;
 }
 
 function BubbleTooltip({
@@ -306,6 +356,29 @@ function AttendanceTooltip({
   );
 }
 
+function ReadinessTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: { name: string; value: number } }>;
+}) {
+  if (!active || !payload?.length) {
+    return null;
+  }
+
+  const data = payload[0].payload;
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-xl dark:border-dark-3 dark:bg-gray-dark">
+      <p className="font-semibold text-dark dark:text-white">{data.name}</p>
+      <p className="mt-2 text-dark-4 dark:text-dark-6">
+        Total siswa: {data.value}
+      </p>
+    </div>
+  );
+}
+
 function EmptyState({
   title,
   description,
@@ -335,6 +408,13 @@ export function AnalyticsDashboard({
   const stressData = buildStressData(students);
   const riskData = buildRiskData(stats, students);
   const attendanceTrendData = buildAttendanceTrendData(students);
+  const readinessData = buildReadinessData(students);
+
+  const bubbleInsight = getBubbleInsight(bubbleData);
+  const stressInsight = getStressInsight(stressData);
+  const riskInsight = getRiskInsight(riskData);
+  const attendanceInsight = getAttendanceInsight(attendanceTrendData);
+  const readinessInsight = getReadinessInsight(readinessData);
 
   const totalStudents = students.length || stats.total_siswa || 0;
   const averageExamScore =
@@ -344,8 +424,8 @@ export function AnalyticsDashboard({
     students.map((student) => student.jam_belajar_per_hari).filter(isNumber),
   );
   const lowRiskCount =
-    stats.tidak_beresiko ??
-    riskData.find((item) => item.name === "Tidak Beresiko")?.value ??
+    stats.tinggi ??
+    riskData.find((item) => item.name === "Tinggi")?.value ??
     0;
 
   return (
@@ -407,7 +487,7 @@ export function AnalyticsDashboard({
             {lowRiskCount}
           </h2>
           <p className="mt-2 text-sm text-slate-500 dark:text-dark-6">
-            Tidak Beresiko menurut analisis backend
+            Kategori Tinggi menurut analisis backend
           </p>
         </div>
       </section>
@@ -478,6 +558,15 @@ export function AnalyticsDashboard({
               description="Backend belum mengirim siswa dengan jam belajar, exam score, dan screen time yang lengkap."
             />
           )}
+
+          {bubbleInsight && (
+            <div className="mt-4 rounded-xl bg-slate-50 p-4 dark:bg-dark-2">
+              <p className="text-sm text-slate-600 dark:text-dark-6">
+                <span className="font-semibold text-brand-header">Insight: </span>
+                {bubbleInsight}
+              </p>
+            </div>
+          )}
         </article>
 
         <article className={cardClassName()}>
@@ -541,6 +630,15 @@ export function AnalyticsDashboard({
               description="Chart ini akan muncul setelah backend mengirim data stress_level dan exam_score yang valid."
             />
           )}
+
+          {stressInsight && (
+            <div className="mt-4 rounded-xl bg-slate-50 p-4 dark:bg-dark-2">
+              <p className="text-sm text-slate-600 dark:text-dark-6">
+                <span className="font-semibold text-brand-accent">Insight: </span>
+                {stressInsight}
+              </p>
+            </div>
+          )}
         </article>
 
         <article className={cardClassName()}>
@@ -577,9 +675,9 @@ export function AnalyticsDashboard({
                     <Cell
                       key={entry.name}
                       fill={
-                        entry.name === "Sangat Beresiko"
+                        entry.name === "Rendah"
                           ? COLORS.danger
-                          : entry.name === "Beresiko"
+                          : entry.name === "Netral"
                             ? COLORS.warning
                             : COLORS.accent2
                       }
@@ -590,6 +688,15 @@ export function AnalyticsDashboard({
               </PieChart>
             </ResponsiveContainer>
           </div>
+
+          {riskInsight && (
+            <div className="mt-4 rounded-xl bg-slate-50 p-4 dark:bg-dark-2">
+              <p className="text-sm text-slate-600 dark:text-dark-6">
+                <span className="font-semibold text-brand-warning">Insight: </span>
+                {riskInsight}
+              </p>
+            </div>
+          )}
         </article>
 
         <article className={cardClassName()}>
@@ -666,6 +773,77 @@ export function AnalyticsDashboard({
               title="Belum ada data attendance"
               description="Chart ini akan tampil jika backend mengirim nilai kehadiran dan exam score siswa secara lengkap."
             />
+          )}
+
+          {attendanceInsight && (
+            <div className="mt-4 rounded-xl bg-slate-50 p-4 dark:bg-dark-2">
+              <p className="text-sm text-slate-600 dark:text-dark-6">
+                <span className="font-semibold text-brand-header">Insight: </span>
+                {attendanceInsight}
+              </p>
+            </div>
+          )}
+        </article>
+
+        <article className={cardClassName()}>
+          <div className="mb-4">
+            <p className="text-brand-accent2 text-sm font-semibold tracking-[0.2em] uppercase">
+              Readiness
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">
+              Kesiapan Industri (Vocational)
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-dark-6">
+              Melihat perbandingan jumlah siswa yang siap masuk dunia industri melawan yang belum siap.
+            </p>
+          </div>
+
+          {readinessData.length ? (
+            <div
+              className="flex w-full items-center justify-center"
+              style={{ height: 360 }}
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Tooltip content={<ReadinessTooltip />} />
+                  <Pie
+                    data={readinessData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={0}
+                    outerRadius={120}
+                    paddingAngle={2}
+                    cornerRadius={8}
+                  >
+                    {readinessData.map((entry) => (
+                      <Cell
+                        key={entry.name}
+                        fill={
+                          entry.name === "Siap"
+                            ? COLORS.accent
+                            : COLORS.danger
+                        }
+                      />
+                    ))}
+                  </Pie>
+                  <Legend verticalAlign="bottom" iconType="circle" />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <EmptyState
+              title="Belum ada data kesiapan industri"
+              description="Chart ini akan muncul jika ada data mengenai tingkat industry_readiness siswa."
+            />
+          )}
+
+          {readinessInsight && (
+            <div className="mt-4 rounded-xl bg-slate-50 p-4 dark:bg-dark-2">
+              <p className="text-sm text-slate-600 dark:text-dark-6">
+                <span className="font-semibold text-brand-accent2">Insight: </span>
+                {readinessInsight}
+              </p>
+            </div>
           )}
         </article>
       </section>

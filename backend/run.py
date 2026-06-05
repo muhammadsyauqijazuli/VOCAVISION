@@ -22,6 +22,8 @@ for logger_name in logging.root.manager.loggerDict:
     logging.getLogger(logger_name).setLevel(logging.DEBUG)
     logging.getLogger(logger_name).propagate = True
 
+from app import socketio
+
 if __name__ == '__main__':
-    logger.info("Starting Flask development server...")
-    app.run(debug=False, use_reloader=False, port=5000)
+    logger.info("Starting Flask-SocketIO development server...")
+    socketio.run(app, debug=False, use_reloader=False, port=5000, allow_unsafe_werkzeug=True)

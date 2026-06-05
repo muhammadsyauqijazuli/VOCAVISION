@@ -11,6 +11,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { BellIcon } from "./icons";
+import { useSocket } from "@/components/socket-provider";
+import { formatDistanceToNow } from "date-fns";
+import { id as idLocale } from "date-fns/locale";
+import { useRouter } from "next/navigation";
 
 const notificationList = [
   {
@@ -42,16 +46,15 @@ const notificationList = [
 
 export function Notification() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDotVisible, setIsDotVisible] = useState(true);
+  const { notifications, unreadCount, markAsRead } = useSocket();
   const isMobile = useIsMobile();
+  const router = useRouter();
 
   return (
     <Dropdown
       isOpen={isOpen}
       setIsOpen={(open) => {
         setIsOpen(open);
-
-        if (setIsDotVisible) setIsDotVisible(false);
       }}
     >
       <DropdownTrigger
@@ -61,7 +64,7 @@ export function Notification() {
         <span className="relative">
           <BellIcon />
 
-          {isDotVisible && (
+          {unreadCount > 0 && (
             <span
               className={cn(
                 "absolute top-0 right-0 z-1 size-2 rounded-full bg-red-light ring-2 ring-gray-2 dark:ring-dark-3",
@@ -81,39 +84,49 @@ export function Notification() {
           <span className="text-lg font-medium text-dark dark:text-white">
             Notifications
           </span>
-          <span className="rounded-md bg-primary px-2.25 py-0.5 text-xs font-medium text-white">
-            5 new
-          </span>
+          {unreadCount > 0 && (
+            <span className="rounded-md bg-primary px-2.25 py-0.5 text-xs font-medium text-white">
+              {unreadCount} new
+            </span>
+          )}
         </div>
 
         <ul className="mb-3 max-h-92 space-y-1.5 overflow-y-auto">
-          {notificationList.map((item, index) => (
-            <li key={index} role="menuitem">
-              <Link
-                href="#"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-4 rounded-lg px-2 py-1.5 outline-none hover:bg-gray-2 focus-visible:bg-gray-2 dark:hover:bg-dark-3 dark:focus-visible:bg-dark-3"
-              >
-                <Image
-                  src={item.image}
-                  className="size-14 rounded-full object-cover"
-                  width={200}
-                  height={200}
-                  alt="User"
-                />
-
-                <div>
-                  <strong className="block text-sm font-medium text-dark dark:text-white">
-                    {item.title}
-                  </strong>
-
-                  <span className="truncate text-sm font-medium text-dark-5 dark:text-dark-6">
-                    {item.subTitle}
-                  </span>
-                </div>
-              </Link>
+          {notifications.length === 0 ? (
+            <li className="px-2 py-3 text-center text-sm text-dark-5 dark:text-dark-6">
+              Tidak ada notifikasi
             </li>
-          ))}
+          ) : (
+            notifications.map((item, index) => {
+              const dateString = item.created_at.endsWith("Z") ? item.created_at : `${item.created_at}Z`;
+              return (
+              <li key={index} role="menuitem">
+                <button
+                  onClick={() => {
+                    if (!item.is_read) markAsRead(item.id);
+                    setIsOpen(false);
+                    router.push('/siswa/catatan-guru');
+                  }}
+                  className={cn("flex w-full items-start gap-4 rounded-lg px-2 py-1.5 outline-none hover:bg-gray-2 focus-visible:bg-gray-2 dark:hover:bg-dark-3 dark:focus-visible:bg-dark-3 text-left", !item.is_read && "bg-gray-1 dark:bg-dark-2")}
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <BellIcon />
+                  </div>
+
+                  <div>
+                    <strong className="block text-sm font-medium text-dark dark:text-white">
+                      {item.message}
+                    </strong>
+
+                    <span className="text-xs font-medium text-dark-5 dark:text-dark-6">
+                      {formatDistanceToNow(new Date(dateString), { addSuffix: true, locale: idLocale })}
+                    </span>
+                  </div>
+                </button>
+              </li>
+              );
+            })
+          )}
         </ul>
 
         <Link

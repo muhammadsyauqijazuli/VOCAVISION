@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from ..models import User, Student, Intervention
-from .. import db
+from ..models import User, Student, Intervention, Notification
+from .. import db, socketio
 
 interventions_bp = Blueprint('interventions', __name__)
 
@@ -51,7 +51,24 @@ def add_intervention(student_id):
         note=note
     )
     db.session.add(intervention)
+    
+    # Send Notification
+    notif = Notification(
+        student_id=student_id,
+        sender_id=user_id,
+        message=f"Guru {user.nama} menambahkan catatan untuk Anda.",
+        type='intervention'
+    )
+    db.session.add(notif)
     db.session.commit()
+
+    socketio.emit('notification', {
+        'id': notif.id,
+        'message': notif.message,
+        'type': notif.type,
+        'created_at': notif.created_at.isoformat()
+    }, room=student_id)
+
     return jsonify({'message': 'Intervensi disimpan'}), 201
 
 @interventions_bp.route('/edit/<intervention_id>', methods=['PUT'])
@@ -77,6 +94,25 @@ def edit_intervention(intervention_id):
     intervention.note = note
     db.session.commit()
     return jsonify({'message': 'Catatan berhasil diperbarui'}), 200
+
+@interventions_bp.route('/delete/<intervention_id>', methods=['DELETE'])
+@jwt_required()
+def delete_intervention(intervention_id):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if user.role != 'guru':
+        return jsonify({'message': 'Hanya guru yang dapat menghapus intervensi'}), 403
+
+    intervention = Intervention.query.get(intervention_id)
+    if not intervention:
+        return jsonify({'message': 'Catatan tidak ditemukan'}), 404
+
+    if intervention.guru_id != user_id:
+        return jsonify({'message': 'Anda hanya dapat menghapus catatan Anda sendiri'}), 403
+
+    db.session.delete(intervention)
+    db.session.commit()
+    return jsonify({'message': 'Catatan berhasil dihapus'}), 200
 
 @interventions_bp.route('/<student_id>', methods=['GET'])
 @jwt_required()

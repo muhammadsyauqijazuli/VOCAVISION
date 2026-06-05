@@ -423,7 +423,7 @@ class MLService:
         """Prediksi dan SHAP"""
         processed = self.preprocess(features)
         prediction = self.model.predict(processed)[0]
-        risk = self.get_risk_status(prediction)
+        risk = self.get_abs_category(prediction)
 
         # SHAP (jika explainer tersedia)
         shap_values = None
@@ -457,12 +457,13 @@ class MLService:
         }
 
     @staticmethod
-    def get_risk_status(score):
-        if score >= 75:
-            return 'Tidak Beresiko'
-        if score >= 65:
-            return 'Beresiko'
-        return 'Sangat Beresiko'
+    def get_abs_category(score):
+        if score <= 70:
+            return 'Rendah'
+        elif score <= 85:
+            return 'Netral'
+        else:
+            return 'Tinggi'
 
     @staticmethod
     def generate_suggestion(feature_name, impact):

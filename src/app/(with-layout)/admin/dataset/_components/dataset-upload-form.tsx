@@ -207,7 +207,7 @@ export function DatasetUploadForm() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex w-full max-w-full flex-col gap-6">
       <ShowcaseSection title="Upload Dataset" className="p-6!">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="rounded-2xl border border-dashed border-stroke bg-gray-1 p-6 transition-all duration-300 ease-out hover:border-primary/40 hover:bg-gray-2 dark:border-dark-3 dark:bg-dark-2 dark:hover:border-primary/50 dark:hover:bg-dark-2/80">
@@ -351,8 +351,8 @@ export function DatasetUploadForm() {
 
       <ShowcaseSection title="Preview" className="p-6!">
         {previewRows.length ? (
-          <div className="overflow-hidden rounded-xl border border-stroke dark:border-dark-3">
-            <div className="overflow-x-auto">
+          <div className="w-full max-w-full overflow-hidden rounded-xl border border-stroke dark:border-dark-3">
+            <div className="w-full overflow-x-auto">
               <table className="min-w-full divide-y divide-stroke dark:divide-dark-3">
                 <tbody className="divide-y divide-stroke dark:divide-dark-3">
                   {previewRows.map((row, rowIndex) => (

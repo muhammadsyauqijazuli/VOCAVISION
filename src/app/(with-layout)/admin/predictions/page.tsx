@@ -20,15 +20,15 @@ type AdminPredictionsPageProps = {
 };
 
 function getRiskBadgeClass(riskStatus: string | null) {
-  if (riskStatus === "Sangat Beresiko") {
+  if (riskStatus === "Rendah") {
     return "inline-flex rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white";
   }
 
-  if (riskStatus === "Beresiko") {
+  if (riskStatus === "Netral") {
     return "inline-flex rounded-full bg-brand-warning px-3 py-1 text-xs font-semibold text-white";
   }
 
-  if (riskStatus === "Tidak Beresiko") {
+  if (riskStatus === "Tinggi") {
     return "inline-flex rounded-full bg-brand-accent-2 px-3 py-1 text-xs font-semibold text-brand-header";
   }
 
@@ -52,10 +52,14 @@ function getDisplayRiskStatus(student: StudentPrediction) {
   }
 
   if (student.predicted_score <= 70) {
-    return "Beresiko";
+    return "Rendah";
   }
 
-  return "Tidak Beresiko";
+  if (student.predicted_score <= 85) {
+    return "Netral";
+  }
+
+  return "Tinggi";
 }
 
 export default async function AdminPredictionsPage({

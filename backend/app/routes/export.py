@@ -152,7 +152,7 @@ def _draw_vocavision_header_footer(canvas, doc):
 
 def _build_risk_pie_chart(rows):
     counts = Counter(row.get('risk_status') or 'Belum Ada Prediksi' for row in rows)
-    labels = ['Sangat Beresiko', 'Beresiko', 'Tidak Beresiko', 'Belum Ada Prediksi']
+    labels = ['Rendah', 'Netral', 'Tinggi', 'Belum Ada Prediksi']
     values = [counts.get(label, 0) for label in labels]
 
     drawing = Drawing(250, 220)
@@ -258,7 +258,7 @@ def _build_attendance_bar_chart(rows):
 def _build_top_risky_students_table(rows):
     risky_rows = [
         row for row in rows
-        if row.get('risk_status') in {'Sangat Beresiko', 'Beresiko'} and isinstance(row.get('predicted_score'), (int, float))
+        if row.get('risk_status') in {'Rendah', 'Netral'} and isinstance(row.get('predicted_score'), (int, float))
     ]
     risky_rows.sort(key=lambda item: float(item['predicted_score']))
 
@@ -668,9 +668,9 @@ def _analytics_summary(rows: list[dict[str, Any]]):
     avg_study_hours = (sum(study_hours) / len(study_hours)) if study_hours else None
 
     risk_counts = {
-        'Sangat Beresiko': 0,
-        'Beresiko': 0,
-        'Tidak Beresiko': 0,
+        'Rendah': 0,
+        'Netral': 0,
+        'Tinggi': 0,
     }
     for row in rows:
         risk_status = row.get('risk_status')
@@ -699,7 +699,7 @@ def _build_dashboard_cards(summary: dict[str, Any]):
         _build_dashboard_card_table('Total sample', str(summary['total_students']), 'Seluruh siswa di backend'),
         _build_dashboard_card_table('Avg exam score', '-' if summary['avg_score'] is None else f"{summary['avg_score']:.1f}", 'Rata-rata prediksi skor'),
         _build_dashboard_card_table('Avg study hours', '-' if summary['avg_study_hours'] is None else f"{summary['avg_study_hours']:.1f}", 'Jam belajar per hari'),
-        _build_dashboard_card_table('Low risk', str(summary['risk_counts']['Tidak Beresiko']), 'Tidak Beresiko'),
+        _build_dashboard_card_table('Risk count', str(summary['risk_counts']['Tinggi']), 'Tinggi'),
     ]]
     table = Table(rows, colWidths=[122, 122, 122, 122])
     table.setStyle(TableStyle([
@@ -782,14 +782,14 @@ def _analytics_report_pdf():
             _build_attendance_bar_chart(rows),
             Table([
                 [Paragraph('<font color="#64748B" size="8"><b>Risk snapshot</b></font>', styles['BodyText'])],
-                [Paragraph(f'<font color="#0F172A" size="18"><b>{summary["risk_counts"]["Sangat Beresiko"]}</b></font>', styles['BodyText'])],
-                [Paragraph('<font color="#64748B" size="8">Sangat Beresiko</font>', styles['BodyText'])],
+                [Paragraph(f'<font color="#0F172A" size="18"><b>{summary["risk_counts"]["Rendah"]}</b></font>', styles['BodyText'])],
+                [Paragraph('<font color="#64748B" size="8">Rendah</font>', styles['BodyText'])],
                 [Spacer(1, 5)],
-                [Paragraph(f'<font color="#0F172A" size="18"><b>{summary["risk_counts"]["Beresiko"]}</b></font>', styles['BodyText'])],
-                [Paragraph('<font color="#64748B" size="8">Beresiko</font>', styles['BodyText'])],
+                [Paragraph(f'<font color="#0F172A" size="18"><b>{summary["risk_counts"]["Netral"]}</b></font>', styles['BodyText'])],
+                [Paragraph('<font color="#64748B" size="8">Netral</font>', styles['BodyText'])],
                 [Spacer(1, 5)],
-                [Paragraph(f'<font color="#0F172A" size="18"><b>{summary["risk_counts"]["Tidak Beresiko"]}</b></font>', styles['BodyText'])],
-                [Paragraph('<font color="#64748B" size="8">Tidak Beresiko</font>', styles['BodyText'])],
+                [Paragraph(f'<font color="#0F172A" size="18"><b>{summary["risk_counts"]["Tinggi"]}</b></font>', styles['BodyText'])],
+                [Paragraph('<font color="#64748B" size="8">Tinggi</font>', styles['BodyText'])],
             ], colWidths=[250])
         ]]
         chart_table = Table(chart_row, colWidths=[260, 260])

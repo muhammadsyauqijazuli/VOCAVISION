@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useSidebarContext } from "../sidebar/sidebar-context";
 import { MenuIcon } from "./icons";
 import { ThemeToggleSwitch } from "./theme-toggle";
+import { Notification } from "./notification";
 import { UserInfo } from "./user-info";
 
 export function Header() {
@@ -58,6 +59,7 @@ export function Header() {
       </div>
 
       <div className="flex flex-1 items-center justify-end gap-2 2xsm:gap-4">
+        {pathname.startsWith("/siswa") && <Notification />}
         <ThemeToggleSwitch />
 
         <div className="shrink-0">

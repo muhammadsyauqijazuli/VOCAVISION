@@ -102,7 +102,7 @@ def get_students():
                 return (v is None, v if v is not None else 0)
             result.sort(key=score_key, reverse=reverse)
         elif sort_by == 'risk_status':
-            order = {'Sangat Beresiko': 2, 'Beresiko': 1, 'Tidak Beresiko': 0, None: -1}
+            order = {'Rendah': 2, 'Netral': 1, 'Tinggi': 0, None: -1}
             result.sort(key=lambda x: order.get(x.get('risk_status')), reverse=reverse)
 
     total = len(result)

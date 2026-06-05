@@ -10,7 +10,7 @@ type DashboardStudentRow = {
   nama: string;
   nisn: string;
   predicted_score: number | null;
-  risk_status: "Sangat Beresiko" | "Beresiko" | "Tidak Beresiko" | null;
+  risk_status: "Rendah" | "Netral" | "Tinggi" | null;
 };
 
 type StudentsResponse = {
@@ -67,7 +67,7 @@ export default async function GuruDashboardPage() {
     : [{}, [] as DashboardStudentRow[]];
 
   const alertRows = students
-    .filter((student) => student.risk_status === "Sangat Beresiko")
+    .filter((student) => student.risk_status === "Rendah")
     .sort(
       (left, right) =>
         (left.predicted_score ?? 999) - (right.predicted_score ?? 999),
@@ -78,14 +78,14 @@ export default async function GuruDashboardPage() {
       name: student.nama,
       className: "Belum tersedia",
       score: student.predicted_score ?? 0,
-      status: student.risk_status ?? "Sangat Beresiko",
+      status: student.risk_status ?? "Rendah",
     }));
 
   const fallbackAlertRows =
     alertRows.length > 0
       ? alertRows
       : (stats.top_risky_students ?? [])
-          .filter((student) => student.risk_status === "Sangat Beresiko")
+          .filter((student) => student.risk_status === "Rendah")
           .slice(0, 5)
           .map((student) => ({
             studentId: student.student_id,

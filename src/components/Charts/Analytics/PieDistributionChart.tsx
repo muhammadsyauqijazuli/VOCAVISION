@@ -10,9 +10,9 @@ import {
 } from "recharts";
 
 const pieData = [
-  { name: "Sangat Beresiko", value: 18 },
-  { name: "Beresiko", value: 32 },
-  { name: "Tidak Beresiko", value: 50 },
+  { name: "Rendah", value: 18 },
+  { name: "Netral", value: 32 },
+  { name: "Tinggi", value: 50 },
 ];
 
 const COLORS = ["#E74C3C", "#F39C12", "#3BA99C"];

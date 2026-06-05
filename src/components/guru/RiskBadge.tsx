@@ -8,26 +8,26 @@ type RiskBadgeProps = {
 export function RiskBadge({ status, score }: RiskBadgeProps) {
   const resolvedStatus = getRiskStatus(score) ?? status ?? null;
 
-  if (resolvedStatus === "Sangat Beresiko") {
+  if (resolvedStatus === "Rendah") {
     return (
       <span className="inline-flex items-center rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white shadow-sm">
-        Sangat Beresiko
+        Rendah
       </span>
     );
   }
 
-  if (resolvedStatus === "Beresiko") {
+  if (resolvedStatus === "Netral") {
     return (
       <span className="bg-brand-warning inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold text-white shadow-sm">
-        Beresiko
+        Netral
       </span>
     );
   }
 
-  if (resolvedStatus === "Tidak Beresiko") {
+  if (resolvedStatus === "Tinggi") {
     return (
       <span className="bg-brand-accent-2 text-brand-header inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold shadow-sm">
-        Tidak Beresiko
+        Tinggi
       </span>
     );
   }

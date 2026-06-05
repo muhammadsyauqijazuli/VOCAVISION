@@ -51,7 +51,7 @@ class Prediction(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
     student_id = db.Column(db.String(36), db.ForeignKey('students.id'), nullable=False)
     predicted_exam_score = db.Column(db.Float, nullable=False)
-    risk_status = db.Column(db.Enum('Sangat Beresiko', 'Beresiko', 'Tidak Beresiko'), nullable=False)
+    risk_status = db.Column(db.Enum('Rendah', 'Netral', 'Tinggi'), nullable=False)
     model_version = db.Column(db.String(20), default='1.0.0')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -80,3 +80,13 @@ class Dataset(db.Model):
     row_count = db.Column(db.Integer, nullable=True)
     status = db.Column(db.Enum('pending', 'processing', 'completed', 'failed'), default='pending')
     uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Notification(db.Model):
+    __tablename__ = 'notifications'
+    id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
+    student_id = db.Column(db.String(36), db.ForeignKey('students.id'), nullable=False)
+    sender_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    is_read = db.Column(db.Boolean, default=False)
+    type = db.Column(db.String(50), default='intervention')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

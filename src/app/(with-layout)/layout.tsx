@@ -3,6 +3,8 @@ import { Sidebar } from "@/components/Layouts/sidebar";
 import { SidebarProvider } from "@/components/Layouts/sidebar/sidebar-context";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { SocketProvider } from "@/components/socket-provider";
+
 export default async function WithLayout({
   children,
 }: {
@@ -13,17 +15,19 @@ export default async function WithLayout({
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen">
-        <Sidebar role={role} />
+      <SocketProvider>
+        <div className="flex min-h-screen">
+          <Sidebar role={role} />
 
-        <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
-          <Header />
+          <div className="relative flex flex-1 flex-col overflow-x-hidden bg-gray-2 dark:bg-[#020d1a]">
+            <Header />
 
-          <main className="isolate mx-auto w-full max-w-(--breakpoint-2xl) overflow-hidden p-4 md:p-6 2xl:p-10">
-            {children}
-          </main>
+            <main className="isolate mx-auto w-full max-w-(--breakpoint-2xl) overflow-hidden p-4 md:p-6 2xl:p-10">
+              {children}
+            </main>
+          </div>
         </div>
-      </div>
+      </SocketProvider>
     </SidebarProvider>
   );
 }

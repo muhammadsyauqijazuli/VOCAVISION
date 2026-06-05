@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export type RiskStatus = "Sangat Beresiko" | "Beresiko" | "Tidak Beresiko";
+export type RiskStatus = "Rendah" | "Netral" | "Tinggi";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -19,13 +19,13 @@ export function getRiskStatus(
     return null;
   }
 
-  if (parsedScore >= 75) {
-    return "Tidak Beresiko";
+  if (parsedScore <= 70) {
+    return "Rendah";
   }
 
-  if (parsedScore >= 65) {
-    return "Beresiko";
+  if (parsedScore <= 85) {
+    return "Netral";
   }
 
-  return "Sangat Beresiko";
+  return "Tinggi";
 }

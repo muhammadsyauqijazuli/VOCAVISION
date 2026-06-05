@@ -65,6 +65,30 @@ export function InterventionItem({ item, currentUserId }: InterventionItemProps)
     setIsEditing(false);
   }
 
+  async function handleDelete() {
+    if (!confirm("Apakah Anda yakin ingin menghapus catatan ini?")) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`/api/interventions/delete/${item.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.message || "Gagal menghapus catatan");
+      }
+
+      toast.success("Catatan berhasil dihapus.");
+      router.refresh();
+    } catch (err: any) {
+      toast.error(`Error: ${err.message}`);
+      setIsSubmitting(false); // Reset only on error since deletion redirects or refreshes
+    }
+  }
+
   return (
     <article className="rounded-xl border border-stroke p-4 dark:border-dark-3">
       <div className="flex items-start justify-between gap-4">
@@ -77,12 +101,21 @@ export function InterventionItem({ item, currentUserId }: InterventionItemProps)
           </p>
         </div>
         {isAuthor && !isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="text-xs font-semibold text-primary hover:underline"
-          >
-            Edit
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setIsEditing(true)}
+              className="text-xs font-semibold text-primary hover:underline"
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={isSubmitting}
+              className="text-xs font-semibold text-red-500 hover:underline disabled:opacity-60"
+            >
+              Hapus
+            </button>
+          </div>
         )}
       </div>
 

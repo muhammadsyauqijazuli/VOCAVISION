@@ -53,7 +53,7 @@ function formatNumber(value: number | null | undefined) {
 }
 
 function getRiskCount(stats: DashboardStatsResponse) {
-  return (stats.sangat_beresiko ?? 0) + (stats.beresiko ?? 0);
+  return (stats.rendah ?? 0) + (stats.netral ?? 0);
 }
 
 function getAverageScore(stats: DashboardStatsResponse) {
@@ -100,9 +100,9 @@ function buildSummaryStats(stats: DashboardStatsResponse): SummaryStat[] {
 
 function buildRiskSegments(stats: DashboardStatsResponse): RiskSegment[] {
   const totalStudents = Math.max(stats.total_siswa ?? 0, 0);
-  const safeCount = Math.max(stats.tidak_beresiko ?? 0, 0);
-  const highCount = Math.max(stats.beresiko ?? 0, 0);
-  const veryHighCount = Math.max(stats.sangat_beresiko ?? 0, 0);
+  const safeCount = Math.max(stats.tinggi ?? 0, 0);
+  const highCount = Math.max(stats.netral ?? 0, 0);
+  const veryHighCount = Math.max(stats.rendah ?? 0, 0);
 
   return [
     {
@@ -120,7 +120,7 @@ function buildRiskSegments(stats: DashboardStatsResponse): RiskSegment[] {
       description: "Perlu pemantauan mingguan dan follow-up ringan.",
     },
     {
-      label: "Sangat Beresiko (Intervensi Segera)",
+      label: "Rendah (Intervensi Segera)",
       count: veryHighCount,
       share: totalStudents
         ? Math.round((veryHighCount / totalStudents) * 100)
@@ -143,8 +143,8 @@ export function TeacherDashboard({
   const alertCount = alertRows.length;
   const alertTitle =
     alertCount > 0
-      ? `${alertCount} siswa beresiko`
-      : "Tidak ada siswa beresiko";
+      ? `${alertCount} siswa beresiko (Rendah)`
+      : "Tidak ada siswa beresiko (Rendah)";
   const chartData = riskSegments.map((segment) => ({
     name: segment.label,
     value: segment.count,
@@ -394,7 +394,7 @@ export function TeacherDashboard({
                 ))
               ) : (
                 <div className="px-5 py-6 text-sm text-dark-4 dark:text-dark-6">
-                  Tidak ada siswa beresiko.
+                  Tidak ada siswa beresiko (Rendah).
                 </div>
               )}
             </div>

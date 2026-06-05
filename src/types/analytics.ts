@@ -59,9 +59,9 @@ export type DashboardStatsResponse = {
   jumlah_siswa_berprediksi?: number;
   rata_rata_exam_score?: number;
   jumlah_siswa_exam_score?: number;
-  sangat_beresiko?: number;
-  beresiko?: number;
-  tidak_beresiko?: number;
+  rendah?: number;
+  netral?: number;
+  tinggi?: number;
   top_risky_students?: Array<{
     student_id: string;
     nama: string;

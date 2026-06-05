@@ -29,7 +29,7 @@ def stats():
     scored_students = 0
     avg_exam_score = 0.0
     exam_scored_students = 0
-    risk_counts = {'Sangat Beresiko': 0, 'Beresiko': 0, 'Tidak Beresiko': 0}
+    risk_counts = {'Rendah': 0, 'Netral': 0, 'Tinggi': 0}
     top_risky_students = []
 
     if latest_preds:
@@ -70,8 +70,8 @@ def stats():
         'jumlah_siswa_berprediksi': scored_students,
         'rata_rata_exam_score': round(avg_exam_score, 2),
         'jumlah_siswa_exam_score': exam_scored_students,
-        'sangat_beresiko': risk_counts['Sangat Beresiko'],
-        'beresiko': risk_counts['Beresiko'],
-        'tidak_beresiko': risk_counts['Tidak Beresiko'],
+        'rendah': risk_counts.get('Rendah', 0),
+        'netral': risk_counts.get('Netral', 0),
+        'tinggi': risk_counts.get('Tinggi', 0),
         'top_risky_students': top_risky_students,
     }), 200

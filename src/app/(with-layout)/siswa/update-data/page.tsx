@@ -9,7 +9,7 @@ import {
   FiArrowDown,
 } from "react-icons/fi";
 
-type RiskStatus = "Sangat Beresiko" | "Beresiko" | "Tidak Beresiko";
+type RiskStatus = "Rendah" | "Netral" | "Tinggi";
 
 type FormState = {
   jam_belajar_per_hari: number;
@@ -220,13 +220,13 @@ const SELECT_FIELDS: SelectField[] = [
 
 function getRiskConfig(status?: RiskStatus) {
   switch (status) {
-    case "Tidak Beresiko":
+    case "Tinggi":
       return {
         badge: "bg-green-light-7 text-green ring-1 ring-green/20",
         bar: "bg-green",
         dot: "bg-green",
       };
-    case "Beresiko":
+    case "Netral":
       return {
         badge: "bg-yellow-light-4 text-yellow-dark ring-1 ring-yellow-dark/20",
         bar: "bg-yellow-dark",
@@ -290,7 +290,7 @@ export default function UpdateDataPage() {
         setResult({
           student_id: "-",
           predicted_exam_score: payload.predicted_exam_score ?? 0,
-          risk_status: payload.risk_status ?? "Sangat Beresiko",
+          risk_status: payload.risk_status ?? "Rendah",
           shap_analysis: payload.shap_analysis ?? [],
           source: "prediction",
         });
@@ -311,7 +311,7 @@ export default function UpdateDataPage() {
         setResult({
           student_id: payload.student_id,
           predicted_exam_score: payload.predicted_exam_score ?? 0,
-          risk_status: payload.risk_status ?? "Sangat Beresiko",
+          risk_status: payload.risk_status ?? "Rendah",
           shap_analysis: payload.shap_analysis ?? [],
           source: "prediction",
         });
