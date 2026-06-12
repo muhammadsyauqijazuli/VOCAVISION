@@ -56,17 +56,18 @@ def build_student_email(nisn):
     return f"{normalized_nisn}@siswa.local"
 
 
-def upsert_student_user(nisn, nama_siswa):
+def upsert_student_user(nisn, nama_siswa, email=None):
     normalized_nisn = normalize_nisn(nisn)
     if not normalized_nisn:
         raise ValueError('NISN tidak valid')
 
-    student_user_email = build_student_email(normalized_nisn)
+    student_user_email = email if email else None
     default_password_hash = generate_password_hash(normalized_nisn)
 
     student = Student.query.filter_by(nisn=normalized_nisn).first()
     user = User.query.get(student.user_id) if student and student.user_id else None
-    if not user:
+
+    if not user and student_user_email:
         user = User.query.filter_by(email=student_user_email).first()
 
     created_user = False
@@ -82,7 +83,8 @@ def upsert_student_user(nisn, nama_siswa):
         created_user = True
     else:
         user.nama = nama_siswa
-        user.email = student_user_email
+        if student_user_email is not None:
+            user.email = student_user_email
         user.role = 'siswa'
         user.password_hash = default_password_hash
 
@@ -106,25 +108,17 @@ def ensure_student_user_link(student):
         return False
 
     fallback_name = student.nama_siswa or f"Siswa {normalized_nisn}"
-    student_user_email = build_student_email(normalized_nisn)
     default_password_hash = generate_password_hash(normalized_nisn)
 
-    user = User.query.filter_by(email=student_user_email).first()
-    created_user = False
-    if not user:
-        user = User(
-            nama=fallback_name,
-            email=student_user_email,
-            password_hash=default_password_hash,
-            role='siswa',
-        )
-        db.session.add(user)
-        db.session.flush()
-        created_user = True
-    else:
-        user.nama = fallback_name
-        user.role = 'siswa'
-        user.password_hash = default_password_hash
+    user = User(
+        nama=fallback_name,
+        email=None,
+        password_hash=default_password_hash,
+        role='siswa',
+    )
+    db.session.add(user)
+    db.session.flush()
+    created_user = True
 
     student.user_id = user.id
     return created_user
@@ -178,6 +172,7 @@ def _process_dataset_job(app, dataset_id, rows):
 
                     nisn = raw_data.get('nisn')
                     nama = str(raw_data.get('nama_siswa') or raw_data.get('nama') or '').strip()
+                    email = clean_value(raw_data.get('email'))
 
                     if not nisn or not nama:
                         raise ValueError('Kolom nisn dan nama_siswa wajib diisi')
@@ -185,10 +180,10 @@ def _process_dataset_job(app, dataset_id, rows):
                     student_payload = {
                         key: value
                         for key, value in raw_data.items()
-                        if key in STUDENT_COLUMN_NAMES and key not in {'id', 'user_id', 'nisn', 'nama_siswa', 'created_at', 'updated_at'}
+                        if key in STUDENT_COLUMN_NAMES and key not in {'id', 'user_id', 'nisn', 'nama_siswa', 'created_at', 'updated_at', 'email'}
                     }
 
-                    student, user, created_user = upsert_student_user(nisn, nama)
+                    student, user, created_user = upsert_student_user(nisn, nama, email)
                     created_accounts += 1 if created_user else 0
 
                     set_job_progress(
@@ -240,6 +235,9 @@ def _process_dataset_job(app, dataset_id, rows):
                         dataset_entry.row_count = success
                         db.session.commit()
                 except Exception as row_error:
+                    import traceback
+                    traceback.print_exc()
+                    print(f"Row {idx} failed with error: {row_error}")
                     db.session.rollback()
                     errors.append({'row': idx, 'error': str(row_error)})
 

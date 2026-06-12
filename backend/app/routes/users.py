@@ -38,19 +38,16 @@ def sync_student_account(student):
     if not normalized_nisn:
         raise ValueError('NISN tidak valid')
 
-    email = build_student_email(normalized_nisn)
     password_hash = generate_password_hash(normalized_nisn)
     student_name = student.nama_siswa or f'Siswa {normalized_nisn}'
 
     user = User.query.get(student.user_id) if student.user_id else None
-    if not user:
-        user = User.query.filter_by(email=email).first()
 
     created_user = False
     if not user:
         user = User(
             nama=student_name,
-            email=email,
+            email=None,
             password_hash=password_hash,
             role='siswa',
         )
@@ -59,7 +56,6 @@ def sync_student_account(student):
         created_user = True
     else:
         user.nama = student_name
-        user.email = email
         user.password_hash = password_hash
         user.role = 'siswa'
 

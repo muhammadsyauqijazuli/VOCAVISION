@@ -59,6 +59,7 @@ export function PersonalInfoForm(personalInfo: UserInfo) {
         name: formData.name,
         phoneNumber: Number(formData.phoneNumber),
         bio: formData.bio,
+        email: formData.email,
       };
 
       const updatePromise = authClient.updateUser(updatePayload);
@@ -131,7 +132,7 @@ export function PersonalInfoForm(personalInfo: UserInfo) {
           icon={<EmailIcon />}
           iconPosition="left"
           height="sm"
-          disabled
+          disabled={isLoading}
         />
 
         <InputGroup

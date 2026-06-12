@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 @auth_bp.route('/login', methods=['POST'])
 def login():
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True) or {}
         email = data.get('email')
         password = data.get('password')
         
@@ -54,9 +54,16 @@ def login():
             return jsonify(access_token=access_token, role=role), 200
 
         # Non-demo login
-        user = User.query.filter_by(email=email).first()
+        login_id = email
+        user = User.query.filter_by(email=login_id).first()
+        if not user:
+            from ..models import Student
+            student = Student.query.filter_by(nisn=login_id).first()
+            if student and student.user_id:
+                user = User.query.get(student.user_id)
+                
         if not user or not check_password_hash(user.password_hash, password):
-            return jsonify({'message': 'Email atau password salah'}), 401
+            return jsonify({'message': 'Email/NISN atau password salah'}), 401
 
         access_token = create_access_token(identity=user.id, additional_claims={'role': user.role})
         return jsonify(access_token=access_token, role=user.role), 200
@@ -75,3 +82,39 @@ def me():
         'email': user.email,
         'role': user.role
     }), 200
+
+@auth_bp.route('/me', methods=['PUT'])
+@jwt_required()
+def update_me():
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'message': 'User tidak ditemukan'}), 404
+            
+        data = request.get_json(silent=True) or {}
+        
+        if 'name' in data:
+            user.nama = data['name']
+        if 'email' in data:
+            new_email = str(data['email']).strip() if data['email'] else None
+            if new_email:
+                existing = User.query.filter_by(email=new_email).first()
+                if existing and existing.id != user.id:
+                    return jsonify({'message': 'Email sudah digunakan'}), 409
+            user.email = new_email
+            
+        db.session.commit()
+        return jsonify({
+            'message': 'Profile diperbarui',
+            'user': {
+                'id': user.id,
+                'nama': user.nama,
+                'email': user.email,
+                'role': user.role
+            }
+        }), 200
+    except Exception as e:
+        logger.error(f"Update profile error: {str(e)}", exc_info=True)
+        db.session.rollback()
+        return jsonify({'message': 'Server error', 'error': str(e)}), 500

@@ -4,6 +4,7 @@ import { Alert } from "@/components/ui-elements/alert";
 import { ShowcaseSection } from "@/components/Layouts/showcase-section";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import * as XLSX from "xlsx";
 
 type PreviewRow = string[];
 
@@ -71,6 +72,7 @@ export function DatasetUploadForm() {
     }
 
     const isCsv = selectedFile.name.toLowerCase().endsWith(".csv");
+    const isXlsx = selectedFile.name.toLowerCase().endsWith(".xlsx");
 
     if (isCsv) {
       const text = await selectedFile.text();
@@ -78,10 +80,23 @@ export function DatasetUploadForm() {
       return;
     }
 
+    if (isXlsx) {
+      const buffer = await selectedFile.arrayBuffer();
+      const workbook = XLSX.read(buffer, { type: "array" });
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const json = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1 });
+      const maxCols = json.length > 0 ? Math.max(...json.map((r) => r.length)) : 0;
+      const previewData = json.slice(0, 6).map((row) => 
+        Array.from({ length: maxCols }, (_, i) => String(row[i] ?? ""))
+      );
+      setPreviewRows(previewData);
+      return;
+    }
+
     setPreviewRows([
       [
-        "Preview untuk XLSX tidak ditampilkan di browser ini.",
-        "File tetap bisa diupload ke backend.",
+        "Format file tidak didukung untuk preview.",
       ],
     ]);
   }
