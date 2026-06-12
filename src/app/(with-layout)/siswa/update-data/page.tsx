@@ -1,35 +1,30 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   FiInfo,
-  FiRotateCcw,
   FiZap,
   FiArrowUp,
   FiArrowDown,
+  FiChevronLeft,
+  FiChevronRight,
+  FiCheckCircle,
+  FiAlertTriangle,
+  FiRotateCcw,
+  FiUser,
+  FiDollarSign,
+  FiBookOpen,
+  FiClock,
+  FiActivity,
+  FiTarget,
+  FiLock,
 } from "react-icons/fi";
 
-type RiskStatus = "Rendah" | "Netral" | "Tinggi";
+/* ================================================================
+   TYPE DEFINITIONS
+   ================================================================ */
 
-type FormState = {
-  jam_belajar_per_hari: number;
-  presentase_kehadiran: number;
-  nilai_rata_rata_raport: number;
-  skor_time_management: number;
-  jam_tidur: number;
-  screen_time: number;
-  kehadiran_pelatihan_industry: number;
-  motivasi_akademik: number;
-  exam_score: number | null;
-  gender: string;
-  rata_rata_pemasukan_keluarga: string;
-  pendidikan_terakhir_orang_tua: string;
-  kerja_sampingan: string;
-  study_environment: string;
-  kompetensi_skill_level: string;
-  industry_readiness: string;
-  stress_level: string;
-};
+type RiskStatus = "Rendah" | "Netral" | "Tinggi";
 
 type ShapInsight = {
   feature_name: string;
@@ -43,6 +38,7 @@ type PredictionResponse = {
   risk_status?: RiskStatus;
   shap_analysis?: ShapInsight[];
   model_version?: string;
+  message?: string;
 };
 
 type InsightResponse = {
@@ -51,6 +47,7 @@ type InsightResponse = {
   predicted_exam_score: number;
   risk_status: RiskStatus;
   shap_analysis: ShapInsight[];
+  message?: string;
 };
 
 type ResultState = {
@@ -62,161 +59,459 @@ type ResultState = {
   source: "prediction" | "insight";
 };
 
-type FieldKey = keyof FormState;
+type QuestionType = "radio" | "number";
 
-type NumericField = {
-  key: FieldKey;
+type RadioOption = {
   label: string;
-  helper: string;
-  min?: number;
-  max?: number;
-  step?: string;
+  value: string;
 };
 
-type SelectField = {
-  key: FieldKey;
-  label: string;
-  options: readonly string[];
+type Question = {
+  id: number;
+  section: 1 | 2 | 3;
+  text: string;
+  type: QuestionType;
+  options?: RadioOption[];
+  numberConfig?: { min: number; max: number; step?: number; unit?: string };
+  helperText?: string;
 };
 
-const DEFAULT_FORM: FormState = {
-  jam_belajar_per_hari: 0,
-  presentase_kehadiran: 0,
-  nilai_rata_rata_raport: 0,
-  skor_time_management: 0,
-  jam_tidur: 0,
-  screen_time: 0,
-  kehadiran_pelatihan_industry: 0,
-  motivasi_akademik: 0,
-  exam_score: null,
-  gender: "Laki-laki",
-  rata_rata_pemasukan_keluarga: "< 2 Juta",
-  pendidikan_terakhir_orang_tua: "SMA/SMK",
-  kerja_sampingan: "Tidak",
-  study_environment: "Cukup Kondusif",
-  kompetensi_skill_level: "Menengah",
-  industry_readiness: "Belum Siap",
-  stress_level: "Sedang",
+/* ================================================================
+   QUESTIONS DATA (19 pertanyaan, 3 section)
+   ================================================================ */
+
+const SECTION_LABELS: Record<number, string> = {
+  1: "Data Diri & Ekonomi",
+  2: "Gaya Hidup Harian",
+  3: "Dinamika Praktik & Lingkungan Belajar",
 };
 
-const NUMERIC_FIELDS: NumericField[] = [
-  {
-    key: "jam_belajar_per_hari",
-    label: "Jam belajar per hari",
-    helper: "Rata-rata waktu belajar mandiri setiap hari.",
-    min: 0,
-    max: 24,
-    step: "0.5",
-  },
-  {
-    key: "presentase_kehadiran",
-    label: "Presentase kehadiran (%)",
-    helper: "Kehadiran aktual dalam proses belajar.",
-    min: 0,
-    max: 100,
-    step: "0.1",
-  },
-  {
-    key: "nilai_rata_rata_raport",
-    label: "Nilai rata-rata raport",
-    helper: "Rata-rata nilai akademik terkini.",
-    min: 0,
-    max: 100,
-    step: "0.1",
-  },
-  {
-    key: "skor_time_management",
-    label: "Skor time management",
-    helper: "Skala kemampuan mengatur waktu (0–10).",
-    min: 0,
-    max: 10,
-    step: "0.1",
-  },
-  {
-    key: "jam_tidur",
-    label: "Jam tidur",
-    helper: "Durasi tidur rata-rata per malam.",
-    min: 0,
-    max: 24,
-    step: "0.5",
-  },
-  {
-    key: "screen_time",
-    label: "Screen time",
-    helper: "Durasi penggunaan layar per hari.",
-    min: 0,
-    max: 24,
-    step: "0.5",
-  },
-  {
-    key: "kehadiran_pelatihan_industry",
-    label: "Kehadiran pelatihan industry (%)",
-    helper: "Persentase kehadiran pada pelatihan relevan.",
-    min: 0,
-    max: 100,
-    step: "0.1",
-  },
-  {
-    key: "motivasi_akademik",
-    label: "Motivasi akademik",
-    helper: "Skala motivasi belajar saat ini (0–10).",
-    min: 0,
-    max: 10,
-    step: "0.1",
-  },
-  {
-    key: "exam_score",
-    label: "Exam score saat ini",
-    helper: "Nilai ujian yang sudah ada, jika tersedia.",
-    min: 0,
-    max: 100,
-    step: "0.1",
-  },
-];
+const SECTION_ICONS: Record<number, React.ReactNode> = {
+  1: <FiUser size={14} />,
+  2: <FiClock size={14} />,
+  3: <FiTarget size={14} />,
+};
 
-const SELECT_FIELDS: SelectField[] = [
-  { key: "gender", label: "Gender", options: ["Laki-laki", "Perempuan"] },
+const QUESTIONS: Question[] = [
+  // ── Section 1: Data Diri & Ekonomi ──
   {
-    key: "rata_rata_pemasukan_keluarga",
-    label: "Rata-rata pemasukan keluarga",
-    options: ["< 2 Juta", "2 - 5 Juta", "5 - 10 Juta", "> 10 Juta"],
-  },
-  {
-    key: "pendidikan_terakhir_orang_tua",
-    label: "Pendidikan terakhir orang tua",
-    options: ["SD", "SMP", "SMA/SMK", "Diploma", "Sarjana"],
-  },
-  {
-    key: "kerja_sampingan",
-    label: "Kerja sampingan",
-    options: ["Tidak", "Ya"],
-  },
-  {
-    key: "study_environment",
-    label: "Study environment",
+    id: 1,
+    section: 1,
+    text: "Jenis Kelamin",
+    type: "radio",
     options: [
-      "Kurang Kondusif",
-      "Cukup Kondusif",
-      "Kondusif",
-      "Sangat Kondusif",
+      { label: "Laki-laki", value: "Laki-laki" },
+      { label: "Perempuan", value: "Perempuan" },
     ],
   },
   {
-    key: "kompetensi_skill_level",
-    label: "Kompetensi / skill level",
-    options: ["Rendah", "Menengah", "Tinggi"],
+    id: 2,
+    section: 1,
+    text: "Rata-rata Pemasukan Keluarga per Bulan",
+    type: "radio",
+    options: [
+      { label: "Kurang dari Rp.2.000.000", value: "< 2 Juta" },
+      { label: "Rp.2.000.000 sampai Rp.5.000.000", value: "2 - 5 Juta" },
+      { label: "Rp.5.000.000 sampai Rp.10.000.000", value: "5 - 10 Juta" },
+      { label: "Lebih dari Rp.10.000.000", value: "> 10 Juta" },
+    ],
   },
   {
-    key: "industry_readiness",
-    label: "Industry readiness",
-    options: ["Belum Siap", "Siap"],
+    id: 3,
+    section: 1,
+    text: "Apakah kamu saat ini memiliki Pekerjaan Sampingan?",
+    type: "radio",
+    options: [
+      { label: "Ya", value: "Ya" },
+      { label: "Tidak", value: "Tidak" },
+    ],
   },
   {
-    key: "stress_level",
-    label: "Stress level",
-    options: ["Rendah", "Sedang", "Berat"],
+    id: 4,
+    section: 1,
+    text: "Pendidikan terakhir orang tua (yang paling tinggi)",
+    type: "radio",
+    options: [
+      { label: "SD", value: "SD" },
+      { label: "SMP", value: "SMP" },
+      { label: "SMA/SMK", value: "SMA/SMK" },
+      { label: "Diploma", value: "Diploma" },
+      { label: "Sarjana", value: "Sarjana" },
+    ],
+  },
+
+  // ── Section 2: Gaya Hidup Harian ──
+  {
+    id: 5,
+    section: 2,
+    text: "Berapa jam rata-rata waktu yang kamu habiskan untuk belajar materi sekolah/praktik di luar jam sekolah?",
+    type: "number",
+    numberConfig: { min: 0, max: 12, step: 0.5, unit: "jam" },
+    helperText: "Masukkan angka antara 0 sampai 12 jam",
+  },
+  {
+    id: 6,
+    section: 2,
+    text: "Jam Tidur per Malam",
+    type: "number",
+    numberConfig: { min: 0, max: 12, step: 0.5, unit: "jam" },
+    helperText: "Masukkan angka antara 0 sampai 12 jam",
+  },
+  {
+    id: 7,
+    section: 2,
+    text: "Berapa jam rata-rata waktu yang kamu habiskan sehari untuk bermain HP di luar keperluan sekolah?",
+    type: "number",
+    numberConfig: { min: 0, max: 12, step: 0.5, unit: "jam" },
+    helperText: "Masukkan angka antara 0 sampai 12 jam",
+  },
+  {
+    id: 8,
+    section: 2,
+    text: "Bagaimana catatan kehadiranmu di sekolah semester ini?",
+    type: "radio",
+    options: [
+      { label: "Hampir selalu hadir (95–100%)", value: "98" },
+      { label: "Cukup sering hadir (80–95%)", value: "90" },
+      { label: "Kadang absen (60–80%)", value: "70" },
+      { label: "Sering bolos (di bawah 60%)", value: "45" },
+    ],
+  },
+
+  // ── Section 3: Dinamika Praktik & Lingkungan Belajar ──
+  {
+    id: 9,
+    section: 3,
+    text: "Saat sedang praktik, kamu menghadapi masalah aneh yang belum pernah diajarkan. Apa insting pertamamu?",
+    type: "radio",
+    options: [
+      {
+        label: "Segera melepaskan alat dan lapor ke pembimbing",
+        value: "30",
+      },
+      {
+        label: "Perhatikan error, cari di Google/YouTube",
+        value: "50",
+      },
+      {
+        label: "Langsung restart/cabut pasang kabel",
+        value: "10",
+      },
+    ],
+  },
+  {
+    id: 10,
+    section: 3,
+    text: "Supervisor memintamu memakai alat/aplikasi brand baru yang belum diajarkan. Sikap kerjamu?",
+    type: "radio",
+    options: [
+      {
+        label: "Cari tutorial di YouTube secara otodidak",
+        value: "50",
+      },
+      {
+        label: "Minta izin tetap pakai alat yang sudah dikenal",
+        value: "10",
+      },
+      {
+        label: "Minta pembimbing contohkan langkah demi langkah",
+        value: "30",
+      },
+    ],
+  },
+  {
+    id: 11,
+    section: 3,
+    text: "Seberapa yakin kamu dengan kemampuan keahlian praktikmu saat ini?",
+    type: "radio",
+    options: [
+      {
+        label: "Saya sangat menguasai, siap terima project",
+        value: "Tinggi",
+      },
+      {
+        label:
+          "Bisa mandiri untuk tugas standar, tapi kesulitan jika error",
+        value: "Menengah",
+      },
+      {
+        label: "Masih sering bingung, bergantung instruksi guru/teman",
+        value: "Rendah",
+      },
+    ],
+  },
+  {
+    id: 12,
+    section: 3,
+    text: "Kamu harus menyelesaikan tugas yang butuh konsentrasi penuh. Bagaimana kamu memilih tempat bekerja?",
+    type: "radio",
+    options: [
+      {
+        label: "Ruang keluarga/TV, ada sedikit keramaian",
+        value: "30",
+      },
+      {
+        label: "Meja khusus, singkirkan barang lain",
+        value: "50",
+      },
+      {
+        label: "Kasur/sofa empuk",
+        value: "10",
+      },
+    ],
+  },
+  {
+    id: 13,
+    section: 3,
+    text: "Saat duduk mengerjakan tugas sulit, di mana posisi HP-mu?",
+    type: "radio",
+    options: [
+      {
+        label: "Di sebelah laptop, layar menghadap atas",
+        value: "10",
+      },
+      {
+        label: "Di laci/tas, jauh dari jangkauan",
+        value: "50",
+      },
+      {
+        label: "Di atas meja, dibalik, mode senyap",
+        value: "30",
+      },
+    ],
+  },
+  {
+    id: 14,
+    section: 3,
+    text: "Kamu ada ujian teori besok, tapi dapat ide proyek praktik yang sangat seru. Apa yang kamu lakukan?",
+    type: "radio",
+    options: [
+      {
+        label: "Eksekusi ide sekarang, ujian nanti malam",
+        value: "10",
+      },
+      {
+        label: "Paksa belajar teori, abaikan ide",
+        value: "30",
+      },
+      {
+        label: "Catat ide, lalu fokus belajar ujian",
+        value: "50",
+      },
+    ],
+  },
+  {
+    id: 15,
+    section: 3,
+    text: "Saat fokus belajar di rumah, grup WhatsApp tiba-tiba ramai. Responmu?",
+    type: "radio",
+    options: [
+      {
+        label: "Baca obrolan sambil tetap mengetik",
+        value: "10",
+      },
+      {
+        label: "Ikut membalas sebentar untuk refreshing",
+        value: "30",
+      },
+      {
+        label: "Tidak tahu karena HP dijauhkan/Do Not Disturb",
+        value: "50",
+      },
+    ],
+  },
+  {
+    id: 16,
+    section: 3,
+    text: "Saat jenuh dengan tugas menumpuk, pikiran apa yang paling ampuh membuatmu kembali semangat?",
+    type: "radio",
+    options: [
+      {
+        label: "Takut urusan makin panjang dengan guru",
+        value: "20",
+      },
+      {
+        label: "Target kebebasan finansial/masa depan",
+        value: "60",
+      },
+      {
+        label: "Sensasi puas saat berhasil memecahkan masalah sulit",
+        value: "100",
+      },
+    ],
+  },
+  {
+    id: 17,
+    section: 3,
+    text: "Fisik sudah lelah, lalu guru memberi instruksi praktik rumit sebelum pulang. Refleksmu?",
+    type: "radio",
+    options: [
+      {
+        label: "Cari alasan keluar/toilet",
+        value: "35",
+      },
+      {
+        label: "Langsung kerjakan pelan-pelan",
+        value: "10",
+      },
+      {
+        label: "Panik, kerjakan asal-asalan",
+        value: "20",
+      },
+    ],
+  },
+  {
+    id: 18,
+    section: 3,
+    text: "Guru mengkritik tajam hasil praktikmu. Pikiranmu?",
+    type: "radio",
+    options: [
+      {
+        label: "Mengiyakan saja, tidak dipikir dalam",
+        value: "20",
+      },
+      {
+        label: "Terima sebagai simulasi tekanan kerja",
+        value: "10",
+      },
+      {
+        label: "Merasa omelan berlebihan",
+        value: "35",
+      },
+    ],
+  },
+  {
+    id: 19,
+    section: 3,
+    text: "Saat ujian praktik, teman-teman selesai duluan, kamu masih stuck. Suara batinmu?",
+    type: "radio",
+    options: [
+      {
+        label: '"Alatku yang jelek, bukan salahku"',
+        value: "15",
+      },
+      {
+        label: '"Aku memang gak berbakat"',
+        value: "30",
+      },
+      {
+        label: '"Aku lirik cara mereka untuk belajar"',
+        value: "5",
+      },
+    ],
   },
 ];
+
+const TOTAL_QUESTIONS = QUESTIONS.length; // 19
+
+/* ================================================================
+   CONVERSION LOGIC (answers → 14 predictors)
+   ================================================================ */
+
+function convertToPayload(answers: Record<number, string | number>) {
+  const num = (id: number) => Number(answers[id] ?? 0);
+  const str = (id: number) => String(answers[id] ?? "");
+
+  // Industry readiness: Q9 + Q10, > 50 → "Siap"
+  const industrySum = num(9) + num(10);
+  const industry_readiness = industrySum > 50 ? "Siap" : "Belum Siap";
+
+  // Study environment: Q12 + Q13
+  const envSum = num(12) + num(13);
+  const study_environment =
+    envSum <= 40
+      ? "Kurang Kondusif"
+      : envSum <= 70
+        ? "Cukup Kondusif"
+        : "Kondusif";
+
+  // Time management: Q14 + Q15
+  const skor_time_management = num(14) + num(15);
+
+  // Motivasi: Q16
+  const motivasi_akademik = num(16);
+
+  // Stress: Q17 + Q18 + Q19
+  const stressSum = num(17) + num(18) + num(19);
+  const stress_level =
+    stressSum <= 45 ? "Rendah" : stressSum <= 70 ? "Sedang" : "Berat";
+
+  return {
+    gender: str(1),
+    rata_rata_pemasukan_keluarga: str(2),
+    kerja_sampingan: str(3),
+    pendidikan_terakhir_orang_tua: str(4),
+    jam_belajar_per_hari: num(5),
+    jam_tidur: num(6),
+    screen_time: num(7),
+    presentase_kehadiran: num(8),
+    industry_readiness,
+    kompetensi_skill_level: str(11),
+    study_environment,
+    skor_time_management,
+    motivasi_akademik,
+    stress_level,
+    // Fields not filled by student — backend handles from DB
+    nilai_rata_rata_raport: null,
+    kehadiran_pelatihan_industry: null,
+    exam_score: null,
+  };
+}
+
+/* ================================================================
+   CONSISTENCY VALIDATION
+   ================================================================ */
+
+function checkConsistency(
+  answers: Record<number, string | number>,
+): string | null {
+  const jamBelajar = Number(answers[5] ?? 0);
+  const screenTime = Number(answers[7] ?? 0);
+  const motivasi = Number(answers[16] ?? 0);
+  const kehadiran = Number(answers[8] ?? 0);
+
+  const stressSum =
+    Number(answers[17] ?? 0) +
+    Number(answers[18] ?? 0) +
+    Number(answers[19] ?? 0);
+
+  const warnings: string[] = [];
+
+  if (motivasi >= 60 && jamBelajar === 0) {
+    warnings.push(
+      "Motivasimu tinggi, tapi jam belajar di luar sekolah 0 jam.",
+    );
+  }
+  if (screenTime >= 10 && jamBelajar === 0) {
+    warnings.push(
+      "Screen time-mu sangat tinggi (≥10 jam), tapi jam belajar 0 jam.",
+    );
+  }
+  if (kehadiran >= 95 && stressSum > 70) {
+    warnings.push(
+      "Kehadiranmu hampir selalu penuh, tapi tingkat stresmu terdeteksi sangat tinggi.",
+    );
+  }
+
+  return warnings.length > 0 ? warnings.join(" ") : null;
+}
+
+/* ================================================================
+   SUMMARY DISPLAY TEXT (human-readable, no raw scores)
+   ================================================================ */
+
+function getAnswerDisplayText(q: Question, answer: string | number): string {
+  if (q.type === "number") {
+    return `${answer} ${q.numberConfig?.unit ?? ""}`.trim();
+  }
+  // For radio, find label
+  const option = q.options?.find((o) => o.value === String(answer));
+  return option?.label ?? String(answer);
+}
+
+/* ================================================================
+   HELPERS
+   ================================================================ */
 
 function getRiskConfig(status?: RiskStatus) {
   switch (status) {
@@ -247,11 +542,35 @@ function sortInsights(insights: ShapInsight[]) {
   );
 }
 
+/* ================================================================
+   MAIN COMPONENT
+   ================================================================ */
+
 export default function UpdateDataPage() {
-  const [form, setForm] = useState<FormState>(DEFAULT_FORM);
+  // Questionnaire state
+  const [currentStep, setCurrentStep] = useState(0); // 0..18
+  const [answers, setAnswers] = useState<Record<number, string | number>>({});
+  const [locked, setLocked] = useState<Set<number>>(new Set());
+  const [showSummary, setShowSummary] = useState(false);
+  const [numberInput, setNumberInput] = useState<string>("");
+
+  // Warning modal
+  const [warningText, setWarningText] = useState<string | null>(null);
+
+  // Prediction state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ResultState | null>(null);
+
+  const currentQuestion = QUESTIONS[currentStep];
+  const currentSection = currentQuestion?.section ?? 1;
+  const isAnswered = currentQuestion
+    ? currentQuestion.type === "number"
+      ? numberInput !== "" && !isNaN(parseFloat(numberInput))
+      : answers[currentQuestion.id] !== undefined
+    : false;
+  const isLocked = currentQuestion ? locked.has(currentQuestion.id) : false;
+  const progressPercent = ((currentStep + 1) / TOTAL_QUESTIONS) * 100;
 
   const topInsights = useMemo(
     () => sortInsights(result?.shap_analysis ?? []).slice(0, 5),
@@ -259,71 +578,144 @@ export default function UpdateDataPage() {
   );
   const riskConfig = getRiskConfig(result?.risk_status);
 
-  function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  }
+  // ── Answer handlers ──
+  const handleRadioSelect = useCallback(
+    (questionId: number, value: string) => {
+      if (locked.has(questionId)) return;
+      setAnswers((prev) => ({ ...prev, [questionId]: value }));
+    },
+    [locked],
+  );
 
+  // ── Navigation ──
+  const goNext = useCallback(() => {
+    if (!currentQuestion) return;
+
+    // For number questions, save numberInput into answers before locking
+    let updatedAnswers = { ...answers };
+    if (currentQuestion.type === "number") {
+      const val = parseFloat(numberInput);
+      if (isNaN(val)) return;
+      const cfg = currentQuestion.numberConfig;
+      const clamped = Math.max(cfg?.min ?? 0, Math.min(cfg?.max ?? 12, val));
+      updatedAnswers[currentQuestion.id] = clamped;
+      setAnswers(updatedAnswers);
+    }
+
+    // Lock the current question
+    setLocked((prev) => new Set(prev).add(currentQuestion.id));
+
+    if (currentStep < TOTAL_QUESTIONS - 1) {
+      const nextQ = QUESTIONS[currentStep + 1];
+      if (nextQ.type === "number" && updatedAnswers[nextQ.id] !== undefined) {
+        setNumberInput(String(updatedAnswers[nextQ.id]));
+      } else {
+        setNumberInput("");
+      }
+      setCurrentStep((s) => s + 1);
+    } else {
+      // Last question → check consistency
+      const warning = checkConsistency(updatedAnswers);
+      if (warning) {
+        setWarningText(warning);
+      } else {
+        setShowSummary(true);
+      }
+    }
+  }, [currentStep, currentQuestion, answers, numberInput]);
+
+  const goPrev = useCallback(() => {
+    if (showSummary) {
+      setShowSummary(false);
+      return;
+    }
+    if (currentStep > 0) {
+      const prevQ = QUESTIONS[currentStep - 1];
+      if (prevQ.type === "number" && answers[prevQ.id] !== undefined) {
+        setNumberInput(String(answers[prevQ.id]));
+      } else {
+        setNumberInput("");
+      }
+      setCurrentStep((s) => s - 1);
+    }
+  }, [currentStep, showSummary, answers]);
+
+  // Sync numberInput when arriving at a number question
+  const syncNumberInput = useCallback(
+    (step: number) => {
+      const q = QUESTIONS[step];
+      if (q.type === "number" && answers[q.id] !== undefined) {
+        setNumberInput(String(answers[q.id]));
+      } else if (q.type === "number") {
+        setNumberInput("");
+      }
+    },
+    [answers],
+  );
+
+  // ── Predict ──
   async function handlePredict() {
     setError(null);
     setResult(null);
     setLoading(true);
 
     try {
+      const payload = convertToPayload(answers);
+
       const response = await fetch("/api/predict/single", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
-      const payload = (await response
+      const data = (await response
         .json()
-        .catch(() => ({}))) as PredictionResponse & { message?: string };
+        .catch(() => ({}))) as PredictionResponse;
 
       if (!response.ok) {
         throw new Error(
-          payload.message ?? `Gagal memproses prediksi (${response.status})`,
+          data.message ?? `Gagal memproses prediksi (${response.status})`,
         );
       }
 
-      if (!payload.student_id) {
+      if (!data.student_id) {
         setResult({
           student_id: "-",
-          predicted_exam_score: payload.predicted_exam_score ?? 0,
-          risk_status: payload.risk_status ?? "Rendah",
-          shap_analysis: payload.shap_analysis ?? [],
+          predicted_exam_score: data.predicted_exam_score ?? 0,
+          risk_status: data.risk_status ?? "Rendah",
+          shap_analysis: data.shap_analysis ?? [],
           source: "prediction",
         });
         return;
       }
 
+      // Fetch detailed insight
       const insightResponse = await fetch(
-        `/api/predict/insight/${payload.student_id}`,
-        {
-          credentials: "include",
-        },
+        `/api/predict/insight/${data.student_id}`,
+        { credentials: "include" },
       );
-      const insightPayload = (await insightResponse
+      const insightData = (await insightResponse
         .json()
-        .catch(() => ({}))) as InsightResponse & { message?: string };
+        .catch(() => ({}))) as InsightResponse;
 
       if (!insightResponse.ok) {
         setResult({
-          student_id: payload.student_id,
-          predicted_exam_score: payload.predicted_exam_score ?? 0,
-          risk_status: payload.risk_status ?? "Rendah",
-          shap_analysis: payload.shap_analysis ?? [],
+          student_id: data.student_id,
+          predicted_exam_score: data.predicted_exam_score ?? 0,
+          risk_status: data.risk_status ?? "Rendah",
+          shap_analysis: data.shap_analysis ?? [],
           source: "prediction",
         });
         return;
       }
 
       setResult({
-        student_id: insightPayload.student_id,
-        student_name: insightPayload.student_name,
-        predicted_exam_score: insightPayload.predicted_exam_score,
-        risk_status: insightPayload.risk_status,
-        shap_analysis: insightPayload.shap_analysis ?? [],
+        student_id: insightData.student_id,
+        student_name: insightData.student_name,
+        predicted_exam_score: insightData.predicted_exam_score,
+        risk_status: insightData.risk_status,
+        shap_analysis: insightData.shap_analysis ?? [],
         source: "insight",
       });
     } catch (err) {
@@ -335,11 +727,28 @@ export default function UpdateDataPage() {
     }
   }
 
+  // ── Reset ──
   function resetForm() {
-    setForm(DEFAULT_FORM);
+    setCurrentStep(0);
+    setAnswers({});
+    setLocked(new Set());
+    setShowSummary(false);
+    setNumberInput("");
+    setWarningText(null);
     setResult(null);
     setError(null);
   }
+
+  // ── Group questions by section for summary ──
+  const groupedBySection = useMemo(() => {
+    const groups: Record<number, Question[]> = { 1: [], 2: [], 3: [] };
+    QUESTIONS.forEach((q) => groups[q.section].push(q));
+    return groups;
+  }, []);
+
+  /* ================================================================
+     RENDER
+     ================================================================ */
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-6 duration-500 ease-out">
@@ -353,19 +762,20 @@ export default function UpdateDataPage() {
             VOCAVISION
           </p>
           <h1 className="text-3xl font-bold text-white md:text-4xl">
-            Perbarui Data &amp; Prediksi
+            Kuesioner Gaya Hidup & Belajar
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/85 md:text-base">
-            Isi 17 variabel gaya hidup dan akademik untuk mengirim data ke proxy
-            Next.js, memanggil model Flask, lalu menampilkan prediksi skor ujian
-            dan insight SHAP.
+            Jawab 19 pertanyaan singkat tentang kebiasaan sehari-hari,
+            lingkungan belajar, dan cara kamu menghadapi tantangan praktik.
+            Hasilnya akan digunakan untuk memprediksi performa akademikmu.
           </p>
 
           <div className="mt-5 flex flex-wrap gap-2">
             {[
-              "Proxy: /api/predict/single",
-              "Insight: /api/predict/insight/[id]",
-              "SSOT DB: Flask SQLAlchemy",
+              "19 Pertanyaan",
+              "3 Bagian",
+              "Prediksi Otomatis",
+              "Insight SHAP",
             ].map((tag) => (
               <span
                 key={tag}
@@ -380,144 +790,356 @@ export default function UpdateDataPage() {
 
       {/* ── Main Grid ── */}
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(300px,0.9fr)] xl:items-start">
-        {/* ── Left: Form ── */}
+        {/* ── Left: Questionnaire ── */}
         <section className="rounded-2xl border border-stroke bg-white shadow-1 dark:border-dark-3 dark:bg-gray-dark">
-          <form
-            className="divide-y divide-stroke dark:divide-dark-3"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            {/* Numeric Fields */}
-            <div className="p-6 md:p-8">
-              <div className="mb-5">
-                <h2 className="text-xl font-bold text-dark dark:text-white">
-                  Data Numerik
-                </h2>
-                <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">
-                  Gunakan angka yang paling mendekati kondisi siswa saat ini.
-                </p>
+          {/* Progress Bar */}
+          <div className="border-b border-stroke p-6 dark:border-dark-3 md:p-8">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  {SECTION_ICONS[currentSection]}
+                </span>
+                <div>
+                  <p className="text-sm font-bold text-dark dark:text-white">
+                    {showSummary
+                      ? "Ringkasan Jawaban"
+                      : `Pertanyaan ${currentStep + 1} dari ${TOTAL_QUESTIONS}`}
+                  </p>
+                  <p className="text-xs text-dark-5 dark:text-dark-6">
+                    {showSummary
+                      ? "Periksa jawaban sebelum mengirim"
+                      : `Bagian ${currentSection} — ${SECTION_LABELS[currentSection]}`}
+                  </p>
+                </div>
               </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                {NUMERIC_FIELDS.map((field) => (
-                  <label
-                    key={String(field.key)}
-                    className="group block space-y-2 rounded-xl border border-stroke bg-gray-1 p-4 transition-all hover:border-primary/40 hover:bg-white dark:border-dark-3 dark:bg-dark-2 dark:hover:border-primary/40 dark:hover:bg-dark-2"
-                  >
-                    <span className="block text-sm font-semibold text-dark dark:text-white">
-                      {field.label}
-                    </span>
-                    <input
-                      type="number"
-                      min={field.min}
-                      max={field.max}
-                      step={field.step}
-                      value={
-                        field.key === "exam_score"
-                          ? (form.exam_score ?? "")
-                          : String(
-                              form[
-                                field.key as Exclude<FieldKey, "exam_score">
-                              ],
-                            )
-                      }
-                      onChange={(e) => {
-                        const raw = e.target.value;
-                        if (field.key === "exam_score") {
-                          updateField(
-                            "exam_score",
-                            raw === "" ? null : Number(raw),
-                          );
-                          return;
-                        }
-                        updateField(
-                          field.key as Exclude<FieldKey, "exam_score">,
-                          Number(raw) as FormState[typeof field.key],
-                        );
-                      }}
-                      className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-dark transition outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 dark:border-dark-3 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
-                    />
-                    <p className="text-xs text-dark-5 dark:text-dark-6">
-                      {field.helper}
-                    </p>
-                  </label>
-                ))}
-              </div>
+              <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                {showSummary
+                  ? "100%"
+                  : `${Math.round(progressPercent)}%`}
+              </span>
             </div>
 
-            {/* Categorical Fields */}
-            <div className="p-6 md:p-8">
-              <div className="mb-5">
-                <h2 className="text-xl font-bold text-dark dark:text-white">
-                  Data Kategorikal
-                </h2>
-                <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">
-                  Pilih nilai yang paling sesuai dengan kondisi siswa.
-                </p>
-              </div>
+            {/* Bar */}
+            <div className="h-2.5 w-full overflow-hidden rounded-full bg-gray-2 dark:bg-dark-3">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-primary via-indigo-500 to-blue-dark transition-all duration-500 ease-out"
+                style={{
+                  width: showSummary ? "100%" : `${progressPercent}%`,
+                }}
+              />
+            </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                {SELECT_FIELDS.map((field) => (
-                  <label
-                    key={String(field.key)}
-                    className="group block space-y-2 rounded-xl border border-stroke bg-gray-1 p-4 transition-all hover:border-primary/40 hover:bg-white dark:border-dark-3 dark:bg-dark-2 dark:hover:border-primary/40 dark:hover:bg-dark-2"
-                  >
-                    <span className="block text-sm font-semibold text-dark dark:text-white">
-                      {field.label}
-                    </span>
-                    <select
-                      value={String(form[field.key])}
-                      onChange={(e) =>
-                        updateField(
-                          field.key,
-                          e.target.value as FormState[typeof field.key],
-                        )
-                      }
-                      className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-sm text-dark transition outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 dark:border-dark-3 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
-                    >
-                      {field.options.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
+            {/* Section dots */}
+            <div className="mt-3 flex gap-1.5">
+              {QUESTIONS.map((q, i) => {
+                const isDone = locked.has(q.id);
+                const isCurrent = i === currentStep && !showSummary;
+                return (
+                  <div
+                    key={q.id}
+                    className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                      isDone
+                        ? "bg-primary"
+                        : isCurrent
+                          ? "bg-primary/40"
+                          : "bg-gray-3 dark:bg-dark-3"
+                    }`}
+                  />
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── Question Card / Summary ── */}
+          <div className="p-6 md:p-8">
+            {showSummary ? (
+              /* ── SUMMARY VIEW ── */
+              <div className="space-y-6">
+                {([1, 2, 3] as const).map((sectionNum) => (
+                  <div key={sectionNum}>
+                    <div className="mb-3 flex items-center gap-2">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        {SECTION_ICONS[sectionNum]}
+                      </span>
+                      <h3 className="text-sm font-bold text-dark dark:text-white">
+                        {SECTION_LABELS[sectionNum]}
+                      </h3>
+                    </div>
+                    <div className="space-y-2">
+                      {groupedBySection[sectionNum].map((q) => (
+                        <div
+                          key={q.id}
+                          className="flex items-start gap-3 rounded-xl border border-stroke bg-gray-1 p-3.5 dark:border-dark-3 dark:bg-dark-2"
+                        >
+                          <FiCheckCircle
+                            size={16}
+                            className="mt-0.5 shrink-0 text-green"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-medium text-dark-5 dark:text-dark-6">
+                              {q.text}
+                            </p>
+                            <p className="mt-0.5 text-sm font-semibold text-dark dark:text-white">
+                              {answers[q.id] !== undefined
+                                ? getAnswerDisplayText(q, answers[q.id])
+                                : "—"}
+                            </p>
+                          </div>
+                        </div>
                       ))}
-                    </select>
-                  </label>
+                    </div>
+                  </div>
                 ))}
+
+                {/* Actions */}
+                <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+                  <button
+                    type="button"
+                    id="btn-predict"
+                    onClick={handlePredict}
+                    disabled={loading}
+                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 font-semibold text-white shadow-1 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+                  >
+                    {loading ? (
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />
+                        <span>Memproses prediksi...</span>
+                      </>
+                    ) : (
+                      <>
+                        <FiZap size={16} />
+                        <span>Kirim untuk Prediksi</span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={goPrev}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-stroke bg-white px-5 py-3.5 text-sm font-semibold text-dark-4 transition hover:border-dark-3 hover:bg-gray-1 dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6 dark:hover:border-dark-2"
+                  >
+                    <FiChevronLeft size={15} />
+                    <span>Kembali</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    id="btn-reset"
+                    onClick={resetForm}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-stroke bg-white px-5 py-3.5 text-sm font-semibold text-dark-4 transition hover:border-dark-3 hover:bg-gray-1 dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6 dark:hover:border-dark-2"
+                  >
+                    <FiRotateCcw size={15} />
+                    <span>Mulai Ulang</span>
+                  </button>
+                </div>
               </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex flex-col gap-3 p-6 sm:flex-row md:p-8">
-              <button
-                type="button"
-                id="btn-predict"
-                onClick={handlePredict}
-                disabled={loading}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-white shadow-1 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+            ) : currentQuestion ? (
+              /* ── QUESTION CARD ── */
+              <div
+                key={currentQuestion.id}
+                className="animate-in fade-in slide-in-from-right-4 duration-300"
               >
-                {loading ? (
-                  <>
-                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/50 border-t-white" />
-                    <span>Memproses prediksi...</span>
-                  </>
-                ) : (
-                  <>
-                    <FiZap size={16} />
-                    <span>Lihat Prediksi Sekarang</span>
-                  </>
+                {/* Question header */}
+                <div className="mb-6">
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+                      {currentQuestion.id}
+                    </span>
+                    <span className="rounded-full bg-gray-2 px-2.5 py-0.5 text-xs font-medium text-dark-5 dark:bg-dark-3 dark:text-dark-6">
+                      Bagian {currentSection}
+                    </span>
+                    {isLocked && (
+                      <span className="flex items-center gap-1 rounded-full bg-green-light-7 px-2.5 py-0.5 text-xs font-semibold text-green">
+                        <FiLock size={12} />
+                        Terkunci
+                      </span>
+                    )}
+                  </div>
+                  <h2 className="text-lg font-bold leading-snug text-dark dark:text-white md:text-xl">
+                    {currentQuestion.text}
+                  </h2>
+                  {currentQuestion.helperText && (
+                    <p className="mt-1.5 text-sm text-dark-5 dark:text-dark-6">
+                      {currentQuestion.helperText}
+                    </p>
+                  )}
+                </div>
+
+                {/* ── Radio options ── */}
+                {currentQuestion.type === "radio" &&
+                  currentQuestion.options && (
+                    <div className="space-y-3">
+                      {currentQuestion.options.map((opt, i) => {
+                        const isSelected =
+                          String(answers[currentQuestion.id]) === opt.value;
+                        const optionLetter = String.fromCharCode(65 + i); // A, B, C...
+
+                        return (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            disabled={isLocked}
+                            onClick={() =>
+                              handleRadioSelect(currentQuestion.id, opt.value)
+                            }
+                            className={`group flex w-full items-center gap-4 rounded-xl border-2 p-4 text-left transition-all duration-200 ${
+                              isSelected
+                                ? "border-primary bg-primary/5 shadow-sm dark:bg-primary/10"
+                                : isLocked
+                                  ? "cursor-not-allowed border-stroke bg-gray-1 opacity-50 dark:border-dark-3 dark:bg-dark-2"
+                                  : "border-stroke bg-white hover:border-primary/40 hover:bg-primary/[0.02] hover:shadow-sm dark:border-dark-3 dark:bg-dark-2 dark:hover:border-primary/40"
+                            }`}
+                          >
+                            {/* Letter circle */}
+                            <span
+                              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-all ${
+                                isSelected
+                                  ? "bg-primary text-white shadow-sm"
+                                  : "bg-gray-2 text-dark-5 group-hover:bg-primary/10 group-hover:text-primary dark:bg-dark-3 dark:text-dark-6"
+                              }`}
+                            >
+                              {isSelected ? (
+                                <FiCheckCircle size={16} />
+                              ) : (
+                                optionLetter
+                              )}
+                            </span>
+
+                            {/* Label */}
+                            <span
+                              className={`flex-1 text-sm leading-relaxed ${
+                                isSelected
+                                  ? "font-semibold text-dark dark:text-white"
+                                  : "text-dark-4 group-hover:text-dark dark:text-dark-6 dark:group-hover:text-white"
+                              }`}
+                            >
+                              {opt.label}
+                            </span>
+
+                            {isLocked && isSelected && (
+                              <FiLock
+                                size={14}
+                                className="shrink-0 text-primary/60"
+                              />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                {/* ── Number input ── */}
+                {currentQuestion.type === "number" && (
+                  <div className="space-y-4">
+                    <div
+                      className={`rounded-xl border-2 p-5 transition-all ${
+                        isLocked
+                          ? "border-primary/30 bg-primary/5 dark:bg-primary/10"
+                          : "border-stroke bg-gray-1 dark:border-dark-3 dark:bg-dark-2"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="number"
+                          min={currentQuestion.numberConfig?.min ?? 0}
+                          max={currentQuestion.numberConfig?.max ?? 12}
+                          step={currentQuestion.numberConfig?.step ?? 0.5}
+                          value={
+                            isLocked
+                              ? String(answers[currentQuestion.id] ?? "")
+                              : numberInput
+                          }
+                          onChange={(e) => setNumberInput(e.target.value)}
+                          disabled={isLocked}
+                          placeholder="0"
+                          className="w-full rounded-lg border border-stroke bg-white px-4 py-3 text-center text-2xl font-bold text-dark transition outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 disabled:cursor-not-allowed disabled:opacity-70 dark:border-dark-3 dark:bg-dark-3 dark:text-white dark:focus:border-primary"
+                        />
+                        {currentQuestion.numberConfig?.unit && (
+                          <span className="text-sm font-semibold text-dark-5 dark:text-dark-6">
+                            {currentQuestion.numberConfig.unit}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Quick select buttons */}
+                      {!isLocked && (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {Array.from(
+                            {
+                              length:
+                                (currentQuestion.numberConfig?.max ?? 12) + 1,
+                            },
+                            (_, i) => i,
+                          )
+                            .filter((v) => v % 2 === 0 || v <= 4)
+                            .map((val) => (
+                              <button
+                                key={val}
+                                type="button"
+                                onClick={() => setNumberInput(String(val))}
+                                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                                  numberInput === String(val)
+                                    ? "bg-primary text-white"
+                                    : "bg-white text-dark-5 hover:bg-primary/10 hover:text-primary dark:bg-dark-3 dark:text-dark-6"
+                                }`}
+                              >
+                                {val}
+                              </button>
+                            ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {isLocked && (
+                      <div className="flex items-center gap-2 text-sm font-semibold text-green">
+                        <FiLock size={16} />
+                        <span>
+                          Terkunci: {answers[currentQuestion.id]}{" "}
+                          {currentQuestion.numberConfig?.unit ?? ""}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 )}
-              </button>
 
-              <button
-                type="button"
-                id="btn-reset"
-                onClick={resetForm}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-stroke bg-white px-6 py-3 font-semibold text-dark-4 transition hover:border-dark-3 hover:bg-gray-1 dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6 dark:hover:border-dark-2"
-              >
-                <FiRotateCcw size={15} />
-                <span>Reset Form</span>
-              </button>
-            </div>
-          </form>
+                {/* ── Navigation buttons ── */}
+                <div className="mt-8 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={goPrev}
+                    disabled={currentStep === 0}
+                    className={`inline-flex items-center gap-2 rounded-xl border border-stroke bg-white px-5 py-3 text-sm font-semibold text-dark-4 transition hover:border-dark-3 hover:bg-gray-1 dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6 ${
+                      currentStep === 0
+                        ? "invisible"
+                        : ""
+                    }`}
+                  >
+                    <FiChevronLeft size={15} />
+                    Sebelumnya
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    disabled={!isAnswered}
+                    className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-white shadow-1 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {currentStep === TOTAL_QUESTIONS - 1 ? (
+                      <>
+                        <span>Lihat Ringkasan</span>
+                        <FiCheckCircle size={15} />
+                      </>
+                    ) : (
+                      <>
+                        <span>Lanjut</span>
+                        <FiChevronRight size={15} />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            ) : null}
+          </div>
 
           {/* Error */}
           {error && (
@@ -534,10 +1156,11 @@ export default function UpdateDataPage() {
                 <span className="h-5 w-5 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
                 <div>
                   <p className="font-semibold text-dark dark:text-white">
-                    Menghubungkan ke backend Flask
+                    Menghubungkan ke backend
                   </p>
                   <p className="text-sm text-dark-4 dark:text-dark-6">
-                    Data sedang diproses dan insight SHAP sedang disiapkan.
+                    Jawaban kamu sedang dikonversi dan diproses oleh model
+                    prediksi.
                   </p>
                 </div>
               </div>
@@ -621,7 +1244,8 @@ export default function UpdateDataPage() {
                     Belum Ada Hasil
                   </p>
                   <p className="mt-1 text-sm text-dark-4 dark:text-dark-6">
-                    Isi form dan tekan tombol prediksi untuk melihat hasil.
+                    Jawab semua pertanyaan dan kirim kuesioner untuk melihat
+                    hasil prediksi.
                   </p>
                 </div>
               )}
@@ -690,17 +1314,56 @@ export default function UpdateDataPage() {
             <div className="mb-2 flex items-center gap-2">
               <FiInfo size={15} className="text-primary" />
               <h3 className="text-sm font-bold text-dark dark:text-white">
-                Catatan Integrasi
+                Catatan
               </h3>
             </div>
             <p className="text-xs leading-relaxed text-dark-4 dark:text-dark-6">
-              Proxy Next.js menjaga frontend tetap seragam, menyembunyikan URL
-              Flask, dan menghindari masalah CORS. Flask SQLAlchemy tetap
-              menjadi sumber kebenaran utama.
+              Jawaban kamu akan dikonversi secara otomatis menjadi data yang
+              dibutuhkan oleh model prediksi. Kamu tidak perlu mengisi angka
+              atau skor secara manual — cukup jawab pertanyaan dengan jujur.
             </p>
           </div>
         </aside>
       </div>
+
+      {/* ── Warning Modal ── */}
+      {warningText && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="animate-in fade-in zoom-in-95 mx-4 w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-gray-dark">
+            <div className="mb-4 flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-light-4 text-yellow-dark">
+                <FiAlertTriangle size={20} />
+              </span>
+              <h3 className="text-lg font-bold text-dark dark:text-white">
+                Jawaban Tidak Konsisten
+              </h3>
+            </div>
+            <p className="mb-6 text-sm leading-relaxed text-dark-4 dark:text-dark-6">
+              {warningText}{" "}
+              <strong>Yakin ingin melanjutkan?</strong>
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setWarningText(null);
+                  setShowSummary(true);
+                }}
+                className="flex-1 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+              >
+                Lanjutkan Saja
+              </button>
+              <button
+                type="button"
+                onClick={() => setWarningText(null)}
+                className="flex-1 rounded-xl border border-stroke bg-white px-4 py-2.5 text-sm font-semibold text-dark-4 transition hover:bg-gray-1 dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6"
+              >
+                Kembali & Periksa
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

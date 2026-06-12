@@ -10,6 +10,7 @@ type Notification = {
   message: string;
   type: string;
   created_at: string;
+  is_read: boolean;
 };
 
 type SocketContextType = {
@@ -56,7 +57,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         method: "PUT",
       });
       setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, is_read: true } as any : n))
+        prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (err) {
