@@ -1,7 +1,8 @@
 -- ============================================================
--- SINTESA - Database setelah revisi variabel
+-- VOCAVISION - Database Model v3.0.0
 -- Target: nilai_rata_rata_raport
--- Prediktor: 14 variabel (tanpa exam_score & kehadiran_pelatihan_industry)
+-- Prediktor: 15 variabel (+ jurusan)
+-- Risk: Sangat Beresiko / Beresiko / Aman (classifier-based)
 -- ============================================================
 
 CREATE DATABASE IF NOT EXISTS `sintesa-database` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
@@ -25,8 +26,8 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
--- Tabel students (14 prediktor + target nilai_rata_rata_raport)
--- exam_score & kehadiran_pelatihan_industry DIHAPUS
+-- Tabel students (15 prediktor + target nilai_rata_rata_raport)
+-- Ditambah: jurusan (TKJ/TAV/TPTU/MULTIMEDIA)
 -- --------------------------------------------------------
 DROP TABLE IF EXISTS `students`;
 CREATE TABLE `students` (
@@ -49,6 +50,7 @@ CREATE TABLE `students` (
   `kompetensi_skill_level` enum('Rendah','Menengah','Tinggi') DEFAULT NULL,
   `industry_readiness` enum('Siap','Belum Siap') DEFAULT NULL,
   `stress_level` enum('Rendah','Sedang','Berat') DEFAULT NULL,
+  `jurusan` enum('TKJ','TAV','TPTU','MULTIMEDIA') DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -66,8 +68,8 @@ CREATE TABLE `predictions` (
   `id` char(36) NOT NULL DEFAULT (uuid()),
   `student_id` char(36) NOT NULL,
   `predicted_exam_score` decimal(5,2) NOT NULL,  -- meskipun sekarang prediksi nilai rapor, nama kolom tetap exam_score untuk kompatibilitas
-  `risk_status` enum('Sangat Beresiko','Beresiko','Tidak Beresiko') DEFAULT NULL,
-  `model_version` varchar(20) DEFAULT '2.0.0',
+  `risk_status` enum('Sangat Beresiko','Beresiko','Aman') NOT NULL,
+  `model_version` varchar(20) DEFAULT '3.0.0',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_predictions_student_id` (`student_id`),
@@ -82,7 +84,7 @@ DROP TABLE IF EXISTS `shap_analysis`;
 CREATE TABLE `shap_analysis` (
   `id` char(36) NOT NULL DEFAULT (uuid()),
   `prediction_id` char(36) NOT NULL,
-  `feature_name` varchar(50) NOT NULL,
+  `feature_name` varchar(100) NOT NULL,
   `impact_value` decimal(8,4) NOT NULL,
   `suggestion_text` text,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -134,7 +136,7 @@ INSERT INTO `users` (`id`, `nama`, `email`, `password_hash`, `role`) VALUES
 ('f21db272-bf78-4df7-a85c-aa84c78a3dc8', 'Guru', 'guru@test.com', 'scrypt:32768:8:1...', 'guru'),
 ('e54e400b-1977-4bc6-b71f-2735cb6ccc58', 'Muhammad Syauqi Jazuli', 'siswa0301@sekolah.id', 'scrypt:32768:8:1...', 'siswa');
 
-INSERT INTO `students` (`id`, `user_id`, `nisn`, `nama_siswa`, `jam_belajar_per_hari`, `presentase_kehadiran`, `nilai_rata_rata_raport`, `skor_time_management`, `jam_tidur`, `screen_time`, `motivasi_akademik`, `gender`, `rata_rata_pemasukan_keluarga`, `pendidikan_terakhir_orang_tua`, `kerja_sampingan`, `study_environment`, `kompetensi_skill_level`, `industry_readiness`, `stress_level`) VALUES
-('a66fb113-74dd-4dd0-9442-7175f8c4bd5b', 'b245ded7-6ba2-4a66-bfab-480b1279753d', '1111111111', 'Siswa Test', 3.5, 85.00, 72.00, 60, 6.5, 7.0, 65, 'Laki-laki', '2 - 5 Juta', 'SMA/SMK', 'Tidak', 'Cukup Kondusif', 'Menengah', 'Belum Siap', 'Sedang'),
-('ef2c9792-9495-44bf-b327-a88b286c5be9', 'e54e400b-1977-4bc6-b71f-2735cb6ccc58', '1000000301', 'Muhammad Syauqi Jazuli', 3.5, 65.00, 70.00, 60, 6.5, 12.0, 81, 'Laki-laki', '< 2 Juta', 'SMA/SMK', 'Tidak', 'Kondusif', 'Tinggi', 'Siap', 'Berat'),
-('d03511f4-b867-4258-817e-64f60a42cbd1', NULL, 'AUTOb19777df', 'Tanpa Nama', 2.0, 98.00, 85.00, 100, 8.0, 6.0, 60, 'Laki-laki', '5 - 10 Juta', 'Sarjana', 'Ya', 'Kondusif', 'Tinggi', 'Siap', 'Rendah');
+INSERT INTO `students` (`id`, `user_id`, `nisn`, `nama_siswa`, `jam_belajar_per_hari`, `presentase_kehadiran`, `nilai_rata_rata_raport`, `skor_time_management`, `jam_tidur`, `screen_time`, `motivasi_akademik`, `gender`, `rata_rata_pemasukan_keluarga`, `pendidikan_terakhir_orang_tua`, `kerja_sampingan`, `study_environment`, `kompetensi_skill_level`, `industry_readiness`, `stress_level`, `jurusan`) VALUES
+('a66fb113-74dd-4dd0-9442-7175f8c4bd5b', 'b245ded7-6ba2-4a66-bfab-480b1279753d', '1111111111', 'Siswa Test', 3.5, 85.00, 72.00, 60, 6.5, 7.0, 65, 'Laki-laki', '2 - 5 Juta', 'SMA/SMK', 'Tidak', 'Cukup Kondusif', 'Menengah', 'Belum Siap', 'Sedang', 'TKJ'),
+('ef2c9792-9495-44bf-b327-a88b286c5be9', 'e54e400b-1977-4bc6-b71f-2735cb6ccc58', '1000000301', 'Muhammad Syauqi Jazuli', 3.5, 65.00, 70.00, 60, 6.5, 12.0, 81, 'Laki-laki', '< 2 Juta', 'SMA/SMK', 'Tidak', 'Kondusif', 'Tinggi', 'Siap', 'Berat', 'MULTIMEDIA'),
+('d03511f4-b867-4258-817e-64f60a42cbd1', NULL, 'AUTOb19777df', 'Tanpa Nama', 2.0, 98.00, 85.00, 100, 8.0, 6.0, 60, 'Laki-laki', '5 - 10 Juta', 'Sarjana', 'Ya', 'Kondusif', 'Tinggi', 'Siap', 'Rendah', 'TAV');

@@ -42,6 +42,7 @@ class Student(db.Model):
     kompetensi_skill_level = db.Column(db.Enum('Rendah', 'Menengah', 'Tinggi'), nullable=True)
     industry_readiness = db.Column(db.Enum('Siap', 'Belum Siap'), nullable=True)
     stress_level = db.Column(db.Enum('Rendah', 'Sedang', 'Berat'), nullable=True)
+    jurusan = db.Column(db.Enum('TKJ', 'TAV', 'TPTU', 'MULTIMEDIA'), nullable=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -51,7 +52,7 @@ class Prediction(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
     student_id = db.Column(db.String(36), db.ForeignKey('students.id'), nullable=False)
     predicted_exam_score = db.Column(db.Float, nullable=False)
-    risk_status = db.Column(db.Enum('Rendah', 'Netral', 'Tinggi'), nullable=False)
+    risk_status = db.Column(db.Enum('Sangat Beresiko', 'Beresiko', 'Aman'), nullable=False)
     model_version = db.Column(db.String(20), default='1.0.0')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
