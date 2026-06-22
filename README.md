@@ -1,98 +1,109 @@
 # VOCAVISION - Vocational Student Predictive Analytics
 
-VOCAVISION is a vocational student predictive analytics platform for early risk detection, performance insight, and academic intervention.
+VOCAVISION is a full-stack vocational student predictive analytics platform designed for early risk detection, academic performance forecasting, and targeted intervention.
 
 ---
 
+## Architecture Overview
+
+This project consists of two main parts:
+- **Frontend**: A modern UI built with Next.js, React, Tailwind CSS, and Recharts.
+- **Backend**: A Machine Learning API built with Python (Flask) that powers predictive analytics using a Random Forest model and SHAP explainability. 
+
 ## Project Links
 
-- Local app: http://localhost:3000
-- Backend API: http://localhost:5000
+- **Frontend Application**: `http://localhost:3000`
+- **Backend API**: `http://localhost:5000`
 
-## Quick start
+---
 
-You'll need Node.js installed. Then:
+## 🚀 Quick Start (Frontend)
 
-Install dependencies — pick your poison:
+You'll need Node.js installed. From the root directory:
 
-```bash
-npm install
-# or: yarn / pnpm install / bun install
-```
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-Copy the example env file and fill in your credentials:
+2. **Configure Environment**:
+   Copy the example env file and fill in your credentials:
+   ```bash
+   cp .env.example .env.local
+   ```
 
-```bash
-cp .env.example .env.local
-```
+3. **Start the Development Server**:
+   ```bash
+   npm run dev
+   ```
 
-Then start the dev server:
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-```bash
-npm run dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) and you're good.
+## ⚙️ Quick Start (Backend)
 
-## Deploying
+The backend handles the machine learning predictions, database integration (MySQL), and dataset management.
 
-Works out of the box on Vercel and Netlify.
+1. **Navigate to Backend Directory**:
+   ```bash
+   cd backend
+   ```
 
-## Notes
+2. **Setup Virtual Environment & Install Dependencies**:
+   ```bash
+   python -m venv .venv
+   .venv\Scripts\Activate.ps1  # Windows PowerShell
+   pip install -r requirements.txt
+   ```
 
-This workspace ships with a Flask backend and a Next.js frontend. Use the backend README for API and database setup details.
+3. **Configure Database**:
+   Set up your MySQL database and copy the environment variables inside `backend/.env`.
 
-## Update Logs
+4. **Run the Backend Server**:
+   ```bash
+   python run.py
+   ```
+   
+> **Note:** For full backend API details, endpoints, and deployment instructions, see the [Backend README](./backend/README.md).
 
-### Version 1.3.0 - [April 30, 2026]
+---
 
-- Update Tailwind CSS to v4 and update dependencies.
-- Added new authentication pages.
-- Updated to latest Next.js
-- Implemented authentication with BetterAuth and Prisma.
-- Configured Role-Based Access Control (RBAC).
-- Added user profile data mutations and queries in profile and settings pages.
+## 🔑 Demo Accounts
 
-### Development Progress - [June 02, 2026]
+You can log in to test different role-based views and features:
+- **Admin**: `admin@test.com` / `admin`
+- **Guru**: `guru@test.com` / `guru`
+- **Siswa**: `siswa@test.com` / `siswa`
 
-- Frontend: Redesigned sign-in landing page (responsive, 100vh hero, merged info sections).
-- Frontend: Implemented `Guru` (teacher) Dashboard UI with live data integration.
-  - Server page now fetches `/api/dashboard/stats` and `/api/students` and passes props to a client component.
-  - Added `src/app/(with-layout)/guru/dashboard/_components/teacher-dashboard.tsx` and updated `page.tsx` to use real backend data.
-  - Charts use Recharts; summary cards and alerts table show live counts and top-risk students.
-- Repo hygiene: Added `.gitignore` entries for Python caches and virtualenvs; removed tracked `__pycache__` and `.pyc` files.
+---
 
-If you want more detail on any of these items (files changed, API contracts, or how to run the backend), tell me which area to expand.
+## 🎯 Key Features
 
-### Version 1.2.3 - [Mar 16, 2026]
+### 1. Admin Dashboard
+- **User & Dataset Management**: Full CRUD operations for platform users and bulk `.csv`/`.xlsx` student dataset uploads.
+- **EDA Analytics**: Real-time Exploratory Data Analysis (EDA) visualizations using interactive charts.
 
-- Update Next.js to ^16.1.6 and configure image qualities
+### 2. Teacher (Guru) Dashboard
+- **Risk Monitoring**: Sorts and identifies students with high academic risk based on predictive modeling.
+- **Targeted Interventions**: Teachers can review SHAP insights for individual students and record custom interventions.
 
-### Version 1.2.2 - [December 01, 2025]
+### 3. Student (Siswa) Dashboard
+- **Self-Assessment**: Students can update their lifestyle, academic, and behavioral data.
+- **Live Prediction & Explanations**: Instant prediction of academic outcomes alongside feature-level insights showing what habits positively or negatively impacted their scores.
 
-- Updated to Next.js 16
-- Updated dependencies.
+---
 
-### Version 1.2.1 - [Mar 20, 2025]
+## 🛠 Tech Stack
 
-- Fix Peer dependency issues and NextConfig warning.
-- Updated apexcharts and react-apexhcarts to the latest version.
+- **Frontend**: Next.js 15+, React 19, Tailwind CSS v4, Recharts, BetterAuth
+- **Backend**: Python 3.11+, Flask, Scikit-Learn (RandomForestClassifier), SHAP, SQLAlchemy
+- **Database**: MySQL / MariaDB
 
-### Version 1.2.0 - Major Upgrade and UI Improvements - [Jan 27, 2025]
+---
 
-- Upgraded to Next.js v15 and updated dependencies
-- API integration with loading skeleton for tables and charts.
-- Improved code structure for better readability.
-- Rebuilt components like dropdown, sidebar, and all ui-elements using accessibility practices.
-- Using search-params to store dropdown selection and refetch data.
-- Semantic markups, better separation of concerns and more.
+## 📝 Recent Updates
 
-### Version 1.1.0
-
-- Updated Dependencies
-- Removed Unused Integrations
-- Optimized App
-
-### Version 1.0
-
-- Initial Release - [May 13, 2024]
+- **Machine Learning Integration**: Replaced mock data with live Flask API predictions. Risk statuses synchronized to `Sangat Beresiko`, `Aman`, and `Sangat Aman`.
+- **SHAP Explanations**: Added SHAP visualization charts for individual students to understand their risk drivers.
+- **Repository Hygiene**: Completely cleaned up experimental test scripts, caches, and mock files.
