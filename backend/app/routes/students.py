@@ -60,12 +60,7 @@ def get_students():
     student_ids = [s.id for s in students]
     latest_preds = {}
     
-    # Map DB risk classes to frontend risk classes
-    risk_map = {
-        'Aman': 'Tinggi',
-        'Beresiko': 'Netral',
-        'Sangat Beresiko': 'Rendah'
-    }
+    # No longer mapping risk classes
 
     if student_ids:
         preds_q = Prediction.query.filter(Prediction.student_id.in_(student_ids)).order_by(Prediction.student_id, Prediction.created_at.desc()).all()
@@ -77,7 +72,7 @@ def get_students():
     result = []
     for s in students:
         pred = latest_preds.get(s.id)
-        mapped_risk = risk_map.get(pred.risk_status, pred.risk_status) if pred else None
+        mapped_risk = pred.risk_status if pred else None
         
         if risk_filter and pred and mapped_risk != risk_filter:
             continue
@@ -145,12 +140,7 @@ def get_student_detail(student_id):
 
     pred = Prediction.query.filter_by(student_id=student.id).order_by(Prediction.created_at.desc()).first()
     
-    risk_map = {
-        'Aman': 'Tinggi',
-        'Beresiko': 'Netral',
-        'Sangat Beresiko': 'Rendah'
-    }
-    mapped_risk = risk_map.get(pred.risk_status, pred.risk_status) if pred else None
+    mapped_risk = pred.risk_status if pred else None
 
     return jsonify({
         'id': student.id,

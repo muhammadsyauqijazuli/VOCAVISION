@@ -53,7 +53,7 @@ function formatNumber(value: number | null | undefined) {
 }
 
 function getRiskCount(stats: DashboardStatsResponse) {
-  return (stats.rendah ?? 0) + (stats.netral ?? 0);
+  return (stats.sangat_beresiko ?? 0) + (stats.aman ?? 0);
 }
 
 function getAverageScore(stats: DashboardStatsResponse) {
@@ -99,34 +99,30 @@ function buildSummaryStats(stats: DashboardStatsResponse): SummaryStat[] {
 }
 
 function buildRiskSegments(stats: DashboardStatsResponse): RiskSegment[] {
-  const totalStudents = Math.max(stats.total_siswa ?? 0, 0);
-  const safeCount = Math.max(stats.tinggi ?? 0, 0);
-  const highCount = Math.max(stats.netral ?? 0, 0);
-  const veryHighCount = Math.max(stats.rendah ?? 0, 0);
+  const total = Math.max(stats.total_siswa ?? 0, 0);
 
   return [
     {
-      label: "Sangat Aman",
-      count: safeCount,
-      share: totalStudents ? Math.round((safeCount / totalStudents) * 100) : 0,
-      color: "#3BA99C",
-      description: "Mayoritas siswa berada di zona aman dan stabil.",
+      label: "Sangat Beresiko",
+      count: stats.sangat_beresiko ?? 0,
+      share:
+        total > 0 ? Math.round(((stats.sangat_beresiko ?? 0) / total) * 100) : 0,
+      color: "#E74C3C",
+      description: "Butuh intervensi segera",
     },
     {
       label: "Aman",
-      count: highCount,
-      share: totalStudents ? Math.round((highCount / totalStudents) * 100) : 0,
+      count: stats.aman ?? 0,
+      share: total > 0 ? Math.round(((stats.aman ?? 0) / total) * 100) : 0,
       color: "#F39C12",
-      description: "Perlu pemantauan mingguan dan follow-up ringan.",
+      description: "Perlu pemantauan berkala",
     },
     {
-      label: "Sangat Beresiko",
-      count: veryHighCount,
-      share: totalStudents
-        ? Math.round((veryHighCount / totalStudents) * 100)
-        : 0,
-      color: "#E74C3C",
-      description: "Butuh intervensi akademik dan komunikasi wali kelas.",
+      label: "Sangat Aman",
+      count: stats.sangat_aman ?? 0,
+      share: total > 0 ? Math.round(((stats.sangat_aman ?? 0) / total) * 100) : 0,
+      color: "#3BA99C",
+      description: "Performa belajar stabil",
     },
   ];
 }

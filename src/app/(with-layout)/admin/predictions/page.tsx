@@ -19,48 +19,7 @@ type AdminPredictionsPageProps = {
   }>;
 };
 
-function getRiskBadgeClass(riskStatus: string | null) {
-  if (riskStatus === "Rendah") {
-    return "inline-flex rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white";
-  }
 
-  if (riskStatus === "Netral") {
-    return "inline-flex rounded-full bg-brand-warning px-3 py-1 text-xs font-semibold text-white";
-  }
-
-  if (riskStatus === "Tinggi") {
-    return "inline-flex rounded-full bg-brand-accent-2 px-3 py-1 text-xs font-semibold text-brand-header";
-  }
-
-  return "inline-flex rounded-full bg-gray-200 px-3 py-1 text-xs font-semibold text-dark-4 dark:bg-dark-3 dark:text-dark-6";
-}
-
-function formatScore(score: number | null) {
-  if (score === null || Number.isNaN(score)) {
-    return "-";
-  }
-
-  return Number(score).toFixed(2);
-}
-
-function getDisplayRiskStatus(student: StudentPrediction) {
-  if (
-    student.predicted_score === null ||
-    Number.isNaN(student.predicted_score)
-  ) {
-    return student.risk_status ?? "Belum ada prediksi";
-  }
-
-  if (student.predicted_score <= 70) {
-    return "Rendah";
-  }
-
-  if (student.predicted_score <= 85) {
-    return "Netral";
-  }
-
-  return "Tinggi";
-}
 
 export default async function AdminPredictionsPage({
   searchParams,

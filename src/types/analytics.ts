@@ -55,15 +55,15 @@ export type DashboardStatsResponse = {
   jumlah_siswa_berprediksi?: number;
   rata_rata_nilai_raport?: number;
   jumlah_siswa_dinilai?: number;
-  rendah?: number;
-  netral?: number;
-  tinggi?: number;
+  sangat_beresiko?: number;
+  aman?: number;
+  sangat_aman?: number;
   top_risky_students?: Array<{
     student_id: string;
     nama: string;
     nisn: string;
     role: string;
-    predicted_nilai_raport: number | null;
+    predicted_score: number | null;
     risk_status: RiskStatus;
   }>;
 };

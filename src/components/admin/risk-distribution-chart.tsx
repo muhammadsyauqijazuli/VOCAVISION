@@ -6,9 +6,9 @@ import dynamic from "next/dynamic";
 
 type PropsType = {
   data: {
-    rendah: number;
-    netral: number;
-    tinggi: number;
+    sangat_beresiko: number;
+    aman: number;
+    sangat_aman: number;
   };
 };
 
@@ -61,7 +61,7 @@ export function RiskDistributionChart({ data }: PropsType) {
     <div className="h-80">
       <Chart
         options={options}
-        series={[data.rendah, data.netral, data.tinggi]}
+        series={[data.sangat_beresiko, data.aman, data.sangat_aman]}
         type="donut"
         height={isMobile ? 280 : 320}
       />

@@ -27,7 +27,7 @@ type DashboardStats = {
     nama: string;
     nisn: string;
     role: string;
-    predicted_nilai_raport: number | null;
+    predicted_score: number | null;
     risk_status: string;
   }[];
 };
@@ -140,11 +140,11 @@ export default async function AdminDashboardPage() {
             Distribusi Risiko
           </p>
           <h3 className="text-3xl font-bold text-dark dark:text-white">
-            {stats.rendah ?? 0} / {stats.netral ?? 0} /{" "}
-            {stats.tinggi ?? 0}
+            {stats.sangat_beresiko ?? 0} / {stats.aman ?? 0} /{" "}
+            {stats.sangat_aman ?? 0}
           </h3>
           <p className="mt-2 text-sm text-dark-4 dark:text-dark-6">
-            Rendah / Netral / Tinggi
+            Sangat Beresiko / Aman / Sangat Aman
           </p>
         </div>
       </section>
@@ -165,9 +165,9 @@ export default async function AdminDashboardPage() {
 
           <RiskDistributionChart
             data={{
-              rendah: stats.rendah ?? 0,
-              netral: stats.netral ?? 0,
-              tinggi: stats.tinggi ?? 0,
+              sangat_beresiko: stats.sangat_beresiko ?? 0,
+              aman: stats.aman ?? 0,
+              sangat_aman: stats.sangat_aman ?? 0,
             }}
           />
         </div>
@@ -217,12 +217,12 @@ export default async function AdminDashboardPage() {
                           {student.nisn}
                         </td>
                         <td className="px-4 py-4 text-dark-4 dark:text-dark-6">
-                          {student.predicted_nilai_raport ?? "-"}
+                          {student.predicted_score ?? "-"}
                         </td>
                         <td className="px-4 py-4">
                           <RiskBadge
                             status={student.risk_status}
-                            score={student.predicted_nilai_raport}
+                            score={student.predicted_score}
                           />
                         </td>
                       </tr>

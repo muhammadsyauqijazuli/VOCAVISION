@@ -52,7 +52,7 @@ class Prediction(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
     student_id = db.Column(db.String(36), db.ForeignKey('students.id'), nullable=False)
     predicted_exam_score = db.Column(db.Float, nullable=False)
-    risk_status = db.Column(db.Enum('Sangat Beresiko', 'Beresiko', 'Aman'), nullable=False)
+    risk_status = db.Column(db.Enum('Sangat Beresiko', 'Aman', 'Sangat Aman'), nullable=False)
     model_version = db.Column(db.String(20), default='1.0.0')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

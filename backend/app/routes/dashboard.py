@@ -29,7 +29,7 @@ def stats():
     scored_students = 0
     rata_rata_nilai_raport = 0.0
     jumlah_siswa_dinilai = 0
-    risk_counts = {'Rendah': 0, 'Netral': 0, 'Tinggi': 0}
+    risk_counts = {'Sangat Beresiko': 0, 'Aman': 0, 'Sangat Aman': 0}
     top_risky_students = []
 
     if latest_preds:
@@ -43,16 +43,12 @@ def stats():
             key=lambda item: item.predicted_exam_score if item.predicted_exam_score is not None else 10**9,
         )
 
-        risk_map = {
-            'Aman': 'Tinggi',
-            'Beresiko': 'Netral',
-            'Sangat Beresiko': 'Rendah'
-        }
+        # Removed risk_map
 
         for prediction in ordered_predictions[:5]:
             student = Student.query.get(prediction.student_id)
             user = User.query.get(student.user_id) if student and student.user_id else None
-            mapped_risk = risk_map.get(prediction.risk_status, prediction.risk_status)
+            mapped_risk = prediction.risk_status
             top_risky_students.append({
                 'student_id': prediction.student_id,
                 'nama': student.nama_siswa if student else '-',
@@ -67,16 +63,13 @@ def stats():
         rata_rata_nilai_raport = sum(student_scores) / len(student_scores)
         jumlah_siswa_dinilai = len(student_scores)
 
-    risk_map = {
-        'Aman': 'Tinggi',
-        'Beresiko': 'Netral',
-        'Sangat Beresiko': 'Rendah'
-    }
-    
     for prediction in latest_preds.values():
-        mapped_risk = risk_map.get(prediction.risk_status, prediction.risk_status)
-        if mapped_risk in risk_counts:
-            risk_counts[mapped_risk] += 1
+        risk_status = prediction.risk_status
+        if risk_status in risk_counts:
+            risk_counts[risk_status] += 1
+        elif risk_status == "Aman" and "Aman" not in risk_counts:
+             # Just in case we didn't init it
+             pass
 
     return jsonify({
         'total_siswa': total_students,
@@ -84,8 +77,8 @@ def stats():
         'jumlah_siswa_berprediksi': scored_students,
         'rata_rata_nilai_raport': round(rata_rata_nilai_raport, 2),
         'jumlah_siswa_dinilai': jumlah_siswa_dinilai,
-        'rendah': risk_counts.get('Rendah', 0),
-        'netral': risk_counts.get('Netral', 0),
-        'tinggi': risk_counts.get('Tinggi', 0),
+        'sangat_beresiko': risk_counts.get('Sangat Beresiko', 0),
+        'aman': risk_counts.get('Aman', 0),
+        'sangat_aman': risk_counts.get('Sangat Aman', 0),
         'top_risky_students': top_risky_students,
     }), 200

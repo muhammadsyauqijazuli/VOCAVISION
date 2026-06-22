@@ -156,22 +156,22 @@ function buildRiskData(
   students: AnalyticsStudentRecord[],
 ) {
   const hasStats =
-    typeof stats.rendah === "number" ||
-    typeof stats.netral === "number" ||
-    typeof stats.tinggi === "number";
+    typeof stats.sangat_beresiko === "number" ||
+    typeof stats.aman === "number" ||
+    typeof stats.sangat_aman === "number";
 
   if (hasStats) {
     return [
-      { name: "Sangat Beresiko", value: stats.rendah ?? 0 },
-      { name: "Aman", value: stats.netral ?? 0 },
-      { name: "Sangat Aman", value: stats.tinggi ?? 0 },
+      { name: "Sangat Beresiko", value: stats.sangat_beresiko ?? 0 },
+      { name: "Aman", value: stats.aman ?? 0 },
+      { name: "Sangat Aman", value: stats.sangat_aman ?? 0 },
     ];
   }
 
   const counts = {
-    Rendah: 0,
-    Netral: 0,
-    Tinggi: 0,
+    "Sangat Beresiko": 0,
+    "Aman": 0,
+    "Sangat Aman": 0,
   };
 
   for (const student of students) {
@@ -183,9 +183,9 @@ function buildRiskData(
   }
 
   return [
-    { name: "Sangat Beresiko", value: counts.Rendah },
-    { name: "Aman", value: counts.Netral },
-    { name: "Sangat Aman", value: counts.Tinggi },
+    { name: "Sangat Beresiko", value: counts["Sangat Beresiko"] },
+    { name: "Aman", value: counts["Aman"] },
+    { name: "Sangat Aman", value: counts["Sangat Aman"] },
   ];
 }
 
@@ -424,7 +424,7 @@ export function AnalyticsDashboard({
     students.map((student) => student.jam_belajar_per_hari).filter(isNumber),
   );
   const lowRiskCount =
-    stats.rendah ??
+    stats.sangat_beresiko ??
     riskData.find((item) => item.name === "Sangat Beresiko")?.value ??
     0;
 
