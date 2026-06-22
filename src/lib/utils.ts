@@ -19,7 +19,7 @@ export function getRiskStatus(
     return null;
   }
 
-  if (parsedScore <= 70) {
+  if (parsedScore <= 83.36) {
     return "Sangat Beresiko";
   }
 

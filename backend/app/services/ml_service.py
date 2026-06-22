@@ -224,7 +224,7 @@ class MLService:
 
         print("Initializing dummy model for development...")
         X_dummy = np.random.rand(100, 12)
-        y_cls_dummy = np.random.choice(['Sangat Beresiko', 'Beresiko', 'Aman'], 100)
+        y_cls_dummy = np.random.choice(['Sangat Beresiko', 'Aman', 'Sangat Aman'], 100)
 
         self.classifier = RFC(n_estimators=10, random_state=42)
         self.classifier.fit(X_dummy, y_cls_dummy)
@@ -524,8 +524,8 @@ class MLService:
             classes = list(self.classifier.classes_)
             
             p_sangat_beresiko = proba[classes.index('Sangat Beresiko')] if 'Sangat Beresiko' in classes else 0
-            p_beresiko = proba[classes.index('Beresiko')] if 'Beresiko' in classes else 0
             p_aman = proba[classes.index('Aman')] if 'Aman' in classes else 0
+            p_sangat_aman = proba[classes.index('Sangat Aman')] if 'Sangat Aman' in classes else 0
             
             low_3 = self.quantiles.get('low_3', 83.36)
             high_3 = self.quantiles.get('high_3', 85.0)
@@ -533,13 +533,13 @@ class MLService:
             if risk_status == 'Sangat Beresiko':
                 # Map from (low_3 - 5) to low_3
                 predicted_score = (low_3 - 5) + (5 * (1 - p_sangat_beresiko))
-            elif risk_status == 'Beresiko':
+            elif risk_status == 'Aman':
                 # Map from low_3 to high_3
                 range_val = high_3 - low_3
-                predicted_score = low_3 + (range_val * p_aman)
+                predicted_score = low_3 + (range_val * p_sangat_aman)
             else:
                 # Map from high_3 to (high_3 + 5)
-                predicted_score = high_3 + (5 * p_aman)
+                predicted_score = high_3 + (5 * p_sangat_aman)
                 
             predicted_score = float(np.clip(predicted_score, 0, 100))
         except Exception as e:
@@ -547,7 +547,7 @@ class MLService:
             # Fallback
             low_3 = self.quantiles.get('low_3', 83.36)
             high_3 = self.quantiles.get('high_3', 85.0)
-            mapping = {'Sangat Beresiko': low_3 - 2, 'Beresiko': (low_3 + high_3)/2, 'Aman': high_3 + 2}
+            mapping = {'Sangat Beresiko': low_3 - 2, 'Aman': (low_3 + high_3)/2, 'Sangat Aman': high_3 + 2}
             predicted_score = mapping.get(risk_status, 80.0)
 
         # SHAP Analysis (pada classifier)
@@ -657,6 +657,6 @@ class MLService:
         if score <= low_3:
             return 'Sangat Beresiko'
         elif score <= high_3:
-            return 'Beresiko'
-        else:
             return 'Aman'
+        else:
+            return 'Sangat Aman'

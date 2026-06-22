@@ -25,7 +25,7 @@ import { formatRiskStatus } from "@/lib/utils";
    TYPE DEFINITIONS
    ================================================================ */
 
-type RiskStatus = "Rendah" | "Netral" | "Tinggi";
+type RiskStatus = "Sangat Beresiko" | "Aman" | "Sangat Aman";
 
 type ShapInsight = {
   feature_name: string;
@@ -515,13 +515,13 @@ function getAnswerDisplayText(q: Question, answer: string | number): string {
 
 function getRiskConfig(status?: RiskStatus) {
   switch (status) {
-    case "Tinggi":
+    case "Sangat Aman":
       return {
         badge: "bg-green-light-7 text-green ring-1 ring-green/20",
         bar: "bg-green",
         dot: "bg-green",
       };
-    case "Netral":
+    case "Aman":
       return {
         badge: "bg-yellow-light-4 text-yellow-dark ring-1 ring-yellow-dark/20",
         bar: "bg-yellow-dark",
@@ -683,7 +683,7 @@ export default function UpdateDataPage() {
         setResult({
           student_id: "-",
           predicted_nilai_raport: data.predicted_nilai_raport ?? 0,
-          risk_status: data.risk_status ?? "Rendah",
+          risk_status: data.risk_status ?? "Sangat Beresiko",
           shap_analysis: data.shap_analysis ?? [],
           source: "prediction",
         });
@@ -703,7 +703,7 @@ export default function UpdateDataPage() {
         setResult({
           student_id: data.student_id,
           predicted_nilai_raport: data.predicted_nilai_raport ?? 0,
-          risk_status: data.risk_status ?? "Rendah",
+          risk_status: data.risk_status ?? "Sangat Beresiko",
           shap_analysis: data.shap_analysis ?? [],
           source: "prediction",
         });

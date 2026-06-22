@@ -19,9 +19,9 @@ type DashboardStats = {
   rata_rata_nilai_raport?: number;
   jumlah_siswa_berprediksi?: number;
   jumlah_siswa_dinilai?: number;
-  rendah?: number;
-  netral?: number;
-  tinggi?: number;
+  sangat_beresiko?: number;
+  aman?: number;
+  sangat_aman?: number;
   top_risky_students?: {
     student_id: string;
     nama: string;

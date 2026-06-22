@@ -55,9 +55,9 @@ export default function SearchFormClient({
           className="w-full rounded-lg border border-stroke bg-transparent px-4 py-3 text-dark transition outline-none focus:border-primary dark:border-dark-3 dark:text-white"
         >
           <option value="">Semua</option>
-          <option value="Rendah">Rendah</option>
-          <option value="Netral">Netral</option>
-          <option value="Tinggi">Tinggi</option>
+          <option value="Sangat Beresiko">Sangat Beresiko</option>
+          <option value="Aman">Aman</option>
+          <option value="Sangat Aman">Sangat Aman</option>
         </select>
       </label>
 
