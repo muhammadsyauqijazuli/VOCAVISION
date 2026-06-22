@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+import { formatShapFeatureName } from "@/lib/utils";
 
 export type SHAPDataItem = {
   feature_name: string;
@@ -32,8 +33,13 @@ export function SHAPChart({ data }: SHAPChartProps) {
     );
   }
 
-  // Ensure data is sorted by absolute impact
-  const sortedData = [...data].sort(
+  // Format names and ensure data is sorted by absolute impact
+  const formattedData = data.map((item) => ({
+    ...item,
+    feature_name: formatShapFeatureName(item.feature_name),
+  }));
+
+  const sortedData = [...formattedData].sort(
     (a, b) => Math.abs(b.impact_value) - Math.abs(a.impact_value),
   );
 

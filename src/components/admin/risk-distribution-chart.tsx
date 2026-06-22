@@ -25,7 +25,7 @@ export function RiskDistributionChart({ data }: PropsType) {
       fontFamily: "inherit",
     },
     colors: ["#E74C3C", "#F39C12", "#3BA99C"],
-    labels: ["Rendah", "Netral", "Tinggi"],
+    labels: ["Sangat Beresiko", "Aman", "Sangat Aman"],
     legend: {
       position: "bottom",
       labels: {

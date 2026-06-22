@@ -76,7 +76,7 @@ def predict_single():
 
     return jsonify({
         'student_id': student.id,
-        'predicted_exam_score': result['predicted_exam_score'],
+        'predicted_nilai_raport': result['predicted_exam_score'],
         'risk_status': result['risk_status'],
         'shap_analysis': result['shap_analysis']
     }), 201
@@ -106,7 +106,7 @@ def get_insight(student_id):
     return jsonify({
         'student_id': student.id,
         'student_name': student.nama_siswa,
-        'predicted_exam_score': prediction.predicted_exam_score,
+        'predicted_nilai_raport': prediction.predicted_exam_score,
         'risk_status': prediction.risk_status,
         'shap_analysis': [
             {

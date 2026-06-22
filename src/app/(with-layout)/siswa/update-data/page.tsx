@@ -19,6 +19,7 @@ import {
   FiTarget,
   FiLock,
 } from "react-icons/fi";
+import { formatRiskStatus } from "@/lib/utils";
 
 /* ================================================================
    TYPE DEFINITIONS
@@ -34,7 +35,7 @@ type ShapInsight = {
 
 type PredictionResponse = {
   student_id?: string;
-  predicted_exam_score?: number;
+  predicted_nilai_raport?: number;
   risk_status?: RiskStatus;
   shap_analysis?: ShapInsight[];
   model_version?: string;
@@ -44,7 +45,7 @@ type PredictionResponse = {
 type InsightResponse = {
   student_id: string;
   student_name: string;
-  predicted_exam_score: number;
+  predicted_nilai_raport: number;
   risk_status: RiskStatus;
   shap_analysis: ShapInsight[];
   message?: string;
@@ -53,7 +54,7 @@ type InsightResponse = {
 type ResultState = {
   student_id: string;
   student_name?: string;
-  predicted_exam_score: number;
+  predicted_nilai_raport: number;
   risk_status: RiskStatus;
   shap_analysis: ShapInsight[];
   source: "prediction" | "insight";
@@ -453,8 +454,7 @@ function convertToPayload(answers: Record<number, string | number>) {
     stress_level,
     // Fields not filled by student — backend handles from DB
     nilai_rata_rata_raport: null,
-    kehadiran_pelatihan_industry: null,
-    exam_score: null,
+
   };
 }
 
@@ -682,7 +682,7 @@ export default function UpdateDataPage() {
       if (!data.student_id) {
         setResult({
           student_id: "-",
-          predicted_exam_score: data.predicted_exam_score ?? 0,
+          predicted_nilai_raport: data.predicted_nilai_raport ?? 0,
           risk_status: data.risk_status ?? "Rendah",
           shap_analysis: data.shap_analysis ?? [],
           source: "prediction",
@@ -702,7 +702,7 @@ export default function UpdateDataPage() {
       if (!insightResponse.ok) {
         setResult({
           student_id: data.student_id,
-          predicted_exam_score: data.predicted_exam_score ?? 0,
+          predicted_nilai_raport: data.predicted_nilai_raport ?? 0,
           risk_status: data.risk_status ?? "Rendah",
           shap_analysis: data.shap_analysis ?? [],
           source: "prediction",
@@ -713,7 +713,7 @@ export default function UpdateDataPage() {
       setResult({
         student_id: insightData.student_id,
         student_name: insightData.student_name,
-        predicted_exam_score: insightData.predicted_exam_score,
+        predicted_nilai_raport: insightData.predicted_nilai_raport,
         risk_status: insightData.risk_status,
         shap_analysis: insightData.shap_analysis ?? [],
         source: "insight",
@@ -1194,16 +1194,16 @@ export default function UpdateDataPage() {
                   {/* Score Block */}
                   <div className="rounded-xl bg-dark p-5 dark:bg-dark-2">
                     <p className="text-xs font-semibold tracking-wider text-white/60 uppercase">
-                      Predicted Exam Score
+                      Prediksi Nilai Rata-rata Raport
                     </p>
                     <div className="mt-2 flex flex-wrap items-end gap-3">
                       <span className="text-4xl font-bold tracking-tight text-white">
-                        {result.predicted_exam_score.toFixed(2)}
+                        {result.predicted_nilai_raport.toFixed(2)}
                       </span>
                       <span
                         className={`rounded-full px-3 py-1 text-sm font-semibold ${riskConfig.badge}`}
                       >
-                        {result.risk_status}
+                        {formatRiskStatus(result.risk_status)}
                       </span>
                     </div>
                     <p className="mt-3 text-sm text-white/75">

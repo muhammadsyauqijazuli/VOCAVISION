@@ -1,200 +1,200 @@
-nisn,nama_siswa,gender,jurusan,kerja_sampingan,ses_index,jam_belajar_per_hari,screen_time,jam_tidur,deviasi_tidur,presentase_kehadiran,industry_readiness,study_environment,skor_time_management,motivasi_akademik,kompetensi_skill_level,stress_level,nilai_rata_rata_raport,nilai_raport_zscore_jurusan
-3105858845,M. Farid alfarisi,Laki-laki,TKJ,Ya,12,1.0,6.0,10.0,2.0,99.02,Siap,Kondusif,80.0,60,Rendah,Rendah,83.57,-0.42553287541586127
-0095714311,Almuntazar,Laki-laki,TPTU,Tidak,4,8.0,3.0,10.0,2.0,86.27,Siap,Kondusif,60.0,100,Rendah,Rendah,84.75,0.8684420020713751
-0109189747,Furkan,Laki-laki,TKJ,Tidak,7,1.0,3.0,10.0,2.0,96.08,Belum Siap,Kondusif,40.0,20,Rendah,Rendah,81.71,-1.5863145730884456
-0082559539,Alisa Putri Ananda,Perempuan,TKJ,Tidak,9,7.0,4.0,10.0,2.0,89.22,Siap,Kurang Kondusif,80.0,20,Rendah,Sedang,85.5,0.7789341549648356
-008619209,Asmaul Husna Fitria,Perempuan,TKJ,Tidak,7,2.0,1.0,10.0,2.0,85.29,Belum Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,85.92,1.0410461512134848
-0083922322,FAIEZA GHUFRAN,Laki-laki,TAV,Tidak,4,1.0,2.0,10.0,2.0,91.18,Belum Siap,Kondusif,60.0,20,Rendah,Sedang,83.58,-0.27536160612899746
-0095034994,finza zulfahri,Laki-laki,TKJ,Tidak,3,2.0,1.0,10.0,2.0,77.45,Siap,Kondusif,60.0,60,Rendah,Sedang,83.5,-0.46921820812396503
-0084112239,ALIF ANWAR,Laki-laki,TAV,Ya,3,10.0,3.0,10.0,2.0,94.12,Belum Siap,Cukup Kondusif,60.0,20,Rendah,Sedang,85.58,0.7854955029106877
-0087323517,DESTIAN FACHRI,Laki-laki,TPTU,Ya,7,3.0,3.0,0.0,8.0,76.47,Siap,Cukup Kondusif,60.0,20,Rendah,Rendah,84.5,0.7597477242477952
-0082146314,zahratul jannah,Perempuan,TKJ,Tidak,9,3.0,4.0,10.0,2.0,97.06,Siap,Kurang Kondusif,60.0,100,Rendah,Rendah,88.25,2.4951436542119363
-0095753214,Eka pandu pratama,Laki-laki,TKJ,Tidak,3,1.0,3.0,10.0,2.0,79.41,Siap,Kurang Kondusif,40.0,100,Rendah,Rendah,84.83,0.3608031133300863
-0094249048,QUMAYRA SALINA,Perempuan,TKJ,Tidak,12,1.0,8.0,10.0,2.0,69.61,Siap,Cukup Kondusif,20.0,100,Rendah,Rendah,86.58,1.4529364310327868
-0083109460,Syibran malasyi,Laki-laki,TAV,Ya,9,2.0,3.0,10.0,2.0,95.1,Siap,Kurang Kondusif,60.0,20,Rendah,Sedang,83.25,-0.4504030291205446
-0081365318,Nurul fahmi,Perempuan,TKJ,Tidak,5,1.0,5.0,10.0,2.0,88.24,Siap,Cukup Kondusif,80.0,60,Rendah,Sedang,86.08,1.1408983402605868
-0106949460,Muhammad Alfiansyah,Laki-laki,TKJ,Tidak,7,2.0,2.0,10.0,2.0,99.02,Siap,Cukup Kondusif,60.0,60,Rendah,Rendah,85.71,0.9099901530891558
-0072467252,Yusnandar,Laki-laki,TAV,Ya,3,1.0,2.0,10.0,2.0,94.12,Siap,Cukup Kondusif,60.0,100,Rendah,Sedang,85.08,0.5202812256507664
-0089252718,Azkal azkia,Laki-laki,TKJ,Ya,5,1.0,3.0,10.0,2.0,94.12,Siap,Kondusif,40.0,100,Rendah,Rendah,85.83,0.9848792948744867
-0104011229,Putri Nazilla Hasmita,Perempuan,TKJ,Tidak,8,1.0,5.0,10.0,2.0,98.04,Siap,Kondusif,60.0,20,Rendah,Sedang,85.43,0.7352488222567318
-3092099525,Muhammad Habil,Laki-laki,TAV,Tidak,6,1.0,2.0,10.0,2.0,80.39,Belum Siap,Kondusif,40.0,20,Rendah,Sedang,82.07,-1.0763087234539626
-0086438346,ARIF PUTRA,Laki-laki,TAV,Ya,6,1.0,5.0,10.0,2.0,99.02,Siap,Kurang Kondusif,60.0,60,Rendah,Rendah,86.0,1.0082754958090225
-3094202338,yogie atha fayruz,Laki-laki,TKJ,Tidak,7,2.0,3.0,10.0,2.0,98.04,Siap,Kondusif,60.0,60,Rendah,Rendah,85.57,0.8226194876729394
-0091801578,Nadiatul safara,Perempuan,TKJ,Tidak,4,2.0,2.0,10.0,2.0,91.18,Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,86.0,1.0909722457370357
-0096964198,Muhammad Ghifari,Laki-laki,TKJ,Tidak,6,1.0,5.0,10.0,2.0,100.0,Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,83.86,-0.24455078276798128
-0101814471,Zulfia rahmat,Laki-laki,TKJ,Ya,4,1.0,5.0,10.0,2.0,98.04,Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,82.43,-1.136979722376469
-3097233929,Zahwa aqilla,Perempuan,TKJ,Tidak,10,3.0,6.0,10.0,2.0,93.14,Siap,Kondusif,80.0,60,Rendah,Rendah,87.92,2.2891985143022855
-0101318375,ERI ALFAZI,Laki-laki,TKJ,Tidak,7,1.0,4.0,10.0,2.0,98.04,Siap,Kondusif,80.0,20,Rendah,Rendah,84.0,-0.15718011735176488
-3097511997,Muhammad afdhal,Laki-laki,TPTU,Ya,6,1.0,4.0,10.0,2.0,69.61,Belum Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,84.67,0.8336598331678303
-0099617744,MUHAMMAD AZKA AQILLA,Laki-laki,TKJ,Ya,12,3.0,3.0,10.0,2.0,86.27,Siap,Kondusif,80.0,100,Rendah,Sedang,84.5,0.15485797342043528
-0092380770,M.KHALILUDDIN,Laki-laki,TKJ,Ya,6,1.0,4.0,10.0,2.0,97.06,Siap,Cukup Kondusif,80.0,60,Rendah,Rendah,82.5,-1.0932943896683653
-0097320013,MUHAMMAD WALIYUL MURTAZHA,Laki-laki,TAV,Ya,6,1.0,2.0,10.0,2.0,94.12,Siap,Kondusif,80.0,20,Rendah,Rendah,86.75,1.4060969116989044
-3108577412,Fathira luthfiah,Perempuan,TKJ,Tidak,9,3.0,1.0,10.0,2.0,91.18,Siap,Kondusif,80.0,100,Rendah,Rendah,83.29,-0.6002742062482852
-0094520172,MUHAMMAD FAZHIL,Laki-laki,TAV,Ya,6,2.0,3.0,10.0,2.0,99.02,Siap,Kondusif,40.0,60,Rendah,Sedang,85.92,0.965841211447436
-0072502421,Firlia Barakatun Nasaba,Perempuan,MULTIMEDIA,Ya,11,2.0,2.0,10.0,2.0,91.18,Siap,Kondusif,80.0,100,Rendah,Rendah,87.67,1.8105004185877702
-0108839921,MAUZATUL FAZILAH,Perempuan,TKJ,Ya,4,1.0,5.0,10.0,2.0,97.06,Siap,Kondusif,80.0,60,Rendah,Sedang,84.0,-0.15718011735176488
-3094362863,munifatuzahra,Perempuan,TKJ,Tidak,6,1.0,3.0,10.0,2.0,91.18,Siap,Kondusif,40.0,60,Rendah,Rendah,82.14,-1.317961815024349
-0097772066,Rauzatulbalqis,Perempuan,MULTIMEDIA,Tidak,8,2.0,4.0,10.0,2.0,97.06,Siap,Cukup Kondusif,80.0,100,Rendah,Rendah,88.0,2.046018840900076
-010394098547,MUHAMMAD RAFI MAULANA,Laki-laki,TAV,Tidak,7,0.0,2.0,10.0,2.0,88.24,Siap,Kondusif,80.0,20,Rendah,Rendah,82.27,-0.9702230125499924
-0098525474,EKA HIDAYAT,Laki-laki,TAV,Ya,8,1.0,2.0,10.0,2.0,99.02,Siap,Kondusif,80.0,20,Rendah,Rendah,87.83,1.9789597505803334
-2068,m.nabil Saputra,Laki-laki,TAV,Tidak,6,2.0,6.0,10.0,2.0,92.16,Siap,Kondusif,60.0,20,Rendah,Rendah,85.07,0.5149769401055653
-3096123317,Nurul asyiqin,Perempuan,TKJ,Tidak,10,2.0,5.0,10.0,2.0,93.14,Siap,Kondusif,80.0,20,Rendah,Rendah,83.36,-0.5565888735401815
-3090284946,Tara Aliya,Perempuan,MULTIMEDIA,Ya,5,2.0,3.0,10.0,2.0,95.1,Siap,Kurang Kondusif,60.0,60,Rendah,Berat,86.25,0.7970575104560244
-0081579201,Nurul syatilla,Perempuan,MULTIMEDIA,Tidak,7,2.0,4.0,10.0,2.0,96.08,Siap,Kondusif,80.0,20,Rendah,Sedang,86.75,1.1539036048686104
-0096455974,AFRAL ABILA,Laki-laki,TAV,Ya,4,1.0,3.0,10.0,2.0,98.04,Siap,Kondusif,40.0,20,Rendah,Rendah,83.2,-0.4769244568465352
-00912255369,HAIKAL EFENDI,Laki-laki,TPTU,Tidak,7,3.0,2.0,10.0,2.0,97.06,Siap,Cukup Kondusif,80.0,100,Rendah,Sedang,86.08,1.4466955600928197
-0101491733,MUHAMMAD ROZI,Laki-laki,TKJ,Ya,8,1.0,3.0,10.0,2.0,99.02,Belum Siap,Kondusif,80.0,60,Rendah,Rendah,81.43,-1.7610559039208695
-0103435080,vivi khairani,Perempuan,TKJ,Tidak,5,2.0,4.0,10.0,2.0,94.12,Siap,Kondusif,60.0,20,Rendah,Rendah,84.14,-0.06980945193554848
-0096818162,muhammad  ferdinan,Laki-laki,TAV,Tidak,5,1.0,1.0,10.0,2.0,82.35,Siap,Kurang Kondusif,20.0,60,Rendah,Rendah,82.13,-1.0444830101827707
-0084220512,Fauzan azmi,Laki-laki,TAV,Tidak,7,2.0,8.0,10.0,2.0,99.02,Siap,Cukup Kondusif,80.0,100,Rendah,Rendah,85.17,0.568019795557554
-0099628466,MUHAMMAD FAHRIE,Laki-laki,TAV,Tidak,8,1.0,5.0,10.0,2.0,89.22,Siap,Kondusif,80.0,20,Rendah,Rendah,82.47,-0.8641373016460224
-0082087407,ULFA JAZIRA,Perempuan,MULTIMEDIA,Tidak,7,1.0,2.0,10.0,2.0,97.06,Siap,Kondusif,60.0,60,Rendah,Sedang,86.75,1.1539036048686104
-0086915366,Adrikalmuna,Laki-laki,TAV,Tidak,6,12.0,5.0,10.0,2.0,94.12,Siap,Kondusif,80.0,100,Rendah,Berat,84.92,0.4354126569275934
-0097365419,ANITA,Perempuan,MULTIMEDIA,Ya,5,1.0,1.0,10.0,2.0,95.1,Siap,Kondusif,80.0,60,Rendah,Rendah,86.83,1.210998979974623
-0099910228,Annisa Unnashri,Perempuan,MULTIMEDIA,Tidak,3,1.0,1.0,10.0,2.0,85.29,Siap,Kondusif,80.0,20,Rendah,Rendah,87.5,1.6891727464874897
-3093574585,Muhammad hafizul,Laki-laki,TKJ,Tidak,7,1.0,4.0,10.0,2.0,76.47,Siap,Kondusif,80.0,20,Rendah,Rendah,84.58,0.20478406794398624
-3095478458,Nur Ainol mardiah,Perempuan,TKJ,Tidak,7,6.0,8.0,10.0,2.0,95.1,Siap,Kondusif,80.0,20,Rendah,Rendah,88.33,2.5450697487354876
-0108639124,RAUZANUR FAUZARI,Laki-laki,TKJ,Ya,9,1.0,12.0,10.0,2.0,98.04,Siap,Kondusif,40.0,60,Rendah,Sedang,79.86,-2.7408555089455824
-009765,zurryatun zakiya,Perempuan,MULTIMEDIA,Tidak,9,2.0,2.0,10.0,2.0,91.18,Siap,Kondusif,80.0,100,Rendah,Rendah,86.67,1.0968082297625978
-0109018938,FARHAN ADI SAPUTRA,Laki-laki,TKJ,Tidak,7,1.0,4.0,10.0,2.0,98.04,Siap,Cukup Kondusif,60.0,20,Rendah,Rendah,83.64,-0.3818475427077486
-3093173575,Refi Afandi,Laki-laki,MULTIMEDIA,Tidak,7,1.0,4.0,10.0,2.0,95.1,Siap,Kondusif,80.0,100,Rendah,Sedang,84.83,-0.21638539767572168
-0094563422,MUHAMMAD SYAWALUDDIN,Laki-laki,TKJ,Ya,10,4.0,3.0,10.0,2.0,87.25,Siap,Kondusif,80.0,20,Rendah,Rendah,84.25,-0.0011610719656648008
-3102627021,Audhatul Hafidhah,Perempuan,TKJ,Tidak,10,1.0,3.0,10.0,2.0,99.02,Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,84.86,0.37952539877641905
-0088800840,almuntazar,Laki-laki,TAV,Ya,8,0.0,4.0,10.0,2.0,94.12,Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,85.67,0.8332340728174753
-0093229329,Adelia Fitri,Perempuan,MULTIMEDIA,Tidak,5,0.0,3.0,10.0,2.0,91.18,Siap,Kurang Kondusif,20.0,100,Rendah,Rendah,86.08,0.6757298383557437
-0095837261,mayla aziza anas,Perempuan,MULTIMEDIA,Tidak,5,1.0,2.0,10.0,2.0,87.25,Siap,Kurang Kondusif,80.0,60,Rendah,Rendah,85.5,0.261788368837145
-0098638354,SAPUTRA,Laki-laki,TKJ,Ya,3,2.0,3.0,10.0,2.0,91.18,Siap,Kondusif,40.0,60,Rendah,Rendah,81.43,-1.7610559039208695
-3094714963,khairina ulfa,Perempuan,TKJ,Ya,7,2.0,5.0,10.0,2.0,94.12,Siap,Kondusif,80.0,60,Rendah,Rendah,87.25,1.8710674726675363
-0104967836,cindi mahesti,Perempuan,TKJ,Tidak,3,1.0,2.0,10.0,2.0,94.12,Siap,Cukup Kondusif,60.0,20,Rendah,Sedang,84.14,-0.06980945193554848
-0104851034,AL MUNAWARAH,Perempuan,TKJ,Tidak,7,2.0,2.0,10.0,2.0,100.0,Belum Siap,Kurang Kondusif,80.0,60,Rendah,Rendah,83.07,-0.7375709661880614
-0103895630,Ulfa Aulia turrahma,Perempuan,TKJ,Ya,5,2.0,2.0,10.0,2.0,93.14,Siap,Kondusif,60.0,20,Rendah,Rendah,82.86,-0.8686269643123816
-0086950101,Siraajul Munira,Laki-laki,TKJ,Tidak,12,4.0,8.0,10.0,2.0,96.08,Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,83.33,-0.5753111589865142
-3105052098,Adrian Maulana,Laki-laki,TAV,Ya,6,1.0,5.0,10.0,2.0,95.1,Siap,Kondusif,80.0,60,Rendah,Rendah,83.27,-0.4397944580301499
-0094705445,Afdalul ikhsan,Laki-laki,TAV,Tidak,6,2.0,4.0,10.0,2.0,92.16,Siap,Kurang Kondusif,40.0,20,Rendah,Sedang,82.33,-0.9383972992788007
-3097259179,Fauzan fikral,Laki-laki,TAV,Tidak,3,5.0,3.0,10.0,2.0,77.45,Siap,Kondusif,60.0,20,Rendah,Rendah,80.87,-1.7128229888777675
-0084003694,Julia Wati,Perempuan,MULTIMEDIA,Tidak,6,0.0,3.0,10.0,2.0,82.35,Siap,Kondusif,80.0,20,Rendah,Sedang,85.42,0.20469299373113245
-0091813758,Salsabila,Perempuan,TKJ,Tidak,6,1.0,3.0,10.0,2.0,98.04,Siap,Cukup Kondusif,80.0,100,Rendah,Rendah,83.86,-0.24455078276798128
-0095124780,Ulfia rifqa saskia,Perempuan,MULTIMEDIA,Tidak,7,1.0,3.0,10.0,2.0,87.25,Siap,Kurang Kondusif,80.0,60,Rendah,Rendah,86.75,1.1539036048686104
-2044,Fahrul rafli,Laki-laki,TPTU,Ya,7,5.0,6.0,10.0,2.0,78.43,Siap,Kondusif,40.0,60,Rendah,Rendah,82.6,-0.06632878721141498
-0086672379,Reivan fahrezi ally aqvan,Laki-laki,TKJ,Ya,7,1.0,1.0,10.0,2.0,71.57,Siap,Kurang Kondusif,80.0,100,Rendah,Rendah,84.67,0.2609509242829844
-0092309319,NURSYAKILA,Perempuan,TKJ,Tidak,3,2.0,5.0,10.0,2.0,98.04,Siap,Kondusif,80.0,20,Rendah,Rendah,82.71,-0.9622383915440452
-0098801774,INTAN WAHYUNA,Perempuan,TKJ,Tidak,5,7.0,3.0,10.0,2.0,87.25,Siap,Kondusif,80.0,60,Rendah,Rendah,86.17,1.1970651965995849
-009548915,Nur arisya,Perempuan,TKJ,Tidak,5,7.0,3.0,10.0,2.0,84.31,Siap,Kondusif,80.0,60,Rendah,Rendah,86.42,1.353084241985685
-0093850794,T. Daffa arkansyah,Laki-laki,TKJ,Ya,6,2.0,2.0,10.0,2.0,98.04,Belum Siap,Kondusif,60.0,20,Rendah,Rendah,85.43,0.7352488222567318
-0101800729,NURUL IZZAH,Perempuan,TKJ,Tidak,7,1.0,1.0,10.0,2.0,98.04,Belum Siap,Cukup Kondusif,60.0,100,Rendah,Rendah,82.79,-0.9123122970204853
-3091737196,Nadila dara funna,Perempuan,TKJ,Tidak,7,1.0,1.0,10.0,2.0,97.06,Belum Siap,Cukup Kondusif,60.0,100,Rendah,Rendah,83.79,-0.2882361154760851
-132,MUHAMMAD HABIL,Laki-laki,TPTU,Ya,7,2.0,10.0,10.0,2.0,90.2,Belum Siap,Kondusif,60.0,20,Rendah,Sedang,80.87,-0.8184931897505838
-0103794479,HALFI HUSNA,Perempuan,TKJ,Tidak,5,1.0,1.0,10.0,2.0,96.08,Belum Siap,Cukup Kondusif,60.0,100,Rendah,Rendah,83.36,-0.5565888735401815
-0097512376,MUHAMMAD AL AKBARI,Laki-laki,TPTU,Tidak,10,2.0,6.0,10.0,2.0,90.2,Belum Siap,Kondusif,40.0,60,Rendah,Berat,81.92,-0.36197722289154927
-0095006546,Faisal maulana,Laki-laki,TPTU,Ya,10,1.0,4.0,10.0,2.0,86.27,Belum Siap,Cukup Kondusif,40.0,100,Rendah,Rendah,80.87,-0.8184931897505838
-0091597857,SYIFA URRAHMA,Perempuan,TKJ,Tidak,7,7.0,3.0,10.0,2.0,83.33,Siap,Kondusif,80.0,20,Rendah,Sedang,85.75,0.9349532003509357
-0094954493,Furqan Ramadhan,Laki-laki,MULTIMEDIA,Tidak,7,1.0,7.0,10.0,2.0,86.27,Siap,Kurang Kondusif,80.0,60,Rendah,Sedang,84.92,-0.15215310068145374
-0092020361,Afdal khalil,Laki-laki,MULTIMEDIA,Tidak,8,1.0,8.0,10.0,2.0,93.14,Belum Siap,Cukup Kondusif,60.0,20,Rendah,Rendah,85.5,0.261788368837145
-0105552363,Natasya attasyah syuana,Perempuan,TKJ,Tidak,4,1.0,1.0,10.0,2.0,97.06,Belum Siap,Cukup Kondusif,60.0,100,Rendah,Rendah,84.14,-0.06980945193554848
-0103138357,ULFA MAHERA,Perempuan,TKJ,Tidak,5,1.0,1.0,10.0,2.0,99.02,Belum Siap,Cukup Kondusif,60.0,100,Rendah,Rendah,84.21,-0.026124119227444717
-3091473712,ASRARUDDIN,Laki-laki,TKJ,Ya,7,1.0,4.0,10.0,2.0,97.06,Siap,Kondusif,80.0,60,Rendah,Rendah,81.43,-1.7610559039208695
-19720202 200604 1 004,Riana qhadafa,Laki-laki,TAV,Ya,7,2.0,3.0,10.0,2.0,94.12,Siap,Kondusif,40.0,60,Rendah,Rendah,82.93,-0.6201401665668906
-0093270487,muhammad alfaruqi,Laki-laki,TPTU,Ya,8,1.0,5.0,10.0,2.0,88.24,Siap,Kondusif,80.0,60,Rendah,Rendah,82.67,-0.03589438942080938
-00081197204,FAIRUZ RISKI,Laki-laki,TPTU,Tidak,7,5.0,3.0,10.0,2.0,69.61,Siap,Kurang Kondusif,60.0,60,Rendah,Sedang,83.58,0.3597527818570202
-0094545444,muhammad fajri,Laki-laki,TPTU,Tidak,7,2.0,3.0,10.0,2.0,72.55,Siap,Cukup Kondusif,40.0,20,Rendah,Rendah,84.83,0.90322417097492
-0092107755,Muhammad suhil ikram,Laki-laki,TPTU,Tidak,5,2.0,3.0,10.0,2.0,79.41,Siap,Kurang Kondusif,80.0,100,Rendah,Rendah,81.13,-0.7054511408140647
-0084976535,Muhammad ra'fat,Laki-laki,TPTU,Ya,10,2.0,5.0,10.0,2.0,78.43,Belum Siap,Cukup Kondusif,40.0,60,Rendah,Sedang,81.67,-0.4706715007151292
-0094292988,Rihul miski,Laki-laki,TAV,Tidak,9,3.0,2.0,10.0,2.0,84.31,Siap,Kondusif,60.0,100,Rendah,Sedang,81.67,-1.288480145261895
-0182835221,Raihan firdaus,Laki-laki,TKJ,Ya,3,2.0,3.0,10.0,2.0,97.06,Siap,Kondusif,60.0,20,Rendah,Sedang,83.36,-0.5565888735401815
-0089057480,Fika mariska,Perempuan,MULTIMEDIA,Tidak,9,1.0,3.0,10.0,2.0,92.16,Siap,Cukup Kondusif,20.0,20,Rendah,Rendah,86.0,0.6186344632497313
-2133,Rafian Al khusry,Laki-laki,TPTU,Tidak,10,2.0,3.0,10.0,2.0,90.2,Siap,Cukup Kondusif,80.0,60,Rendah,Rendah,83.4,0.28149290182404585
-0089652463,Aulia Fitri,Perempuan,MULTIMEDIA,Ya,4,7.0,9.0,10.0,2.0,82.35,Siap,Cukup Kondusif,40.0,20,Rendah,Rendah,85.42,0.20469299373113245
-0103481810,Abdul aziz,Laki-laki,TKJ,Ya,7,2.0,4.0,10.0,2.0,95.1,Siap,Kondusif,80.0,60,Rendah,Rendah,82.57,-1.0496090569602616
-0107049166,Yunita dewi,Perempuan,TKJ,Tidak,3,6.0,6.0,10.0,2.0,98.04,Siap,Kurang Kondusif,40.0,20,Rendah,Sedang,83.79,-0.2882361154760851
-0092992319,fatma nadila,Perempuan,TKJ,Tidak,3,2.0,3.0,10.0,2.0,75.49,Siap,Cukup Kondusif,80.0,100,Rendah,Sedang,85.0,0.46689606419263546
-0098413992,Zahrul liza,Perempuan,TKJ,Tidak,6,6.0,3.0,10.0,2.0,98.04,Siap,Kondusif,80.0,100,Rendah,Rendah,83.93,-0.20086545005986864
-3091487149,TEUKU ZAMHARIRA SYAH,Laki-laki,TPTU,Ya,11,1.0,1.0,10.0,2.0,72.55,Siap,Cukup Kondusif,60.0,60,Rendah,Sedang,84.25,0.6510534464242153
-0099089440,SYIKHKIR,Laki-laki,TAV,Tidak,8,7.0,5.0,10.0,2.0,97.06,Siap,Kondusif,80.0,100,Rendah,Sedang,86.25,1.140882634438983
-0091597686,Aidila fitria,Perempuan,MULTIMEDIA,Tidak,6,3.0,12.0,10.0,2.0,98.04,Siap,Cukup Kondusif,40.0,20,Rendah,Rendah,86.58,1.03257593276833
-0106567312,M. FAJRI RIZQUNA,Laki-laki,TPTU,Tidak,6,6.0,5.0,10.0,2.0,89.22,Belum Siap,Cukup Kondusif,60.0,60,Rendah,Rendah,81.27,-0.6445823452328596
-3092055175,Muhammad Mustaqim,Laki-laki,TKJ,Tidak,3,2.0,6.0,10.0,2.0,91.18,Siap,Kondusif,40.0,60,Rendah,Rendah,81.86,-1.4927031458567819
-0099437449,Aldy putra triyanto,Laki-laki,TPTU,Tidak,3,3.0,3.0,10.0,2.0,84.31,Siap,Kondusif,60.0,20,Rendah,Rendah,82.2,-0.2402396317291392
-0105423699,cut mutia maharani,Perempuan,TKJ,Tidak,6,2.0,3.0,10.0,2.0,100.0,Siap,Kondusif,80.0,100,Rendah,Rendah,84.5,0.15485797342043528
-3103292191,MUHAMMAD FADHIL RIZKI,Laki-laki,TKJ,Tidak,6,1.0,2.0,10.0,2.0,93.14,Siap,Kurang Kondusif,40.0,100,Rendah,Rendah,82.43,-1.136979722376469
-0097089031,MUHAMMAD ABIZAR,Laki-laki,TPTU,Tidak,4,2.0,2.0,10.0,2.0,94.12,Belum Siap,Kondusif,40.0,100,Rendah,Sedang,83.47,0.31192729961464527
-0105135070,ulfa amelia,Perempuan,TKJ,Tidak,5,6.0,3.0,10.0,2.0,98.04,Siap,Kondusif,80.0,20,Rendah,Rendah,84.29,0.023801975296115115
-3107892856,Muhammad Sulfan,Laki-laki,TPTU,Tidak,8,3.0,2.0,10.0,2.0,92.16,Siap,Cukup Kondusif,60.0,20,Rendah,Rendah,83.8,0.45540374634177005
-0108489659,Haikal Zubaili,Laki-laki,TPTU,Tidak,6,10.0,1.0,10.0,2.0,86.27,Belum Siap,Cukup Kondusif,20.0,20,Rendah,Rendah,82.6,-0.06632878721141498
-2128714169,MUHAMMAD MEI HELDIN,Laki-laki,MULTIMEDIA,Ya,12,0.0,3.0,10.0,2.0,89.22,Siap,Kurang Kondusif,20.0,60,Rendah,Sedang,85.75,0.4402114160434381
-0101685434,M.ILHAM NABAWI AS,Laki-laki,TKJ,Tidak,7,2.0,1.0,10.0,2.0,97.06,Siap,Kurang Kondusif,80.0,100,Rendah,Rendah,82.57,-1.0496090569602616
-0099368889,Alia Ranjani Guci,Perempuan,MULTIMEDIA,Tidak,6,1.0,12.0,10.0,2.0,86.27,Belum Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,86.42,0.9183851825563049
-0107417733,Zahratul hayawita melani,Perempuan,TKJ,Tidak,9,1.0,5.0,10.0,2.0,98.04,Siap,Cukup Kondusif,80.0,60,Rendah,Rendah,83.57,-0.42553287541586127
-0081919484,THAHARATUL MAQFIRAH,Perempuan,MULTIMEDIA,Ya,5,2.0,4.0,10.0,2.0,99.02,Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,86.75,1.1539036048686104
-0108862000,Hakim Maulana Nasution,Laki-laki,TKJ,Tidak,8,2.0,5.0,10.0,2.0,91.18,Siap,Kurang Kondusif,80.0,100,Rendah,Rendah,83.5,-0.46921820812396503
-010464108,Muhammad rizki,Laki-laki,TPTU,Tidak,5,2.0,3.0,10.0,2.0,78.43,Belum Siap,Kurang Kondusif,60.0,60,Rendah,Berat,82.07,-0.296760656197405
-0103975097,Muhammad saryulis,Laki-laki,TKJ,Tidak,4,1.0,8.0,10.0,2.0,98.04,Siap,Kurang Kondusif,40.0,20,Rendah,Sedang,82.43,-1.136979722376469
-0101756109,Niswatul khoira,Perempuan,TKJ,Tidak,3,2.0,2.0,10.0,2.0,96.08,Siap,Kondusif,60.0,100,Rendah,Rendah,83.43,-0.5129035408320688
-0105129981,ZULFA DAMUL IZZI,Perempuan,TKJ,Tidak,7,2.0,2.0,10.0,2.0,94.12,Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,83.14,-0.6938856334799488
-0092900321,FAIZA ALGHIFARI,Laki-laki,TKJ,Tidak,8,3.0,7.0,10.0,2.0,94.12,Siap,Kondusif,60.0,60,Rendah,Rendah,83.93,-0.20086545005986864
-0092860879,Nadia ulfa,Perempuan,MULTIMEDIA,Ya,8,7.0,4.0,10.0,2.0,88.24,Siap,Kondusif,80.0,20,Rendah,Rendah,86.42,0.9183851825563049
-3093715391,Muhammad Auni Farhan,Laki-laki,TKJ,Ya,12,1.0,5.0,10.0,2.0,98.04,Siap,Kurang Kondusif,80.0,100,Rendah,Rendah,85.07,0.5105813969007392
-0108803284,Muhammad Rizqi,Laki-laki,TKJ,Tidak,11,1.0,5.0,10.0,2.0,99.02,Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,85.64,0.866304820381052
-3092360271,MAULANA SIDDIQ,Laki-laki,TPTU,Tidak,7,2.0,4.0,10.0,2.0,98.04,Siap,Kondusif,80.0,60,Rendah,Rendah,84.93,0.9467018821043557
-0104020926,najwa thalita,Perempuan,TKJ,Tidak,5,1.0,2.0,10.0,2.0,96.08,Siap,Kurang Kondusif,80.0,60,Rendah,Rendah,84.29,0.023801975296115115
-0095507550,M FAHRiL SARi,Laki-laki,TPTU,Ya,10,2.0,2.0,10.0,2.0,55.88,Belum Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,80.6,-0.9358830098000547
-0093604813,Khairannisa salsabila,Perempuan,MULTIMEDIA,Tidak,8,3.0,4.0,10.0,2.0,80.39,Siap,Kondusif,60.0,20,Rendah,Rendah,85.0,-0.09505772557544116
-0074520519,MUHAMMAD HUSAINI,Laki-laki,TPTU,Tidak,6,0.0,2.0,10.0,2.0,63.73,Siap,Kondusif,60.0,60,Rendah,Sedang,83.67,0.3988827218735105
-0098280442,Muhammad Syahril,Laki-laki,TKJ,Ya,8,0.0,8.0,10.0,2.0,72.55,Siap,Kurang Kondusif,40.0,20,Rendah,Sedang,84.75,0.31087701880653534
-0099830358,Muhammad Fazil,Laki-laki,TPTU,Tidak,7,1.0,3.0,10.0,2.0,99.02,Siap,Kondusif,60.0,20,Rendah,Sedang,86.67,1.7032140557564701
-0093739983,fitrah alfarabi,Laki-laki,TKJ,Ya,10,1.0,5.0,0.0,8.0,98.04,Siap,Kondusif,80.0,100,Rendah,Rendah,85.0,0.46689606419263546
-0098889065,maula zikri,Laki-laki,TPTU,Tidak,6,0.0,5.0,10.0,2.0,96.08,Siap,Kondusif,40.0,20,Rendah,Sedang,83.33,0.2510585040334402
-3085199567,muhammad reza alfian,Laki-laki,TPTU,Tidak,10,1.0,3.0,10.0,2.0,76.47,Siap,Kondusif,60.0,20,Rendah,Sedang,85.92,1.3771312222857301
-0081046494,MUHAMMAD RIZKI MAULANA,Laki-laki,TPTU,Tidak,5,1.0,2.0,10.0,2.0,78.43,Siap,Kondusif,60.0,20,Rendah,Sedang,82.07,-0.296760656197405
-0092646666,SARYULIS,Laki-laki,TPTU,Tidak,6,5.0,3.0,10.0,2.0,94.12,Belum Siap,Kondusif,80.0,60,Rendah,Rendah,82.2,-0.2402396317291392
-3108006177,Zufarudin Zaki,Laki-laki,TKJ,Tidak,8,1.0,6.0,10.0,2.0,98.04,Siap,Kurang Kondusif,60.0,20,Rendah,Sedang,84.29,0.023801975296115115
-0107172101,UNZUR RAVIZI,Laki-laki,TKJ,Tidak,3,1.0,8.0,10.0,2.0,94.12,Siap,Kurang Kondusif,60.0,100,Rendah,Sedang,82.86,-0.8686269643123816
-0101329654,RIZKY APRILIADI,Laki-laki,TKJ,Tidak,4,1.0,6.0,10.0,2.0,91.18,Siap,Kurang Kondusif,40.0,100,Rendah,Sedang,83.07,-0.7375709661880614
-0074796305,Muhammad Akbar zulfajri,Laki-laki,TPTU,Tidak,5,8.0,5.0,10.0,2.0,74.51,Siap,Kondusif,20.0,60,Rendah,Rendah,84.17,0.6162712775206703
-3106067561,MUHAMMAD ALFI,Laki-laki,TKJ,Ya,10,0.0,5.0,10.0,2.0,92.16,Siap,Kurang Kondusif,60.0,20,Rendah,Sedang,83.14,-0.6938856334799488
-0105133699,TAJJUL ARASY,Laki-laki,TPTU,Ya,11,2.0,2.0,10.0,2.0,92.16,Belum Siap,Kondusif,40.0,100,Rendah,Sedang,82.4,-0.15328420947027402
-2113,Muhammad syoqi,Laki-laki,TPTU,Ya,6,1.0,4.0,10.0,2.0,85.29,Belum Siap,Kondusif,80.0,60,Rendah,Rendah,82.93,0.077147659515716
-0105787210,ALDI AL FARUK,Laki-laki,TPTU,Tidak,7,2.0,3.0,10.0,2.0,81.37,Siap,Cukup Kondusif,40.0,100,Rendah,Berat,81.2,-0.675016743023459
-3102526588,Muhammad Ridho,Laki-laki,TPTU,Ya,7,2.0,7.0,10.0,2.0,73.53,Siap,Kondusif,40.0,20,Rendah,Sedang,81.27,-0.6445823452328596
-0098985269,putri nazariah,Perempuan,MULTIMEDIA,Tidak,10,2.0,2.0,10.0,2.0,94.12,Siap,Kondusif,80.0,20,Rendah,Rendah,84.57,-0.40194536677027015
-3105166654,Ahmad al maturidy,Laki-laki,TPTU,Tidak,5,2.0,2.0,10.0,2.0,84.31,Siap,Kondusif,80.0,100,Rendah,Rendah,82.87,0.051061032838055825
-0099219941,Zulfikri,Laki-laki,TPTU,Tidak,11,6.0,4.0,10.0,2.0,97.06,Siap,Kondusif,20.0,60,Rendah,Rendah,86.33,1.5553898379163997
-0109863872,NEISYA AMELYA,Perempuan,MULTIMEDIA,Tidak,7,8.0,6.0,10.0,2.0,99.02,Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,84.79,-0.2449330852287229
-3086156322,M.satria z,Laki-laki,TPTU,Ya,10,2.0,5.0,10.0,2.0,85.29,Siap,Kondusif,40.0,60,Rendah,Rendah,85.08,1.0119184487985
-0092292870,Muhammad Usmar karali,Laki-laki,TPTU,Tidak,7,1.0,9.0,10.0,2.0,83.33,Belum Siap,Cukup Kondusif,40.0,60,Rendah,Berat,78.07,-2.0358691013746846
-30965847,resita naswatun,Perempuan,MULTIMEDIA,Tidak,4,7.0,2.0,10.0,2.0,100.0,Siap,Kondusif,80.0,100,Rendah,Rendah,84.57,-0.40194536677027015
-0109781358,Fadilsadana,Laki-laki,MULTIMEDIA,Ya,4,8.0,3.0,10.0,2.0,98.04,Siap,Cukup Kondusif,80.0,20,Rendah,Sedang,85.0,-0.09505772557544116
-3097310220,nauval kismullah,Laki-laki,TPTU,Tidak,9,2.0,1.0,10.0,2.0,90.2,Belum Siap,Kondusif,80.0,100,Rendah,Sedang,81.4,-0.5880613207645938
-0091525219,putri maulida,Perempuan,MULTIMEDIA,Tidak,3,8.0,6.0,10.0,2.0,100.0,Siap,Cukup Kondusif,60.0,20,Rendah,Rendah,85.36,0.16187146240162048
-0089319245,Muhammad adami,Laki-laki,TPTU,Tidak,7,2.0,2.0,10.0,2.0,81.37,Belum Siap,Kondusif,80.0,20,Rendah,Rendah,86.25,1.520607669012855
-0099875397,shindy an'nazila,Perempuan,MULTIMEDIA,Tidak,3,2.0,3.0,10.0,2.0,99.02,Siap,Kondusif,80.0,60,Rendah,Sedang,84.43,-0.5018622732057846
-0105557820,fadillah safitri,Perempuan,MULTIMEDIA,Tidak,7,2.0,5.0,10.0,2.0,100.0,Siap,Kondusif,80.0,60,Rendah,Sedang,85.14,0.004859180860083371
-0108476479,SALVINA ZUHRA,Perempuan,MULTIMEDIA,Ya,7,1.0,8.0,10.0,2.0,98.04,Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,84.57,-0.40194536677027015
-0098765663,LUTFIA AMANDA,Perempuan,MULTIMEDIA,Ya,4,1.0,8.0,10.0,2.0,83.33,Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,83.29,-1.3154713684664814
-0097577268,Atessha martha,Perempuan,MULTIMEDIA,Tidak,3,1.0,3.0,10.0,2.0,72.55,Siap,Kondusif,80.0,60,Rendah,Rendah,82.29,-2.0291635572916538
-0108835676,YUNITA SILVIANITA,Perempuan,MULTIMEDIA,Tidak,8,1.0,4.0,10.0,2.0,95.1,Siap,Kondusif,80.0,60,Rendah,Rendah,83.29,-1.3154713684664814
-0104470464,Auliza latifa,Perempuan,MULTIMEDIA,Tidak,6,1.0,6.0,10.0,2.0,94.12,Siap,Kurang Kondusif,60.0,60,Rendah,Rendah,84.21,-0.6588745547473318
-0092150887,Sharayulis afdila,Perempuan,TKJ,Tidak,8,2.0,2.0,10.0,2.0,97.06,Belum Siap,Cukup Kondusif,80.0,60,Rendah,Rendah,83.71,-0.33816220999964486
-0101477118,Ahmad alfi,Laki-laki,MULTIMEDIA,Tidak,6,0.0,3.0,10.0,2.0,80.39,Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,82.14,-2.1362173856154336
-0107709420,siti rahil qory,Perempuan,MULTIMEDIA,Tidak,7,1.0,2.0,10.0,2.0,93.14,Siap,Kurang Kondusif,20.0,20,Rendah,Sedang,83.5,-1.1655960088131998
-0103385630,lailatul safa,Perempuan,MULTIMEDIA,Tidak,7,2.0,2.0,10.0,2.0,91.18,Siap,Kondusif,80.0,60,Rendah,Rendah,84.57,-0.40194536677027015
-3094563031,Maiya Adelia,Perempuan,MULTIMEDIA,Tidak,6,2.0,2.0,10.0,2.0,99.02,Siap,Kondusif,80.0,60,Rendah,Rendah,84.79,-0.2449330852287229
-0104966153,Putri aulia,Perempuan,MULTIMEDIA,Tidak,5,2.0,3.0,10.0,2.0,92.16,Siap,Kondusif,80.0,60,Rendah,Rendah,84.0,-0.8087499144006135
-1972203032000121001,maulisal,Laki-laki,TPTU,Tidak,5,2.0,2.0,10.0,2.0,94.12,Siap,Cukup Kondusif,40.0,60,Rendah,Rendah,75.6,-3.109768566271654
-0099968988,VIRA MAULIDA,Perempuan,TKJ,Tidak,4,8.0,7.0,10.0,2.0,98.04,Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,86.75,1.559029381895336
-0084654163,Anisa Salsabila,Perempuan,TKJ,Tidak,8,8.0,5.0,10.0,2.0,88.24,Siap,Kurang Kondusif,80.0,100,Rendah,Rendah,85.0,0.46689606419263546
-0093895653,Selvi Amanda sari,Perempuan,TKJ,Tidak,5,8.0,5.0,10.0,2.0,84.31,Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,84.5,0.15485797342043528
-0085715508,Khalisma,Perempuan,TKJ,Tidak,4,8.0,7.0,10.0,2.0,89.22,Siap,Kondusif,80.0,60,Rendah,Rendah,84.83,0.3608031133300863
-0091480394,MIFTAHUL JANNAH,Perempuan,TKJ,Tidak,4,8.0,3.0,10.0,2.0,97.06,Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,85.5,0.7789341549648356
-0091395470,Syifaulkhaira,Perempuan,TKJ,Tidak,5,8.0,3.0,10.0,2.0,91.18,Siap,Kondusif,80.0,100,Rendah,Rendah,85.58,0.8288602494883865
-0101588430,marsya nadhifa,Perempuan,MULTIMEDIA,Tidak,7,8.0,1.0,10.0,2.0,98.04,Siap,Kondusif,80.0,20,Rendah,Rendah,84.71,-0.3020284603347456
-3090117959,meriani,Perempuan,MULTIMEDIA,Tidak,6,5.0,4.0,10.0,2.0,83.33,Siap,Kondusif,80.0,20,Rendah,Rendah,83.36,-1.2655129152487243
-0394191117,MUHAMMAD MAULANA,Laki-laki,MULTIMEDIA,Tidak,8,3.0,5.0,10.0,2.0,100.0,Siap,Kondusif,80.0,20,Rendah,Rendah,84.64,-0.35198691355250283
-0102996855,MUHAMMAD SAUQIL KHALIS,Laki-laki,MULTIMEDIA,Tidak,8,3.0,2.0,10.0,2.0,86.27,Siap,Kondusif,80.0,20,Rendah,Rendah,82.79,-1.6723174628790676
-0083739813,mukhraja shiddieqy,Laki-laki,MULTIMEDIA,Ya,6,8.0,2.0,10.0,2.0,98.04,Siap,Kondusif,60.0,60,Rendah,Rendah,84.21,-0.6588745547473318
-0101282386,ABDUL RAZAK,Laki-laki,TPTU,Ya,5,4.0,0.0,10.0,2.0,86.27,Siap,Kondusif,80.0,60,Rendah,Rendah,79.8,-1.2837046988355094
-0092896612,frisya cindy elisia,Perempuan,TKJ,Tidak,9,3.0,8.0,10.0,2.0,97.06,Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,87.08,1.764974521804987
-0102215188,ULFA MAHERA,Perempuan,MULTIMEDIA,Tidak,5,1.0,1.0,10.0,2.0,96.08,Siap,Kondusif,80.0,100,Rendah,Rendah,83.71,-1.015720649159918
-0102218389,Khaira alfina,Perempuan,MULTIMEDIA,Tidak,6,1.0,1.0,10.0,2.0,89.22,Siap,Kondusif,80.0,100,Rendah,Sedang,83.57,-1.1156375555954425
-0109363075,Abdu reza,Laki-laki,TPTU,Tidak,7,1.0,5.0,10.0,2.0,72.55,Siap,Kondusif,60.0,20,Rendah,Rendah,78.4,-1.8923926546475534
-0098201782,ADI MULYONO,Laki-laki,TKJ,Tidak,6,1.0,5.0,10.0,2.0,98.04,Siap,Kondusif,80.0,60,Rendah,Rendah,85.92,1.0410461512134848
-0099870835,Muhammad Hidayatullah,Laki-laki,TKJ,Ya,10,1.0,3.0,0.0,8.0,83.33,Siap,Kurang Kondusif,80.0,60,Rendah,Rendah,84.0,-0.15718011735176488
+nisn,nama_siswa,email,gender,jurusan,kerja_sampingan,ses_index,jam_belajar_per_hari,screen_time,jam_tidur,deviasi_tidur,presentase_kehadiran,industry_readiness,study_environment,skor_time_management,motivasi_akademik,kompetensi_skill_level,stress_level,nilai_rata_rata_raport,nilai_raport_zscore_jurusan
+3105858845,M. Farid alfarisi,faridmdtmdt@gmail.com,Laki-laki,TKJ,Ya,12,1.0,6.0,10.0,2.0,99.02,Siap,Kondusif,80.0,60,Rendah,Rendah,83.57,-0.42553287541586127
+0095714311,Almuntazar,tadarspn@gmail.com,Laki-laki,TPTU,Tidak,4,8.0,3.0,10.0,2.0,86.27,Siap,Kondusif,60.0,100,Rendah,Rendah,84.75,0.8684420020713751
+0109189747,Furkan,farelfarel97936@gmail.com,Laki-laki,TKJ,Tidak,7,1.0,3.0,10.0,2.0,96.08,Belum Siap,Kondusif,40.0,20,Rendah,Rendah,81.71,-1.5863145730884456
+0082559539,Alisa Putri Ananda,alsptriananda51@gmail.com,Perempuan,TKJ,Tidak,9,7.0,4.0,10.0,2.0,89.22,Siap,Kurang Kondusif,80.0,20,Rendah,Sedang,85.5,0.7789341549648356
+008619209,Asmaul Husna Fitria,almaulusna58@gmail.com,Perempuan,TKJ,Tidak,7,2.0,1.0,10.0,2.0,85.29,Belum Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,85.92,1.0410461512134848
+0083922322,FAIEZA GHUFRAN,fadekdera@gmail.com,Laki-laki,TAV,Tidak,4,1.0,2.0,10.0,2.0,91.18,Belum Siap,Kondusif,60.0,20,Rendah,Sedang,83.58,-0.27536160612899746
+0095034994,finza zulfahri,a87147775@gmail.com,Laki-laki,TKJ,Tidak,3,2.0,1.0,10.0,2.0,77.45,Siap,Kondusif,60.0,60,Rendah,Sedang,83.5,-0.46921820812396503
+0084112239,ALIF ANWAR,alifanwar53821@gmail.com,Laki-laki,TAV,Ya,3,10.0,3.0,10.0,2.0,94.12,Belum Siap,Cukup Kondusif,60.0,20,Rendah,Sedang,85.58,0.7854955029106877
+0087323517,DESTIAN FACHRI,destifah112@gmail.com,Laki-laki,TPTU,Ya,7,3.0,3.0,0.0,8.0,76.47,Siap,Cukup Kondusif,60.0,20,Rendah,Rendah,84.5,0.7597477242477952
+0082146314,zahratul jannah,tuljannahzahra93@gmail.com,Perempuan,TKJ,Tidak,9,3.0,4.0,10.0,2.0,97.06,Siap,Kurang Kondusif,60.0,100,Rendah,Rendah,88.25,2.4951436542119363
+0095753214,Eka pandu pratama,eka.pandu161@smk.belajar.id,Laki-laki,TKJ,Tidak,3,1.0,3.0,10.0,2.0,79.41,Siap,Kurang Kondusif,40.0,100,Rendah,Rendah,84.83,0.3608031133300863
+0094249048,QUMAYRA SALINA,qumayrassalina@gmail.com,Perempuan,TKJ,Tidak,12,1.0,8.0,10.0,2.0,69.61,Siap,Cukup Kondusif,20.0,100,Rendah,Rendah,86.58,1.4529364310327868
+0083109460,Syibran malasyi,syibranpro@gmail.com,Laki-laki,TAV,Ya,9,2.0,3.0,10.0,2.0,95.1,Siap,Kurang Kondusif,60.0,20,Rendah,Sedang,83.25,-0.4504030291205446
+0081365318,Nurul fahmi,nurulfahmishop@gmail.com,Perempuan,TKJ,Tidak,5,1.0,5.0,10.0,2.0,88.24,Siap,Cukup Kondusif,80.0,60,Rendah,Sedang,86.08,1.1408983402605868
+0106949460,Muhammad Alfiansyah,malfiansyah746@gmail.com,Laki-laki,TKJ,Tidak,7,2.0,2.0,10.0,2.0,99.02,Siap,Cukup Kondusif,60.0,60,Rendah,Rendah,85.71,0.9099901530891558
+0072467252,Yusnandar,nndaaanakbaik@gmail.com,Laki-laki,TAV,Ya,3,1.0,2.0,10.0,2.0,94.12,Siap,Cukup Kondusif,60.0,100,Rendah,Sedang,85.08,0.5202812256507664
+0089252718,Azkal azkia,pakwa0088@gmail.com,Laki-laki,TKJ,Ya,5,1.0,3.0,10.0,2.0,94.12,Siap,Kondusif,40.0,100,Rendah,Rendah,85.83,0.9848792948744867
+0104011229,Putri Nazilla Hasmita,zillaforterta@gmail.com,Perempuan,TKJ,Tidak,8,1.0,5.0,10.0,2.0,98.04,Siap,Kondusif,60.0,20,Rendah,Sedang,85.43,0.7352488222567318
+3092099525,Muhammad Habil,habil1804799@gmail.com,Laki-laki,TAV,Tidak,6,1.0,2.0,10.0,2.0,80.39,Belum Siap,Kondusif,40.0,20,Rendah,Sedang,82.07,-1.0763087234539626
+0086438346,ARIF PUTRA,arifptra36@gmail.com,Laki-laki,TAV,Ya,6,1.0,5.0,10.0,2.0,99.02,Siap,Kurang Kondusif,60.0,60,Rendah,Rendah,86.0,1.0082754958090225
+3094202338,yogie atha fayruz,yugielina@gmail.com,Laki-laki,TKJ,Tidak,7,2.0,3.0,10.0,2.0,98.04,Siap,Kondusif,60.0,60,Rendah,Rendah,85.57,0.8226194876729394
+0091801578,Nadiatul safara,safarasafara695@gmail.com,Perempuan,TKJ,Tidak,4,2.0,2.0,10.0,2.0,91.18,Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,86.0,1.0909722457370357
+0096964198,Muhammad Ghifari,ruzkirizki306@gmail.com,Laki-laki,TKJ,Tidak,6,1.0,5.0,10.0,2.0,100.0,Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,83.86,-0.24455078276798128
+0101814471,Zulfia rahmat,ramantree302@gmail.com,Laki-laki,TKJ,Ya,4,1.0,5.0,10.0,2.0,98.04,Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,82.43,-1.136979722376469
+3097233929,Zahwa aqilla,zahwaaqilla0823@gmail.com,Perempuan,TKJ,Tidak,10,3.0,6.0,10.0,2.0,93.14,Siap,Kondusif,80.0,60,Rendah,Rendah,87.92,2.2891985143022855
+0101318375,ERI ALFAZI,eeri29956@gmail.com,Laki-laki,TKJ,Tidak,7,1.0,4.0,10.0,2.0,98.04,Siap,Kondusif,80.0,20,Rendah,Rendah,84.0,-0.15718011735176488
+3097511997,Muhammad afdhal,afdarilafdalaril@gmail.com,Laki-laki,TPTU,Ya,6,1.0,4.0,10.0,2.0,69.61,Belum Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,84.67,0.8336598331678303
+0099617744,MUHAMMAD AZKA AQILLA,muhammadazkaqil@gmail.com,Laki-laki,TKJ,Ya,12,3.0,3.0,10.0,2.0,86.27,Siap,Kondusif,80.0,100,Rendah,Sedang,84.5,0.15485797342043528
+0092380770,M.KHALILUDDIN,dindaa73536@gmail.com,Laki-laki,TKJ,Ya,6,1.0,4.0,10.0,2.0,97.06,Siap,Cukup Kondusif,80.0,60,Rendah,Rendah,82.5,-1.0932943896683653
+0097320013,MUHAMMAD WALIYUL MURTAZHA,waliyul514@gmail.com,Laki-laki,TAV,Ya,6,1.0,2.0,10.0,2.0,94.12,Siap,Kondusif,80.0,20,Rendah,Rendah,86.75,1.4060969116989044
+3108577412,Fathira luthfiah,fathiraluthfiah@gmail.com,Perempuan,TKJ,Tidak,9,3.0,1.0,10.0,2.0,91.18,Siap,Kondusif,80.0,100,Rendah,Rendah,83.29,-0.6002742062482852
+0094520172,MUHAMMAD FAZHIL,muhammadfazhil87@gmail.com,Laki-laki,TAV,Ya,6,2.0,3.0,10.0,2.0,99.02,Siap,Kondusif,40.0,60,Rendah,Sedang,85.92,0.965841211447436
+0072502421,Firlia Barakatun Nasaba,firliabarakatunnasaba@gmail.com,Perempuan,MULTIMEDIA,Ya,11,2.0,2.0,10.0,2.0,91.18,Siap,Kondusif,80.0,100,Rendah,Rendah,87.67,1.8105004185877702
+0108839921,MAUZATUL FAZILAH,mauzatulfazilah@gmail.com,Perempuan,TKJ,Ya,4,1.0,5.0,10.0,2.0,97.06,Siap,Kondusif,80.0,60,Rendah,Sedang,84.0,-0.15718011735176488
+3094362863,munifatuzahra,munizahra01@gmail.com,Perempuan,TKJ,Tidak,6,1.0,3.0,10.0,2.0,91.18,Siap,Kondusif,40.0,60,Rendah,Rendah,82.14,-1.317961815024349
+0097772066,Rauzatulbalqis,rauzatulbalqis42@gmail.com,Perempuan,MULTIMEDIA,Tidak,8,2.0,4.0,10.0,2.0,97.06,Siap,Cukup Kondusif,80.0,100,Rendah,Rendah,88.0,2.046018840900076
+010394098547,MUHAMMAD RAFI MAULANA,madraf045@gmail.com,Laki-laki,TAV,Tidak,7,0.0,2.0,10.0,2.0,88.24,Siap,Kondusif,80.0,20,Rendah,Rendah,82.27,-0.9702230125499924
+0098525474,EKA HIDAYAT,eka15735@gmail.com,Laki-laki,TAV,Ya,8,1.0,2.0,10.0,2.0,99.02,Siap,Kondusif,80.0,20,Rendah,Rendah,87.83,1.9789597505803334
+2068,m.nabil Saputra,chenmullinmullin@gmail.com,Laki-laki,TAV,Tidak,6,2.0,6.0,10.0,2.0,92.16,Siap,Kondusif,60.0,20,Rendah,Rendah,85.07,0.5149769401055653
+3096123317,Nurul asyiqin,umimuslika34@gmail.com,Perempuan,TKJ,Tidak,10,2.0,5.0,10.0,2.0,93.14,Siap,Kondusif,80.0,20,Rendah,Rendah,83.36,-0.5565888735401815
+3090284946,Tara Aliya,taraalia614@gmail.com,Perempuan,MULTIMEDIA,Ya,5,2.0,3.0,10.0,2.0,95.1,Siap,Kurang Kondusif,60.0,60,Rendah,Berat,86.25,0.7970575104560244
+0081579201,Nurul syatilla,llupi0281@gmail.com,Perempuan,MULTIMEDIA,Tidak,7,2.0,4.0,10.0,2.0,96.08,Siap,Kondusif,80.0,20,Rendah,Sedang,86.75,1.1539036048686104
+0096455974,AFRAL ABILA,afralabila@gmail.com,Laki-laki,TAV,Ya,4,1.0,3.0,10.0,2.0,98.04,Siap,Kondusif,40.0,20,Rendah,Rendah,83.2,-0.4769244568465352
+00912255369,HAIKAL EFENDI,haikalefendi609@gmail.com,Laki-laki,TPTU,Tidak,7,3.0,2.0,10.0,2.0,97.06,Siap,Cukup Kondusif,80.0,100,Rendah,Sedang,86.08,1.4466955600928197
+0101491733,MUHAMMAD ROZI,ztos26576@gmail.com,Laki-laki,TKJ,Ya,8,1.0,3.0,10.0,2.0,99.02,Belum Siap,Kondusif,80.0,60,Rendah,Rendah,81.43,-1.7610559039208695
+0103435080,vivi khairani,nanipipi481@gmail.com,Perempuan,TKJ,Tidak,5,2.0,4.0,10.0,2.0,94.12,Siap,Kondusif,60.0,20,Rendah,Rendah,84.14,-0.06980945193554848
+0096818162,muhammad  ferdinan,ferdy199x@gmail.com,Laki-laki,TAV,Tidak,5,1.0,1.0,10.0,2.0,82.35,Siap,Kurang Kondusif,20.0,60,Rendah,Rendah,82.13,-1.0444830101827707
+0084220512,Fauzan azmi,fauzanfauzanpakphin@gmail.com,Laki-laki,TAV,Tidak,7,2.0,8.0,10.0,2.0,99.02,Siap,Cukup Kondusif,80.0,100,Rendah,Rendah,85.17,0.568019795557554
+0099628466,MUHAMMAD FAHRIE,fahriajaygy123467@gmail.com,Laki-laki,TAV,Tidak,8,1.0,5.0,10.0,2.0,89.22,Siap,Kondusif,80.0,20,Rendah,Rendah,82.47,-0.8641373016460224
+0082087407,ULFA JAZIRA,ulfajazira10@gmail.com,Perempuan,MULTIMEDIA,Tidak,7,1.0,2.0,10.0,2.0,97.06,Siap,Kondusif,60.0,60,Rendah,Sedang,86.75,1.1539036048686104
+0086915366,Adrikalmuna,adrikal483@gmail.com,Laki-laki,TAV,Tidak,6,12.0,5.0,10.0,2.0,94.12,Siap,Kondusif,80.0,100,Rendah,Berat,84.92,0.4354126569275934
+0097365419,ANITA,daffaariya2017@gmail.com,Perempuan,MULTIMEDIA,Ya,5,1.0,1.0,10.0,2.0,95.1,Siap,Kondusif,80.0,60,Rendah,Rendah,86.83,1.210998979974623
+0099910228,Annisa Unnashri,chasachasaavi@gmail.com,Perempuan,MULTIMEDIA,Tidak,3,1.0,1.0,10.0,2.0,85.29,Siap,Kondusif,80.0,20,Rendah,Rendah,87.5,1.6891727464874897
+3093574585,Muhammad hafizul,obrigado5731@gmail.com,Laki-laki,TKJ,Tidak,7,1.0,4.0,10.0,2.0,76.47,Siap,Kondusif,80.0,20,Rendah,Rendah,84.58,0.20478406794398624
+3095478458,Nur Ainol mardiah,nurainulmardiah98@gmail.com,Perempuan,TKJ,Tidak,7,6.0,8.0,10.0,2.0,95.1,Siap,Kondusif,80.0,20,Rendah,Rendah,88.33,2.5450697487354876
+0108639124,RAUZANUR FAUZARI,rojanur695@gmail.com,Laki-laki,TKJ,Ya,9,1.0,12.0,10.0,2.0,98.04,Siap,Kondusif,40.0,60,Rendah,Sedang,79.86,-2.7408555089455824
+009765,zurryatun zakiya,zurryatunz@gmail.com,Perempuan,MULTIMEDIA,Tidak,9,2.0,2.0,10.0,2.0,91.18,Siap,Kondusif,80.0,100,Rendah,Rendah,86.67,1.0968082297625978
+0109018938,FARHAN ADI SAPUTRA,r14130042@gmail.com,Laki-laki,TKJ,Tidak,7,1.0,4.0,10.0,2.0,98.04,Siap,Cukup Kondusif,60.0,20,Rendah,Rendah,83.64,-0.3818475427077486
+3093173575,Refi Afandi,revvwkwk@gmai.com,Laki-laki,MULTIMEDIA,Tidak,7,1.0,4.0,10.0,2.0,95.1,Siap,Kondusif,80.0,100,Rendah,Sedang,84.83,-0.21638539767572168
+0094563422,MUHAMMAD SYAWALUDDIN,syawalrizwal@gmail.com,Laki-laki,TKJ,Ya,10,4.0,3.0,10.0,2.0,87.25,Siap,Kondusif,80.0,20,Rendah,Rendah,84.25,-0.0011610719656648008
+3102627021,Audhatul Hafidhah,hafidhahaudhatul@gmail.com,Perempuan,TKJ,Tidak,10,1.0,3.0,10.0,2.0,99.02,Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,84.86,0.37952539877641905
+0088800840,almuntazar,tazaralmun9@gmail.com,Laki-laki,TAV,Ya,8,0.0,4.0,10.0,2.0,94.12,Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,85.67,0.8332340728174753
+0093229329,Adelia Fitri,am6324052@gmail.com,Perempuan,MULTIMEDIA,Tidak,5,0.0,3.0,10.0,2.0,91.18,Siap,Kurang Kondusif,20.0,100,Rendah,Rendah,86.08,0.6757298383557437
+0095837261,mayla aziza anas,maylaazizaanas@gmail.com,Perempuan,MULTIMEDIA,Tidak,5,1.0,2.0,10.0,2.0,87.25,Siap,Kurang Kondusif,80.0,60,Rendah,Rendah,85.5,0.261788368837145
+0098638354,SAPUTRA,saputra450x@gmail.com,Laki-laki,TKJ,Ya,3,2.0,3.0,10.0,2.0,91.18,Siap,Kondusif,40.0,60,Rendah,Rendah,81.43,-1.7610559039208695
+3094714963,khairina ulfa,p3631622@gmail.com,Perempuan,TKJ,Ya,7,2.0,5.0,10.0,2.0,94.12,Siap,Kondusif,80.0,60,Rendah,Rendah,87.25,1.8710674726675363
+0104967836,cindi mahesti,storyambyar824@gmail.com,Perempuan,TKJ,Tidak,3,1.0,2.0,10.0,2.0,94.12,Siap,Cukup Kondusif,60.0,20,Rendah,Sedang,84.14,-0.06980945193554848
+0104851034,AL MUNAWARAH,roomuna33@gmail.com,Perempuan,TKJ,Tidak,7,2.0,2.0,10.0,2.0,100.0,Belum Siap,Kurang Kondusif,80.0,60,Rendah,Rendah,83.07,-0.7375709661880614
+0103895630,Ulfa Aulia turrahma,uulfa9976@gmail.com,Perempuan,TKJ,Ya,5,2.0,2.0,10.0,2.0,93.14,Siap,Kondusif,60.0,20,Rendah,Rendah,82.86,-0.8686269643123816
+0086950101,Siraajul Munira,rajuljuljul12@gmail.com,Laki-laki,TKJ,Tidak,12,4.0,8.0,10.0,2.0,96.08,Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,83.33,-0.5753111589865142
+3105052098,Adrian Maulana,r33860897@gmail.com,Laki-laki,TAV,Ya,6,1.0,5.0,10.0,2.0,95.1,Siap,Kondusif,80.0,60,Rendah,Rendah,83.27,-0.4397944580301499
+0094705445,Afdalul ikhsan,jornandonando313@gmail.com,Laki-laki,TAV,Tidak,6,2.0,4.0,10.0,2.0,92.16,Siap,Kurang Kondusif,40.0,20,Rendah,Sedang,82.33,-0.9383972992788007
+3097259179,Fauzan fikral,fauzanrty6@gmail.com,Laki-laki,TAV,Tidak,3,5.0,3.0,10.0,2.0,77.45,Siap,Kondusif,60.0,20,Rendah,Rendah,80.87,-1.7128229888777675
+0084003694,Julia Wati,juliawatijulia051@gmail.com,Perempuan,MULTIMEDIA,Tidak,6,0.0,3.0,10.0,2.0,82.35,Siap,Kondusif,80.0,20,Rendah,Sedang,85.42,0.20469299373113245
+0091813758,Salsabila,lpanton658@gmail.com,Perempuan,TKJ,Tidak,6,1.0,3.0,10.0,2.0,98.04,Siap,Cukup Kondusif,80.0,100,Rendah,Rendah,83.86,-0.24455078276798128
+0095124780,Ulfia rifqa saskia,ulfiarifqasaskia@gmail.com,Perempuan,MULTIMEDIA,Tidak,7,1.0,3.0,10.0,2.0,87.25,Siap,Kurang Kondusif,80.0,60,Rendah,Rendah,86.75,1.1539036048686104
+2044,Fahrul rafli,jamettjawirr@gmail.com,Laki-laki,TPTU,Ya,7,5.0,6.0,10.0,2.0,78.43,Siap,Kondusif,40.0,60,Rendah,Rendah,82.6,-0.06632878721141498
+0086672379,Reivan fahrezi ally aqvan,aparatngawi@gmail.com,Laki-laki,TKJ,Ya,7,1.0,1.0,10.0,2.0,71.57,Siap,Kurang Kondusif,80.0,100,Rendah,Rendah,84.67,0.2609509242829844
+0092309319,NURSYAKILA,syakila345x@gmail.com,Perempuan,TKJ,Tidak,3,2.0,5.0,10.0,2.0,98.04,Siap,Kondusif,80.0,20,Rendah,Rendah,82.71,-0.9622383915440452
+0098801774,INTAN WAHYUNA,intanwahyuna2009@gmail.com,Perempuan,TKJ,Tidak,5,7.0,3.0,10.0,2.0,87.25,Siap,Kondusif,80.0,60,Rendah,Rendah,86.17,1.1970651965995849
+009548915,Nur arisya,nurarisya937@gmail.com,Perempuan,TKJ,Tidak,5,7.0,3.0,10.0,2.0,84.31,Siap,Kondusif,80.0,60,Rendah,Rendah,86.42,1.353084241985685
+0093850794,T. Daffa arkansyah,teukudaffa4rkansyah67@gmail.com,Laki-laki,TKJ,Ya,6,2.0,2.0,10.0,2.0,98.04,Belum Siap,Kondusif,60.0,20,Rendah,Rendah,85.43,0.7352488222567318
+0101800729,NURUL IZZAH,nurulizzahsufli25@gmail.com,Perempuan,TKJ,Tidak,7,1.0,1.0,10.0,2.0,98.04,Belum Siap,Cukup Kondusif,60.0,100,Rendah,Rendah,82.79,-0.9123122970204853
+3091737196,Nadila dara funna,khairia0244@gmail.com,Perempuan,TKJ,Tidak,7,1.0,1.0,10.0,2.0,97.06,Belum Siap,Cukup Kondusif,60.0,100,Rendah,Rendah,83.79,-0.2882361154760851
+132,MUHAMMAD HABIL,hur20088a@gmail.com,Laki-laki,TPTU,Ya,7,2.0,10.0,10.0,2.0,90.2,Belum Siap,Kondusif,60.0,20,Rendah,Sedang,80.87,-0.8184931897505838
+0103794479,HALFI HUSNA,husnqhalfi@gmail.com,Perempuan,TKJ,Tidak,5,1.0,1.0,10.0,2.0,96.08,Belum Siap,Cukup Kondusif,60.0,100,Rendah,Rendah,83.36,-0.5565888735401815
+0097512376,MUHAMMAD AL AKBARI,alakbari372@gmail.com,Laki-laki,TPTU,Tidak,10,2.0,6.0,10.0,2.0,90.2,Belum Siap,Kondusif,40.0,60,Rendah,Berat,81.92,-0.36197722289154927
+0095006546,Faisal maulana,mulanafaisal748@gmail.com,Laki-laki,TPTU,Ya,10,1.0,4.0,10.0,2.0,86.27,Belum Siap,Cukup Kondusif,40.0,100,Rendah,Rendah,80.87,-0.8184931897505838
+0091597857,SYIFA URRAHMA,andriania790@gmail.com,Perempuan,TKJ,Tidak,7,7.0,3.0,10.0,2.0,83.33,Siap,Kondusif,80.0,20,Rendah,Sedang,85.75,0.9349532003509357
+0094954493,Furqan Ramadhan,furkanramadan41@gmail.com,Laki-laki,MULTIMEDIA,Tidak,7,1.0,7.0,10.0,2.0,86.27,Siap,Kurang Kondusif,80.0,60,Rendah,Sedang,84.92,-0.15215310068145374
+0092020361,Afdal khalil,makk270809@gmail.com,Laki-laki,MULTIMEDIA,Tidak,8,1.0,8.0,10.0,2.0,93.14,Belum Siap,Cukup Kondusif,60.0,20,Rendah,Rendah,85.5,0.261788368837145
+0105552363,Natasya attasyah syuana,tasya020897@gmail.com,Perempuan,TKJ,Tidak,4,1.0,1.0,10.0,2.0,97.06,Belum Siap,Cukup Kondusif,60.0,100,Rendah,Rendah,84.14,-0.06980945193554848
+0103138357,ULFA MAHERA,ulfa96713@gmail.com,Perempuan,TKJ,Tidak,5,1.0,1.0,10.0,2.0,99.02,Belum Siap,Cukup Kondusif,60.0,100,Rendah,Rendah,84.21,-0.026124119227444717
+3091473712,ASRARUDDIN,asrarruddin335@gmail.com,Laki-laki,TKJ,Ya,7,1.0,4.0,10.0,2.0,97.06,Siap,Kondusif,80.0,60,Rendah,Rendah,81.43,-1.7610559039208695
+19720202 200604 1 004,Riana qhadafa,rianqhadafa@gmail.com,Laki-laki,TAV,Ya,7,2.0,3.0,10.0,2.0,94.12,Siap,Kondusif,40.0,60,Rendah,Rendah,82.93,-0.6201401665668906
+0093270487,muhammad alfaruqi,aruki942@gmail.com,Laki-laki,TPTU,Ya,8,1.0,5.0,10.0,2.0,88.24,Siap,Kondusif,80.0,60,Rendah,Rendah,82.67,-0.03589438942080938
+00081197204,FAIRUZ RISKI,fannynokabel01@gmail.com,Laki-laki,TPTU,Tidak,7,5.0,3.0,10.0,2.0,69.61,Siap,Kurang Kondusif,60.0,60,Rendah,Sedang,83.58,0.3597527818570202
+0094545444,muhammad fajri,maun47765@gmail.com,Laki-laki,TPTU,Tidak,7,2.0,3.0,10.0,2.0,72.55,Siap,Cukup Kondusif,40.0,20,Rendah,Rendah,84.83,0.90322417097492
+0092107755,Muhammad suhil ikram,suhilikram58@gmail.com,Laki-laki,TPTU,Tidak,5,2.0,3.0,10.0,2.0,79.41,Siap,Kurang Kondusif,80.0,100,Rendah,Rendah,81.13,-0.7054511408140647
+0084976535,Muhammad ra'fat,rafahmuhammad458@gmail.com,Laki-laki,TPTU,Ya,10,2.0,5.0,10.0,2.0,78.43,Belum Siap,Cukup Kondusif,40.0,60,Rendah,Sedang,81.67,-0.4706715007151292
+0094292988,Rihul miski,rihulmiski80@gmail.com,Laki-laki,TAV,Tidak,9,3.0,2.0,10.0,2.0,84.31,Siap,Kondusif,60.0,100,Rendah,Sedang,81.67,-1.288480145261895
+0182835221,Raihan firdaus,boyt30289@gmail.com,Laki-laki,TKJ,Ya,3,2.0,3.0,10.0,2.0,97.06,Siap,Kondusif,60.0,20,Rendah,Sedang,83.36,-0.5565888735401815
+0089057480,Fika mariska,fka4357@gmail.com,Perempuan,MULTIMEDIA,Tidak,9,1.0,3.0,10.0,2.0,92.16,Siap,Cukup Kondusif,20.0,20,Rendah,Rendah,86.0,0.6186344632497313
+2133,Rafian Al khusry,raffymadeline@gmail.com,Laki-laki,TPTU,Tidak,10,2.0,3.0,10.0,2.0,90.2,Siap,Cukup Kondusif,80.0,60,Rendah,Rendah,83.4,0.28149290182404585
+0089652463,Aulia Fitri,auliaaputry25@gmail.com,Perempuan,MULTIMEDIA,Ya,4,7.0,9.0,10.0,2.0,82.35,Siap,Cukup Kondusif,40.0,20,Rendah,Rendah,85.42,0.20469299373113245
+0103481810,Abdul aziz,ajisbrader2@gmail.com,Laki-laki,TKJ,Ya,7,2.0,4.0,10.0,2.0,95.1,Siap,Kondusif,80.0,60,Rendah,Rendah,82.57,-1.0496090569602616
+0107049166,Yunita dewi,yunitadewidew@gmail.com,Perempuan,TKJ,Tidak,3,6.0,6.0,10.0,2.0,98.04,Siap,Kurang Kondusif,40.0,20,Rendah,Sedang,83.79,-0.2882361154760851
+0092992319,fatma nadila,nisakhairun8106@gmail.com,Perempuan,TKJ,Tidak,3,2.0,3.0,10.0,2.0,75.49,Siap,Cukup Kondusif,80.0,100,Rendah,Sedang,85.0,0.46689606419263546
+0098413992,Zahrul liza,liza362884@gmail.com,Perempuan,TKJ,Tidak,6,6.0,3.0,10.0,2.0,98.04,Siap,Kondusif,80.0,100,Rendah,Rendah,83.93,-0.20086545005986864
+3091487149,TEUKU ZAMHARIRA SYAH,tzamharirapopon@gmail.com,Laki-laki,TPTU,Ya,11,1.0,1.0,10.0,2.0,72.55,Siap,Cukup Kondusif,60.0,60,Rendah,Sedang,84.25,0.6510534464242153
+0099089440,SYIKHKIR,syikirsyikir2@gmail.com,Laki-laki,TAV,Tidak,8,7.0,5.0,10.0,2.0,97.06,Siap,Kondusif,80.0,100,Rendah,Sedang,86.25,1.140882634438983
+0091597686,Aidila fitria,aidilafitria@50gmail.com,Perempuan,MULTIMEDIA,Tidak,6,3.0,12.0,10.0,2.0,98.04,Siap,Cukup Kondusif,40.0,20,Rendah,Rendah,86.58,1.03257593276833
+0106567312,M. FAJRI RIZQUNA,razkakupi@gmail.com,Laki-laki,TPTU,Tidak,6,6.0,5.0,10.0,2.0,89.22,Belum Siap,Cukup Kondusif,60.0,60,Rendah,Rendah,81.27,-0.6445823452328596
+3092055175,Muhammad Mustaqim,accpai80@gmail.com,Laki-laki,TKJ,Tidak,3,2.0,6.0,10.0,2.0,91.18,Siap,Kondusif,40.0,60,Rendah,Rendah,81.86,-1.4927031458567819
+0099437449,Aldy putra triyanto,paldy8342@gmail.com,Laki-laki,TPTU,Tidak,3,3.0,3.0,10.0,2.0,84.31,Siap,Kondusif,60.0,20,Rendah,Rendah,82.2,-0.2402396317291392
+0105423699,cut mutia maharani,cutmutiamaharani07@gmail.com,Perempuan,TKJ,Tidak,6,2.0,3.0,10.0,2.0,100.0,Siap,Kondusif,80.0,100,Rendah,Rendah,84.5,0.15485797342043528
+3103292191,MUHAMMAD FADHIL RIZKI,ekdekdan451@gmail.com,Laki-laki,TKJ,Tidak,6,1.0,2.0,10.0,2.0,93.14,Siap,Kurang Kondusif,40.0,100,Rendah,Rendah,82.43,-1.136979722376469
+0097089031,MUHAMMAD ABIZAR,abizarabizaraja75@gmail.com,Laki-laki,TPTU,Tidak,4,2.0,2.0,10.0,2.0,94.12,Belum Siap,Kondusif,40.0,100,Rendah,Sedang,83.47,0.31192729961464527
+0105135070,ulfa amelia,aulfa4492@gmail.com,Perempuan,TKJ,Tidak,5,6.0,3.0,10.0,2.0,98.04,Siap,Kondusif,80.0,20,Rendah,Rendah,84.29,0.023801975296115115
+3107892856,Muhammad Sulfan,sulfanm7@gmail.com,Laki-laki,TPTU,Tidak,8,3.0,2.0,10.0,2.0,92.16,Siap,Cukup Kondusif,60.0,20,Rendah,Rendah,83.8,0.45540374634177005
+0108489659,Haikal Zubaili,haikalzubaili8@gmail.com,Laki-laki,TPTU,Tidak,6,10.0,1.0,10.0,2.0,86.27,Belum Siap,Cukup Kondusif,20.0,20,Rendah,Rendah,82.6,-0.06632878721141498
+2128714169,MUHAMMAD MEI HELDIN,meiiheldin@gmail.com,Laki-laki,MULTIMEDIA,Ya,12,0.0,3.0,10.0,2.0,89.22,Siap,Kurang Kondusif,20.0,60,Rendah,Sedang,85.75,0.4402114160434381
+0101685434,M.ILHAM NABAWI AS,muhammadilhamnabawi524@gmail.com,Laki-laki,TKJ,Tidak,7,2.0,1.0,10.0,2.0,97.06,Siap,Kurang Kondusif,80.0,100,Rendah,Rendah,82.57,-1.0496090569602616
+0099368889,Alia Ranjani Guci,aliaranjaniguci14@gmail.com,Perempuan,MULTIMEDIA,Tidak,6,1.0,12.0,10.0,2.0,86.27,Belum Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,86.42,0.9183851825563049
+0107417733,Zahratul hayawita melani,zahm0280@gmail.com,Perempuan,TKJ,Tidak,9,1.0,5.0,10.0,2.0,98.04,Siap,Cukup Kondusif,80.0,60,Rendah,Rendah,83.57,-0.42553287541586127
+0081919484,THAHARATUL MAQFIRAH,tahratulmaqfirahtahra@gmail.com,Perempuan,MULTIMEDIA,Ya,5,2.0,4.0,10.0,2.0,99.02,Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,86.75,1.1539036048686104
+0108862000,Hakim Maulana Nasution,hakimmaulana831@gmail.com,Laki-laki,TKJ,Tidak,8,2.0,5.0,10.0,2.0,91.18,Siap,Kurang Kondusif,80.0,100,Rendah,Rendah,83.5,-0.46921820812396503
+010464108,Muhammad rizki,muhammadrizki@gmail.com,Laki-laki,TPTU,Tidak,5,2.0,3.0,10.0,2.0,78.43,Belum Siap,Kurang Kondusif,60.0,60,Rendah,Berat,82.07,-0.296760656197405
+0103975097,Muhammad saryulis,ulihkece827@gmail.com,Laki-laki,TKJ,Tidak,4,1.0,8.0,10.0,2.0,98.04,Siap,Kurang Kondusif,40.0,20,Rendah,Sedang,82.43,-1.136979722376469
+0101756109,Niswatul khoira,wettrew047@gmail.com,Perempuan,TKJ,Tidak,3,2.0,2.0,10.0,2.0,96.08,Siap,Kondusif,60.0,100,Rendah,Rendah,83.43,-0.5129035408320688
+0105129981,ZULFA DAMUL IZZI,zulfazalmuizi@gmail.com,Perempuan,TKJ,Tidak,7,2.0,2.0,10.0,2.0,94.12,Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,83.14,-0.6938856334799488
+0092900321,FAIZA ALGHIFARI,faiza00898@gmail.com,Laki-laki,TKJ,Tidak,8,3.0,7.0,10.0,2.0,94.12,Siap,Kondusif,60.0,60,Rendah,Rendah,83.93,-0.20086545005986864
+0092860879,Nadia ulfa,nn8407153@gmail.com,Perempuan,MULTIMEDIA,Ya,8,7.0,4.0,10.0,2.0,88.24,Siap,Kondusif,80.0,20,Rendah,Rendah,86.42,0.9183851825563049
+3093715391,Muhammad Auni Farhan,muhammadaunifarhan@gmail.com,Laki-laki,TKJ,Ya,12,1.0,5.0,10.0,2.0,98.04,Siap,Kurang Kondusif,80.0,100,Rendah,Rendah,85.07,0.5105813969007392
+0108803284,Muhammad Rizqi,rm3993638@gmail.com,Laki-laki,TKJ,Tidak,11,1.0,5.0,10.0,2.0,99.02,Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,85.64,0.866304820381052
+3092360271,MAULANA SIDDIQ,maulanasiddiqroni@gmail.com,Laki-laki,TPTU,Tidak,7,2.0,4.0,10.0,2.0,98.04,Siap,Kondusif,80.0,60,Rendah,Rendah,84.93,0.9467018821043557
+0104020926,najwa thalita,najwaathalita85@gmail.com,Perempuan,TKJ,Tidak,5,1.0,2.0,10.0,2.0,96.08,Siap,Kurang Kondusif,80.0,60,Rendah,Rendah,84.29,0.023801975296115115
+0095507550,M FAHRiL SARi,sadrifahril@gmail.com,Laki-laki,TPTU,Ya,10,2.0,2.0,10.0,2.0,55.88,Belum Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,80.6,-0.9358830098000547
+0093604813,Khairannisa salsabila,dekzain652@gmail.com,Perempuan,MULTIMEDIA,Tidak,8,3.0,4.0,10.0,2.0,80.39,Siap,Kondusif,60.0,20,Rendah,Rendah,85.0,-0.09505772557544116
+0074520519,MUHAMMAD HUSAINI,tadamcuki328@gmail.com,Laki-laki,TPTU,Tidak,6,0.0,2.0,10.0,2.0,63.73,Siap,Kondusif,60.0,60,Rendah,Sedang,83.67,0.3988827218735105
+0098280442,Muhammad Syahril,shinoburikka10@gmail.com,Laki-laki,TKJ,Ya,8,0.0,8.0,10.0,2.0,72.55,Siap,Kurang Kondusif,40.0,20,Rendah,Sedang,84.75,0.31087701880653534
+0099830358,Muhammad Fazil,muhammadfazil2925@gmail.com,Laki-laki,TPTU,Tidak,7,1.0,3.0,10.0,2.0,99.02,Siap,Kondusif,60.0,20,Rendah,Sedang,86.67,1.7032140557564701
+0093739983,fitrah alfarabi,fitrahalfarabi3@gmail.com,Laki-laki,TKJ,Ya,10,1.0,5.0,0.0,8.0,98.04,Siap,Kondusif,80.0,100,Rendah,Rendah,85.0,0.46689606419263546
+0098889065,maula zikri,hakimtzy7@gmail.com,Laki-laki,TPTU,Tidak,6,0.0,5.0,10.0,2.0,96.08,Siap,Kondusif,40.0,20,Rendah,Sedang,83.33,0.2510585040334402
+3085199567,muhammad reza alfian,rezaalvian3637@gmail.com,Laki-laki,TPTU,Tidak,10,1.0,3.0,10.0,2.0,76.47,Siap,Kondusif,60.0,20,Rendah,Sedang,85.92,1.3771312222857301
+0081046494,MUHAMMAD RIZKI MAULANA,muhammadrizkimaulana83@gmail.com,Laki-laki,TPTU,Tidak,5,1.0,2.0,10.0,2.0,78.43,Siap,Kondusif,60.0,20,Rendah,Sedang,82.07,-0.296760656197405
+0092646666,SARYULIS,kartini999cp@gmail.com,Laki-laki,TPTU,Tidak,6,5.0,3.0,10.0,2.0,94.12,Belum Siap,Kondusif,80.0,60,Rendah,Rendah,82.2,-0.2402396317291392
+3108006177,Zufarudin Zaki,tremosintremos@gmail.com,Laki-laki,TKJ,Tidak,8,1.0,6.0,10.0,2.0,98.04,Siap,Kurang Kondusif,60.0,20,Rendah,Sedang,84.29,0.023801975296115115
+0107172101,UNZUR RAVIZI,wandyiwan49@gmail.com,Laki-laki,TKJ,Tidak,3,1.0,8.0,10.0,2.0,94.12,Siap,Kurang Kondusif,60.0,100,Rendah,Sedang,82.86,-0.8686269643123816
+0101329654,RIZKY APRILIADI,rizkyapriliadi578@gmail.com,Laki-laki,TKJ,Tidak,4,1.0,6.0,10.0,2.0,91.18,Siap,Kurang Kondusif,40.0,100,Rendah,Sedang,83.07,-0.7375709661880614
+0074796305,Muhammad Akbar zulfajri,akbar82644@gmail.com,Laki-laki,TPTU,Tidak,5,8.0,5.0,10.0,2.0,74.51,Siap,Kondusif,20.0,60,Rendah,Rendah,84.17,0.6162712775206703
+3106067561,MUHAMMAD ALFI,wahyufino662@gmail.com,Laki-laki,TKJ,Ya,10,0.0,5.0,10.0,2.0,92.16,Siap,Kurang Kondusif,60.0,20,Rendah,Sedang,83.14,-0.6938856334799488
+0105133699,TAJJUL ARASY,jult93940@gmail.com,Laki-laki,TPTU,Ya,11,2.0,2.0,10.0,2.0,92.16,Belum Siap,Kondusif,40.0,100,Rendah,Sedang,82.4,-0.15328420947027402
+2113,Muhammad syoqi,fazilmuhammad8217@gmail.com,Laki-laki,TPTU,Ya,6,1.0,4.0,10.0,2.0,85.29,Belum Siap,Kondusif,80.0,60,Rendah,Rendah,82.93,0.077147659515716
+0105787210,ALDI AL FARUK,aldialfaruk979@gmail.com,Laki-laki,TPTU,Tidak,7,2.0,3.0,10.0,2.0,81.37,Siap,Cukup Kondusif,40.0,100,Rendah,Berat,81.2,-0.675016743023459
+3102526588,Muhammad Ridho,ridoinjeksi16@gmail.com,Laki-laki,TPTU,Ya,7,2.0,7.0,10.0,2.0,73.53,Siap,Kondusif,40.0,20,Rendah,Sedang,81.27,-0.6445823452328596
+0098985269,putri nazariah,putrinazariah2026@icloud.com,Perempuan,MULTIMEDIA,Tidak,10,2.0,2.0,10.0,2.0,94.12,Siap,Kondusif,80.0,20,Rendah,Rendah,84.57,-0.40194536677027015
+3105166654,Ahmad al maturidy,ahmadalmaturidi11@gmail.com,Laki-laki,TPTU,Tidak,5,2.0,2.0,10.0,2.0,84.31,Siap,Kondusif,80.0,100,Rendah,Rendah,82.87,0.051061032838055825
+0099219941,Zulfikri,zulkifli242826@gmail.com,Laki-laki,TPTU,Tidak,11,6.0,4.0,10.0,2.0,97.06,Siap,Kondusif,20.0,60,Rendah,Rendah,86.33,1.5553898379163997
+0109863872,NEISYA AMELYA,naisyaamelia3@gmail.com,Perempuan,MULTIMEDIA,Tidak,7,8.0,6.0,10.0,2.0,99.02,Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,84.79,-0.2449330852287229
+3086156322,M.satria z,satriazm6@gmail.com,Laki-laki,TPTU,Ya,10,2.0,5.0,10.0,2.0,85.29,Siap,Kondusif,40.0,60,Rendah,Rendah,85.08,1.0119184487985
+0092292870,Muhammad Usmar karali,kakneng95@gmail.com,Laki-laki,TPTU,Tidak,7,1.0,9.0,10.0,2.0,83.33,Belum Siap,Cukup Kondusif,40.0,60,Rendah,Berat,78.07,-2.0358691013746846
+30965847,resita naswatun,risma50999@gmail.com,Perempuan,MULTIMEDIA,Tidak,4,7.0,2.0,10.0,2.0,100.0,Siap,Kondusif,80.0,100,Rendah,Rendah,84.57,-0.40194536677027015
+0109781358,Fadilsadana,fadilsadana67@gmail.com,Laki-laki,MULTIMEDIA,Ya,4,8.0,3.0,10.0,2.0,98.04,Siap,Cukup Kondusif,80.0,20,Rendah,Sedang,85.0,-0.09505772557544116
+3097310220,nauval kismullah,nopalllk96@gmail.com,Laki-laki,TPTU,Tidak,9,2.0,1.0,10.0,2.0,90.2,Belum Siap,Kondusif,80.0,100,Rendah,Sedang,81.4,-0.5880613207645938
+0091525219,putri maulida,putrimaulinda0111@gmail.com,Perempuan,MULTIMEDIA,Tidak,3,8.0,6.0,10.0,2.0,100.0,Siap,Cukup Kondusif,60.0,20,Rendah,Rendah,85.36,0.16187146240162048
+0089319245,Muhammad adami,damiadami1221@gmail.com,Laki-laki,TPTU,Tidak,7,2.0,2.0,10.0,2.0,81.37,Belum Siap,Kondusif,80.0,20,Rendah,Rendah,86.25,1.520607669012855
+0099875397,shindy an'nazila,marimar.sini88@gmail.com,Perempuan,MULTIMEDIA,Tidak,3,2.0,3.0,10.0,2.0,99.02,Siap,Kondusif,80.0,60,Rendah,Sedang,84.43,-0.5018622732057846
+0105557820,fadillah safitri,f31779200@gmail.com,Perempuan,MULTIMEDIA,Tidak,7,2.0,5.0,10.0,2.0,100.0,Siap,Kondusif,80.0,60,Rendah,Sedang,85.14,0.004859180860083371
+0108476479,SALVINA ZUHRA,mildafazillah@gmail.com,Perempuan,MULTIMEDIA,Ya,7,1.0,8.0,10.0,2.0,98.04,Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,84.57,-0.40194536677027015
+0098765663,LUTFIA AMANDA,lutfiaamanda47@gmail.com,Perempuan,MULTIMEDIA,Ya,4,1.0,8.0,10.0,2.0,83.33,Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,83.29,-1.3154713684664814
+0097577268,Atessha martha,dektsyasofyan@gmail.com,Perempuan,MULTIMEDIA,Tidak,3,1.0,3.0,10.0,2.0,72.55,Siap,Kondusif,80.0,60,Rendah,Rendah,82.29,-2.0291635572916538
+0108835676,YUNITA SILVIANITA,nairais539@gmail.com,Perempuan,MULTIMEDIA,Tidak,8,1.0,4.0,10.0,2.0,95.1,Siap,Kondusif,80.0,60,Rendah,Rendah,83.29,-1.3154713684664814
+0104470464,Auliza latifa,latifaauliza@gmail.com,Perempuan,MULTIMEDIA,Tidak,6,1.0,6.0,10.0,2.0,94.12,Siap,Kurang Kondusif,60.0,60,Rendah,Rendah,84.21,-0.6588745547473318
+0092150887,Sharayulis afdila,sharayulisafdila@gmail.com,Perempuan,TKJ,Tidak,8,2.0,2.0,10.0,2.0,97.06,Belum Siap,Cukup Kondusif,80.0,60,Rendah,Rendah,83.71,-0.33816220999964486
+0101477118,Ahmad alfi,alpiwwjjtipis@gmail.com,Laki-laki,MULTIMEDIA,Tidak,6,0.0,3.0,10.0,2.0,80.39,Siap,Kurang Kondusif,80.0,20,Rendah,Rendah,82.14,-2.1362173856154336
+0107709420,siti rahil qory,pamolqory@gmail.com,Perempuan,MULTIMEDIA,Tidak,7,1.0,2.0,10.0,2.0,93.14,Siap,Kurang Kondusif,20.0,20,Rendah,Sedang,83.5,-1.1655960088131998
+0103385630,lailatul safa,lala290728@gmail.com,Perempuan,MULTIMEDIA,Tidak,7,2.0,2.0,10.0,2.0,91.18,Siap,Kondusif,80.0,60,Rendah,Rendah,84.57,-0.40194536677027015
+3094563031,Maiya Adelia,jaban3472@gmail.com,Perempuan,MULTIMEDIA,Tidak,6,2.0,2.0,10.0,2.0,99.02,Siap,Kondusif,80.0,60,Rendah,Rendah,84.79,-0.2449330852287229
+0104966153,Putri aulia,pmulia8628@gmail.com,Perempuan,MULTIMEDIA,Tidak,5,2.0,3.0,10.0,2.0,92.16,Siap,Kondusif,80.0,60,Rendah,Rendah,84.0,-0.8087499144006135
+1972203032000121001,maulisal,maulizarlizar47@gmail.com,Laki-laki,TPTU,Tidak,5,2.0,2.0,10.0,2.0,94.12,Siap,Cukup Kondusif,40.0,60,Rendah,Rendah,75.6,-3.109768566271654
+0099968988,VIRA MAULIDA,viramaulidalgs@gmail.com,Perempuan,TKJ,Tidak,4,8.0,7.0,10.0,2.0,98.04,Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,86.75,1.559029381895336
+0084654163,Anisa Salsabila,nipaslsabila@gmail.com,Perempuan,TKJ,Tidak,8,8.0,5.0,10.0,2.0,88.24,Siap,Kurang Kondusif,80.0,100,Rendah,Rendah,85.0,0.46689606419263546
+0093895653,Selvi Amanda sari,selviamandasari123@gmail.com,Perempuan,TKJ,Tidak,5,8.0,5.0,10.0,2.0,84.31,Siap,Kurang Kondusif,60.0,20,Rendah,Rendah,84.5,0.15485797342043528
+0085715508,Khalisma,khalisma296@gmail.com,Perempuan,TKJ,Tidak,4,8.0,7.0,10.0,2.0,89.22,Siap,Kondusif,80.0,60,Rendah,Rendah,84.83,0.3608031133300863
+0091480394,MIFTAHUL JANNAH,miftahuljannahmiftaa90@gmail.com,Perempuan,TKJ,Tidak,4,8.0,3.0,10.0,2.0,97.06,Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,85.5,0.7789341549648356
+0091395470,Syifaulkhaira,shipaulkhaira67@gmail.com,Perempuan,TKJ,Tidak,5,8.0,3.0,10.0,2.0,91.18,Siap,Kondusif,80.0,100,Rendah,Rendah,85.58,0.8288602494883865
+0101588430,marsya nadhifa,marsyanadhifaa@gmail.com,Perempuan,MULTIMEDIA,Tidak,7,8.0,1.0,10.0,2.0,98.04,Siap,Kondusif,80.0,20,Rendah,Rendah,84.71,-0.3020284603347456
+3090117959,meriani,mericantik000@gmail.com,Perempuan,MULTIMEDIA,Tidak,6,5.0,4.0,10.0,2.0,83.33,Siap,Kondusif,80.0,20,Rendah,Rendah,83.36,-1.2655129152487243
+0394191117,MUHAMMAD MAULANA,theenaaw@gmail.com,Laki-laki,MULTIMEDIA,Tidak,8,3.0,5.0,10.0,2.0,100.0,Siap,Kondusif,80.0,20,Rendah,Rendah,84.64,-0.35198691355250283
+0102996855,MUHAMMAD SAUQIL KHALIS,rfifi6362@gmail.com,Laki-laki,MULTIMEDIA,Tidak,8,3.0,2.0,10.0,2.0,86.27,Siap,Kondusif,80.0,20,Rendah,Rendah,82.79,-1.6723174628790676
+0083739813,mukhraja shiddieqy,mukhraja014@gmail.com,Laki-laki,MULTIMEDIA,Ya,6,8.0,2.0,10.0,2.0,98.04,Siap,Kondusif,60.0,60,Rendah,Rendah,84.21,-0.6588745547473318
+0101282386,ABDUL RAZAK,abdulrazak01062010@gmail.com,Laki-laki,TPTU,Ya,5,4.0,0.0,10.0,2.0,86.27,Siap,Kondusif,80.0,60,Rendah,Rendah,79.8,-1.2837046988355094
+0092896612,frisya cindy elisia,frisyaelisia@gmail.com,Perempuan,TKJ,Tidak,9,3.0,8.0,10.0,2.0,97.06,Siap,Cukup Kondusif,80.0,20,Rendah,Rendah,87.08,1.764974521804987
+0102215188,ULFA MAHERA,ulfamahera049@gmail.com,Perempuan,MULTIMEDIA,Tidak,5,1.0,1.0,10.0,2.0,96.08,Siap,Kondusif,80.0,100,Rendah,Rendah,83.71,-1.015720649159918
+0102218389,Khaira alfina,murahzulfa770@gmail.com,Perempuan,MULTIMEDIA,Tidak,6,1.0,1.0,10.0,2.0,89.22,Siap,Kondusif,80.0,100,Rendah,Sedang,83.57,-1.1156375555954425
+0109363075,Abdu reza,pantonlabu0813@gmail.com,Laki-laki,TPTU,Tidak,7,1.0,5.0,10.0,2.0,72.55,Siap,Kondusif,60.0,20,Rendah,Rendah,78.4,-1.8923926546475534
+0098201782,ADI MULYONO,adimulyono1240@gmail.com,Laki-laki,TKJ,Tidak,6,1.0,5.0,10.0,2.0,98.04,Siap,Kondusif,80.0,60,Rendah,Rendah,85.92,1.0410461512134848
+0099870835,Muhammad Hidayatullah,surexxblue@gmail.com,Laki-laki,TKJ,Ya,10,1.0,3.0,0.0,8.0,83.33,Siap,Kurang Kondusif,80.0,60,Rendah,Rendah,84.0,-0.15718011735176488

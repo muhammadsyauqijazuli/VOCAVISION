@@ -21,19 +21,18 @@ type StudentDetailResponse = {
   skor_time_management: number | string | null;
   jam_tidur: number | string | null;
   screen_time: number | string | null;
-  kehadiran_pelatihan_industry: number | string | null;
   motivasi_akademik: number | string | null;
-  exam_score: number | string | null;
+  ses_index: number | string | null;
+  deviasi_tidur: number | string | null;
   gender: string | null;
-  rata_rata_pemasukan_keluarga: string | null;
-  pendidikan_terakhir_orang_tua: string | null;
   kerja_sampingan: string | null;
   study_environment: string | null;
   kompetensi_skill_level: string | null;
   industry_readiness: string | null;
   stress_level: string | null;
+  jurusan: string | null;
   latest_prediction: {
-    predicted_exam_score: number | string | null;
+    predicted_nilai_raport: number | string | null;
     risk_status: string | null;
     created_at: string | null;
   } | null;
@@ -42,7 +41,7 @@ type StudentDetailResponse = {
 type InsightResponse = {
   student_id: string;
   student_name: string;
-  predicted_exam_score: number | string | null;
+  predicted_nilai_raport: number | string | null;
   risk_status: string | null;
   shap_analysis?: {
     feature_name: string;
@@ -67,19 +66,18 @@ type StudentNumericKey =
   | "skor_time_management"
   | "jam_tidur"
   | "screen_time"
-  | "kehadiran_pelatihan_industry"
   | "motivasi_akademik"
-  | "exam_score";
+  | "ses_index"
+  | "deviasi_tidur";
 
 type StudentCategoricalKey =
   | "gender"
-  | "rata_rata_pemasukan_keluarga"
-  | "pendidikan_terakhir_orang_tua"
   | "kerja_sampingan"
   | "study_environment"
   | "kompetensi_skill_level"
   | "industry_readiness"
-  | "stress_level";
+  | "stress_level"
+  | "jurusan";
 
 const numericFields: Array<{ key: StudentNumericKey; label: string }> = [
   { key: "jam_belajar_per_hari", label: "Jam belajar per hari" },
@@ -87,31 +85,21 @@ const numericFields: Array<{ key: StudentNumericKey; label: string }> = [
   { key: "nilai_rata_rata_raport", label: "Nilai rata-rata raport" },
   { key: "skor_time_management", label: "Skor time management" },
   { key: "jam_tidur", label: "Jam tidur" },
+  { key: "deviasi_tidur", label: "Deviasi tidur" },
   { key: "screen_time", label: "Screen time" },
-  {
-    key: "kehadiran_pelatihan_industry",
-    label: "Kehadiran pelatihan industry",
-  },
+  { key: "ses_index", label: "SES Index" },
   { key: "motivasi_akademik", label: "Motivasi akademik" },
-  { key: "exam_score", label: "Exam score" },
 ] as const;
 
 const categoricalFields: Array<{ key: StudentCategoricalKey; label: string }> =
   [
     { key: "gender", label: "Gender" },
-    {
-      key: "rata_rata_pemasukan_keluarga",
-      label: "Rata-rata pemasukan keluarga",
-    },
-    {
-      key: "pendidikan_terakhir_orang_tua",
-      label: "Pendidikan terakhir orang tua",
-    },
-    { key: "kerja_sampingan", label: "Kerja sampingan" },
-    { key: "study_environment", label: "Study environment" },
-    { key: "kompetensi_skill_level", label: "Kompetensi skill level" },
-    { key: "industry_readiness", label: "Industry readiness" },
-    { key: "stress_level", label: "Stress level" },
+    { key: "kerja_sampingan", label: "Kerja Sampingan" },
+    { key: "study_environment", label: "Lingkungan Belajar" },
+    { key: "kompetensi_skill_level", label: "Tingkat Kompetensi Skill" },
+    { key: "industry_readiness", label: "Kesiapan Industri" },
+    { key: "stress_level", label: "Tingkat Stres" },
+    { key: "jurusan", label: "Jurusan" },
   ] as const;
 
 function formatValue(value: number | string | null | undefined) {
@@ -242,16 +230,6 @@ function buildRecommendations(
     });
   }
 
-  const industryTrainingAttendance = toNumber(
-    student.kehadiran_pelatihan_industry,
-  );
-  if (industryTrainingAttendance !== null && industryTrainingAttendance < 1) {
-    recommendations.push({
-      title: "Dorong ikut pelatihan industri",
-      description: `Kehadiran pelatihan industry ${studentName} masih ${industryTrainingAttendance.toFixed(0)}. Dorong partisipasi agar mendapat pengalaman praktik dan eksposur yang relevan.`,
-    });
-  }
-
   if (!recommendations.length) {
     recommendations.push({
       title: "Pertahankan kebiasaan belajar yang baik",
@@ -331,8 +309,8 @@ export default async function GuruStudentDetailPage({ params }: PageProps) {
   }
 
   const predictedScore =
-    insight.predicted_exam_score ??
-    student.latest_prediction?.predicted_exam_score;
+    insight.predicted_nilai_raport ??
+    student.latest_prediction?.predicted_nilai_raport;
   const riskStatus =
     getRiskStatus(predictedScore) ??
     insight.risk_status ??
@@ -359,7 +337,7 @@ export default async function GuruStudentDetailPage({ params }: PageProps) {
 
           <div className="rounded-2xl border border-stroke bg-gray-1 px-5 py-4 text-left lg:text-right dark:border-dark-3 dark:bg-dark-2">
             <p className="text-sm text-dark-4 dark:text-dark-6">
-              Prediksi skor ujian
+              Prediksi Nilai Raport
             </p>
             <p className="mt-1 text-3xl font-bold text-dark dark:text-white">
               {formatScore(predictedScore)}
@@ -382,7 +360,7 @@ export default async function GuruStudentDetailPage({ params }: PageProps) {
       <section className="rounded-2xl border border-stroke bg-white p-6 shadow-1 dark:border-dark-3 dark:bg-gray-dark">
         <div className="mb-5">
           <h2 className="text-xl font-bold text-dark dark:text-white">
-            Data 17 Variabel
+            Data 15 Variabel
           </h2>
           <p className="text-sm text-dark-4 dark:text-dark-6">
             Informasi numerik dan kategorikal yang digunakan untuk prediksi

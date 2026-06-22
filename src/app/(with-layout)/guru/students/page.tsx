@@ -28,7 +28,7 @@ export default async function GuruStudentsPage() {
           </p>
           <h1 className="text-3xl font-bold md:text-4xl">Data Siswa & Kelas</h1>
           <p className="mt-3 max-w-4xl text-sm leading-relaxed text-white/90 md:text-base">
-            Menampilkan skor prediksi terbaru, status risiko, dan tautan ke
+            Menampilkan prediksi nilai rata-rata raport terbaru, status risiko, dan tautan ke
             profil siswa yang menampilkan analisis personal model SHAP.
           </p>
         </div>

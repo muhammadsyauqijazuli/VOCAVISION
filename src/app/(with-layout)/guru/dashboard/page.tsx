@@ -91,7 +91,7 @@ export default async function GuruDashboardPage() {
             studentId: student.student_id,
             name: student.nama,
             className: "Belum tersedia",
-            score: student.predicted_exam_score ?? 0,
+            score: student.predicted_nilai_raport ?? 0,
             status: student.risk_status,
           }));
 

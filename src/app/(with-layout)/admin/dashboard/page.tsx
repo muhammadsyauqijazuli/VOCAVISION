@@ -16,9 +16,9 @@ import {
 type DashboardStats = {
   total_siswa?: number;
   rata_rata_prediksi?: number;
-  rata_rata_exam_score?: number;
+  rata_rata_nilai_raport?: number;
   jumlah_siswa_berprediksi?: number;
-  jumlah_siswa_exam_score?: number;
+  jumlah_siswa_dinilai?: number;
   rendah?: number;
   netral?: number;
   tinggi?: number;
@@ -27,7 +27,7 @@ type DashboardStats = {
     nama: string;
     nisn: string;
     role: string;
-    predicted_exam_score: number | null;
+    predicted_nilai_raport: number | null;
     risk_status: string;
   }[];
 };
@@ -58,10 +58,10 @@ export default async function AdminDashboardPage() {
   const averageScore =
     stats.jumlah_siswa_berprediksi && stats.rata_rata_prediksi !== undefined
       ? stats.rata_rata_prediksi
-      : (stats.rata_rata_exam_score ?? 0);
+      : (stats.rata_rata_nilai_raport ?? 0);
   const averageBasis = stats.jumlah_siswa_berprediksi
     ? `Prediksi terbaru ${stats.jumlah_siswa_berprediksi} siswa`
-    : `Nilai exam_score ${stats.jumlah_siswa_exam_score ?? 0} siswa`;
+    : `Nilai raport ${stats.jumlah_siswa_dinilai ?? 0} siswa`;
 
   const topStudents = stats.top_risky_students ?? [];
 
@@ -217,12 +217,12 @@ export default async function AdminDashboardPage() {
                           {student.nisn}
                         </td>
                         <td className="px-4 py-4 text-dark-4 dark:text-dark-6">
-                          {student.predicted_exam_score ?? "-"}
+                          {student.predicted_nilai_raport ?? "-"}
                         </td>
                         <td className="px-4 py-4">
                           <RiskBadge
                             status={student.risk_status}
-                            score={student.predicted_exam_score}
+                            score={student.predicted_nilai_raport}
                           />
                         </td>
                       </tr>

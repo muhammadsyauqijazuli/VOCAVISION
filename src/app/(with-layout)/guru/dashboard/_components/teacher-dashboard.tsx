@@ -61,7 +61,7 @@ function getAverageScore(stats: DashboardStatsResponse) {
     return stats.rata_rata_prediksi ?? 0;
   }
 
-  return stats.rata_rata_exam_score ?? 0;
+  return stats.rata_rata_nilai_raport ?? 0;
 }
 
 function getAverageHelper(stats: DashboardStatsResponse) {
@@ -69,7 +69,7 @@ function getAverageHelper(stats: DashboardStatsResponse) {
     return `Rata-rata prediksi terbaru dari ${stats.jumlah_siswa_berprediksi} siswa`;
   }
 
-  return `Rata-rata exam_score dari ${stats.jumlah_siswa_exam_score ?? 0} siswa`;
+  return `Rata-rata nilai raport dari ${stats.jumlah_siswa_dinilai ?? 0} siswa`;
 }
 
 function buildSummaryStats(stats: DashboardStatsResponse): SummaryStat[] {
@@ -106,21 +106,21 @@ function buildRiskSegments(stats: DashboardStatsResponse): RiskSegment[] {
 
   return [
     {
-      label: "Rendah (Aman)",
+      label: "Sangat Aman",
       count: safeCount,
       share: totalStudents ? Math.round((safeCount / totalStudents) * 100) : 0,
       color: "#3BA99C",
       description: "Mayoritas siswa berada di zona aman dan stabil.",
     },
     {
-      label: "Tinggi (Perlu Perhatian)",
+      label: "Aman",
       count: highCount,
       share: totalStudents ? Math.round((highCount / totalStudents) * 100) : 0,
       color: "#F39C12",
       description: "Perlu pemantauan mingguan dan follow-up ringan.",
     },
     {
-      label: "Rendah (Intervensi Segera)",
+      label: "Sangat Beresiko",
       count: veryHighCount,
       share: totalStudents
         ? Math.round((veryHighCount / totalStudents) * 100)
@@ -143,8 +143,8 @@ export function TeacherDashboard({
   const alertCount = alertRows.length;
   const alertTitle =
     alertCount > 0
-      ? `${alertCount} siswa beresiko (Rendah)`
-      : "Tidak ada siswa beresiko (Rendah)";
+      ? `${alertCount} siswa Sangat Beresiko`
+      : "Tidak ada siswa Sangat Beresiko";
   const chartData = riskSegments.map((segment) => ({
     name: segment.label,
     value: segment.count,
@@ -394,7 +394,7 @@ export function TeacherDashboard({
                 ))
               ) : (
                 <div className="px-5 py-6 text-sm text-dark-4 dark:text-dark-6">
-                  Tidak ada siswa beresiko (Rendah).
+                  Tidak ada siswa Sangat Beresiko.
                 </div>
               )}
             </div>

@@ -26,13 +26,13 @@ import {
 type BubbleDatum = {
   name: string;
   jam_belajar_per_hari: number;
-  exam_score: number;
+  nilai_raport: number;
   screen_time: number;
 };
 
 type StressDatum = {
   stress_level: string;
-  avg_exam_score: number;
+  avg_nilai_raport: number;
 };
 
 type RiskDatum = {
@@ -43,7 +43,7 @@ type RiskDatum = {
 type AttendanceTrendDatum = {
   name: string;
   presentase_kehadiran: number;
-  exam_score: number;
+  nilai_raport: number;
 };
 
 type AnalyticsDashboardProps = {
@@ -73,12 +73,12 @@ function hasBubbleMetrics(
   student: AnalyticsStudentRecord,
 ): student is AnalyticsStudentRecord & {
   jam_belajar_per_hari: number;
-  exam_score: number;
+  nilai_rata_rata_raport: number;
   screen_time: number;
 } {
   return (
     isNumber(student.jam_belajar_per_hari) &&
-    isNumber(student.exam_score) &&
+    isNumber(student.nilai_rata_rata_raport) &&
     isNumber(student.screen_time)
   );
 }
@@ -87,9 +87,9 @@ function hasAttendanceMetrics(
   student: AnalyticsStudentRecord,
 ): student is AnalyticsStudentRecord & {
   presentase_kehadiran: number;
-  exam_score: number;
+  nilai_rata_rata_raport: number;
 } {
-  return isNumber(student.presentase_kehadiran) && isNumber(student.exam_score);
+  return isNumber(student.presentase_kehadiran) && isNumber(student.nilai_rata_rata_raport);
 }
 
 function average(values: number[]) {
@@ -118,7 +118,7 @@ function buildBubbleData(students: AnalyticsStudentRecord[]) {
     .map((student) => ({
       name: student.nama,
       jam_belajar_per_hari: student.jam_belajar_per_hari,
-      exam_score: student.exam_score,
+      nilai_raport: student.nilai_rata_rata_raport,
       screen_time: student.screen_time,
     }));
 }
@@ -127,12 +127,12 @@ function buildStressData(students: AnalyticsStudentRecord[]) {
   const buckets = new Map<string, { total: number; count: number }>();
 
   for (const student of students) {
-    if (!student.stress_level || !isNumber(student.exam_score)) {
+    if (!student.stress_level || !isNumber(student.nilai_rata_rata_raport)) {
       continue;
     }
 
     const current = buckets.get(student.stress_level) ?? { total: 0, count: 0 };
-    current.total += student.exam_score;
+    current.total += student.nilai_rata_rata_raport;
     current.count += 1;
     buckets.set(student.stress_level, current);
   }
@@ -146,7 +146,7 @@ function buildStressData(students: AnalyticsStudentRecord[]) {
 
       return {
         stress_level: label,
-        avg_exam_score: bucket.total / bucket.count,
+        avg_nilai_raport: bucket.total / bucket.count,
       };
     });
 }
@@ -162,9 +162,9 @@ function buildRiskData(
 
   if (hasStats) {
     return [
-      { name: "Rendah", value: stats.rendah ?? 0 },
-      { name: "Netral", value: stats.netral ?? 0 },
-      { name: "Tinggi", value: stats.tinggi ?? 0 },
+      { name: "Sangat Beresiko", value: stats.rendah ?? 0 },
+      { name: "Aman", value: stats.netral ?? 0 },
+      { name: "Sangat Aman", value: stats.tinggi ?? 0 },
     ];
   }
 
@@ -183,9 +183,9 @@ function buildRiskData(
   }
 
   return [
-    { name: "Rendah", value: counts.Rendah },
-    { name: "Netral", value: counts.Netral },
-    { name: "Tinggi", value: counts.Tinggi },
+    { name: "Sangat Beresiko", value: counts.Rendah },
+    { name: "Aman", value: counts.Netral },
+    { name: "Sangat Aman", value: counts.Tinggi },
   ];
 }
 
@@ -199,7 +199,7 @@ function buildAttendanceTrendData(students: AnalyticsStudentRecord[]) {
     .map((student) => ({
       name: student.nama,
       presentase_kehadiran: student.presentase_kehadiran,
-      exam_score: student.exam_score,
+      nilai_raport: student.nilai_rata_rata_raport,
     }));
 }
 
@@ -220,23 +220,23 @@ function buildReadinessData(students: AnalyticsStudentRecord[]) {
 function getBubbleInsight(data: ReturnType<typeof buildBubbleData>) {
   if (!data.length) return null;
   const avgStudy = data.reduce((acc, curr) => acc + curr.jam_belajar_per_hari, 0) / data.length;
-  const avgScore = data.reduce((acc, curr) => acc + curr.exam_score, 0) / data.length;
+  const avgScore = data.reduce((acc, curr) => acc + curr.nilai_raport, 0) / data.length;
   return `Rata-rata jam belajar siswa pada populasi ini adalah ${avgStudy.toFixed(1)} jam/hari dengan pencapaian nilai rata-rata ${avgScore.toFixed(1)}.`;
 }
 
 function getStressInsight(data: ReturnType<typeof buildStressData>) {
   if (!data.length) return null;
-  const highestScore = [...data].sort((a, b) => b.avg_exam_score - a.avg_exam_score)[0];
+  const highestScore = [...data].sort((a, b) => b.avg_nilai_raport - a.avg_nilai_raport)[0];
   return `Performa nilai tertinggi rata-rata diraih oleh kelompok siswa dengan tingkat stres '${highestScore.stress_level}'.`;
 }
 
 function getRiskInsight(data: ReturnType<typeof buildRiskData>) {
   const total = data.reduce((acc, curr) => acc + curr.value, 0);
   if (total === 0) return null;
-  const rendah = data.find(d => d.name === "Rendah")?.value || 0;
-  const netral = data.find(d => d.name === "Netral")?.value || 0;
+  const rendah = data.find(d => d.name === "Sangat Beresiko")?.value || 0;
+  const netral = data.find(d => d.name === "Aman")?.value || 0;
   const pct = (((rendah + netral) / total) * 100).toFixed(1);
-  return `Dari total siswa, terdapat ${pct}% yang terdeteksi pada kategori Rendah dan Netral yang membutuhkan perhatian.`;
+  return `Dari total siswa, terdapat ${pct}% yang terdeteksi pada kategori Sangat Beresiko dan Aman yang membutuhkan perhatian.`;
 }
 
 function getAttendanceInsight(data: ReturnType<typeof buildAttendanceTrendData>) {
@@ -273,7 +273,7 @@ function BubbleTooltip({
         Jam belajar: {data.jam_belajar_per_hari.toFixed(1)} jam
       </p>
       <p className="text-dark-4 dark:text-dark-6">
-        Exam score: {data.exam_score.toFixed(1)}
+        Nilai raport: {data.nilai_raport.toFixed(1)}
       </p>
       <p className="text-dark-4 dark:text-dark-6">
         Screen time: {data.screen_time.toFixed(1)} jam
@@ -301,7 +301,7 @@ function StressTooltip({
         Stress Level: {data.stress_level}
       </p>
       <p className="mt-2 text-dark-4 dark:text-dark-6">
-        Rata-rata exam score: {data.avg_exam_score.toFixed(1)}
+        Rata-rata nilai raport: {data.avg_nilai_raport.toFixed(1)}
       </p>
     </div>
   );
@@ -350,7 +350,7 @@ function AttendanceTooltip({
         Kehadiran: {formatPercent(data.presentase_kehadiran)}
       </p>
       <p className="text-dark-4 dark:text-dark-6">
-        Exam score: {formatScore(data.exam_score)}
+        Nilai raport: {formatScore(data.nilai_raport)}
       </p>
     </div>
   );
@@ -418,14 +418,14 @@ export function AnalyticsDashboard({
 
   const totalStudents = students.length || stats.total_siswa || 0;
   const averageExamScore =
-    stats.rata_rata_exam_score ??
-    average(students.map((student) => student.exam_score).filter(isNumber));
+    stats.rata_rata_nilai_raport ??
+    average(students.map((student) => student.nilai_rata_rata_raport).filter(isNumber));
   const averageStudyHours = average(
     students.map((student) => student.jam_belajar_per_hari).filter(isNumber),
   );
   const lowRiskCount =
-    stats.tinggi ??
-    riskData.find((item) => item.name === "Tinggi")?.value ??
+    stats.rendah ??
+    riskData.find((item) => item.name === "Sangat Beresiko")?.value ??
     0;
 
   return (
@@ -461,7 +461,7 @@ export function AnalyticsDashboard({
         </div>
         <div className={cardClassName()}>
           <p className="text-sm text-slate-500 dark:text-dark-6">
-            Avg exam score
+            Avg nilai raport
           </p>
           <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">
             {formatScore(averageExamScore)}
@@ -482,12 +482,12 @@ export function AnalyticsDashboard({
           </p>
         </div>
         <div className={cardClassName()}>
-          <p className="text-sm text-slate-500 dark:text-dark-6">Low risk</p>
+          <p className="text-sm text-slate-500 dark:text-dark-6">High risk</p>
           <h2 className="mt-2 text-3xl font-bold text-dark dark:text-white">
             {lowRiskCount}
           </h2>
           <p className="mt-2 text-sm text-slate-500 dark:text-dark-6">
-            Kategori Tinggi menurut analisis backend
+            Kategori Sangat Beresiko menurut analisis backend
           </p>
         </div>
       </section>
@@ -526,8 +526,8 @@ export function AnalyticsDashboard({
                   />
                   <YAxis
                     type="number"
-                    dataKey="exam_score"
-                    name="Exam Score"
+                    dataKey="nilai_raport"
+                    name="Nilai Raport"
                     domain={[0, 100]}
                     tick={{ fill: COLORS.slate, fontSize: 12 }}
                     axisLine={{ stroke: COLORS.slate }}
@@ -555,7 +555,7 @@ export function AnalyticsDashboard({
           ) : (
             <EmptyState
               title="Belum ada data untuk chart ini"
-              description="Backend belum mengirim siswa dengan jam belajar, exam score, dan screen time yang lengkap."
+              description="Backend belum mengirim siswa dengan jam belajar, nilai raport, dan screen time yang lengkap."
             />
           )}
 
@@ -575,11 +575,11 @@ export function AnalyticsDashboard({
               Psychology
             </p>
             <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">
-              Rata-rata Exam Score per Stress Level
+              Rata-rata Nilai Raport per Stress Level
             </h2>
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-dark-6">
               Distribusi ini dihitung langsung dari siswa yang punya stress
-              level dan exam score.
+              level dan nilai raport.
             </p>
           </div>
 
@@ -607,7 +607,7 @@ export function AnalyticsDashboard({
                     content={<StressTooltip />}
                     cursor={{ fill: "rgba(31, 111, 95, 0.08)" }}
                   />
-                  <Bar dataKey="avg_exam_score" radius={[10, 10, 0, 0]}>
+                  <Bar dataKey="avg_nilai_raport" radius={[10, 10, 0, 0]}>
                     {stressData.map((entry) => (
                       <Cell
                         key={entry.stress_level}
@@ -627,7 +627,7 @@ export function AnalyticsDashboard({
           ) : (
             <EmptyState
               title="Belum ada data stress level"
-              description="Chart ini akan muncul setelah backend mengirim data stress_level dan exam_score yang valid."
+              description="Chart ini akan muncul setelah backend mengirim data stress_level dan nilai_raport yang valid."
             />
           )}
 
@@ -675,9 +675,9 @@ export function AnalyticsDashboard({
                     <Cell
                       key={entry.name}
                       fill={
-                        entry.name === "Rendah"
+                        entry.name === "Sangat Beresiko"
                           ? COLORS.danger
-                          : entry.name === "Netral"
+                          : entry.name === "Aman"
                             ? COLORS.warning
                             : COLORS.accent2
                       }
@@ -705,7 +705,7 @@ export function AnalyticsDashboard({
               Trend
             </p>
             <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">
-              Attendance vs Exam Score
+              Attendance vs Nilai Raport
             </h2>
             <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-dark-6">
               Composed chart ini memakai siswa dengan kehadiran tertinggi untuk
@@ -758,8 +758,8 @@ export function AnalyticsDashboard({
                   <Line
                     yAxisId="right"
                     type="monotone"
-                    dataKey="exam_score"
-                    name="Exam Score"
+                    dataKey="nilai_raport"
+                    name="Nilai Raport"
                     stroke={COLORS.header}
                     strokeWidth={3}
                     dot={{ r: 4, fill: COLORS.header }}
@@ -771,7 +771,7 @@ export function AnalyticsDashboard({
           ) : (
             <EmptyState
               title="Belum ada data attendance"
-              description="Chart ini akan tampil jika backend mengirim nilai kehadiran dan exam score siswa secara lengkap."
+              description="Chart ini akan tampil jika backend mengirim nilai kehadiran dan nilai raport siswa secara lengkap."
             />
           )}
 

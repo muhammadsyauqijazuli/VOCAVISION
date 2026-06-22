@@ -9,9 +9,7 @@ export type StudentAnalyticsRecord = {
   skor_time_management: number;
   jam_tidur: number;
   screen_time: number;
-  kehadiran_pelatihan_industry: number;
   motivasi_akademik: number;
-  exam_score: number;
   gender: "Laki-laki" | "Perempuan";
   rata_rata_pemasukan_keluarga: "Rendah" | "Menengah" | "Tinggi";
   pendidikan_terakhir_orang_tua: "SMA" | "D3" | "S1" | "S2";
@@ -33,9 +31,7 @@ export type AnalyticsStudentRecord = {
   skor_time_management: number | null;
   jam_tidur: number | null;
   screen_time: number | null;
-  kehadiran_pelatihan_industry: number | null;
   motivasi_akademik: number | null;
-  exam_score: number | null;
   gender: "Laki-laki" | "Perempuan" | null;
   rata_rata_pemasukan_keluarga: string | null;
   pendidikan_terakhir_orang_tua: string | null;
@@ -47,7 +43,7 @@ export type AnalyticsStudentRecord = {
   predicted_score: number | null;
   risk_status: RiskStatus | null;
   latest_prediction: {
-    predicted_exam_score: number | null;
+    predicted_nilai_raport: number | null;
     risk_status: RiskStatus | null;
     created_at: string | null;
   } | null;
@@ -57,8 +53,8 @@ export type DashboardStatsResponse = {
   total_siswa?: number;
   rata_rata_prediksi?: number;
   jumlah_siswa_berprediksi?: number;
-  rata_rata_exam_score?: number;
-  jumlah_siswa_exam_score?: number;
+  rata_rata_nilai_raport?: number;
+  jumlah_siswa_dinilai?: number;
   rendah?: number;
   netral?: number;
   tinggi?: number;
@@ -67,7 +63,7 @@ export type DashboardStatsResponse = {
     nama: string;
     nisn: string;
     role: string;
-    predicted_exam_score: number | null;
+    predicted_nilai_raport: number | null;
     risk_status: RiskStatus;
   }>;
 };

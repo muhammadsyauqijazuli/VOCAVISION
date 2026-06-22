@@ -27,8 +27,8 @@ def stats():
 
     avg_score = 0.0
     scored_students = 0
-    avg_exam_score = 0.0
-    exam_scored_students = 0
+    rata_rata_nilai_raport = 0.0
+    jumlah_siswa_dinilai = 0
     risk_counts = {'Rendah': 0, 'Netral': 0, 'Tinggi': 0}
     top_risky_students = []
 
@@ -43,33 +43,47 @@ def stats():
             key=lambda item: item.predicted_exam_score if item.predicted_exam_score is not None else 10**9,
         )
 
+        risk_map = {
+            'Aman': 'Tinggi',
+            'Beresiko': 'Netral',
+            'Sangat Beresiko': 'Rendah'
+        }
+
         for prediction in ordered_predictions[:5]:
             student = Student.query.get(prediction.student_id)
             user = User.query.get(student.user_id) if student and student.user_id else None
+            mapped_risk = risk_map.get(prediction.risk_status, prediction.risk_status)
             top_risky_students.append({
                 'student_id': prediction.student_id,
                 'nama': student.nama_siswa if student else '-',
                 'nisn': student.nisn if student else '-',
                 'role': user.role if user else 'siswa',
-                'predicted_exam_score': round(prediction.predicted_exam_score, 2) if prediction.predicted_exam_score is not None else None,
-                'risk_status': prediction.risk_status,
+                'predicted_score': round(prediction.predicted_exam_score, 2) if prediction.predicted_exam_score is not None else None,
+                'risk_status': mapped_risk,
             })
 
-    student_scores = [student.exam_score for student in Student.query.all() if student.exam_score is not None]
+    student_scores = [student.nilai_rata_rata_raport for student in Student.query.all() if student.nilai_rata_rata_raport is not None]
     if student_scores:
-        avg_exam_score = sum(student_scores) / len(student_scores)
-        exam_scored_students = len(student_scores)
+        rata_rata_nilai_raport = sum(student_scores) / len(student_scores)
+        jumlah_siswa_dinilai = len(student_scores)
 
+    risk_map = {
+        'Aman': 'Tinggi',
+        'Beresiko': 'Netral',
+        'Sangat Beresiko': 'Rendah'
+    }
+    
     for prediction in latest_preds.values():
-        if prediction.risk_status in risk_counts:
-            risk_counts[prediction.risk_status] += 1
+        mapped_risk = risk_map.get(prediction.risk_status, prediction.risk_status)
+        if mapped_risk in risk_counts:
+            risk_counts[mapped_risk] += 1
 
     return jsonify({
         'total_siswa': total_students,
         'rata_rata_prediksi': round(avg_score, 2),
         'jumlah_siswa_berprediksi': scored_students,
-        'rata_rata_exam_score': round(avg_exam_score, 2),
-        'jumlah_siswa_exam_score': exam_scored_students,
+        'rata_rata_nilai_raport': round(rata_rata_nilai_raport, 2),
+        'jumlah_siswa_dinilai': jumlah_siswa_dinilai,
         'rendah': risk_counts.get('Rendah', 0),
         'netral': risk_counts.get('Netral', 0),
         'tinggi': risk_counts.get('Tinggi', 0),

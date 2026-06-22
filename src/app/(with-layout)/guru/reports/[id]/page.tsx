@@ -14,7 +14,7 @@ type StudentReportResponse = {
   nama: string;
   nisn: string;
   latest_prediction: {
-    predicted_exam_score: number | string | null;
+    predicted_nilai_raport: number | string | null;
     risk_status: string | null;
     created_at: string | null;
   } | null;
@@ -23,7 +23,7 @@ type StudentReportResponse = {
 type InsightResponse = {
   student_id: string;
   student_name: string;
-  predicted_exam_score: number | string | null;
+  predicted_nilai_raport: number | string | null;
   risk_status: string | null;
   shap_analysis: Array<{
     feature_name: string;
@@ -152,8 +152,8 @@ export default async function GuruStudentReportPage({ params }: PageProps) {
 
   const interventions = interventionResult.payload ?? [];
   const predictedScore =
-    insight.predicted_exam_score ??
-    student.latest_prediction?.predicted_exam_score ??
+    insight.predicted_nilai_raport ??
+    student.latest_prediction?.predicted_nilai_raport ??
     null;
   const riskStatus =
     getRiskStatus(predictedScore) ??
@@ -198,7 +198,7 @@ export default async function GuruStudentReportPage({ params }: PageProps) {
 
               <div className="rounded-2xl border border-stroke bg-gray-1 px-5 py-4 text-left lg:text-right dark:border-dark-3 dark:bg-dark-2">
                 <p className="text-sm text-dark-4 dark:text-dark-6">
-                  Prediksi skor ujian
+                  Prediksi Nilai Raport
                 </p>
                 <p className="mt-1 text-3xl font-bold text-dark dark:text-white">
                   {formatScore(predictedScore)}

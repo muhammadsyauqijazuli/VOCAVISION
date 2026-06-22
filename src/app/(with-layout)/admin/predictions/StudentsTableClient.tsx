@@ -184,7 +184,7 @@ export default function StudentsTableClient({ initialSearch = "" }: Props) {
                 onClick={() => toggleSort("predicted_score")}
                 className="cursor-pointer px-5 py-3 text-left text-sm font-semibold text-dark dark:text-white"
               >
-                Skor Prediksi{" "}
+                Prediksi Nilai Raport{" "}
                 {sortBy === "predicted_score"
                   ? sortDir === "asc"
                     ? "▲"

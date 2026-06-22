@@ -48,8 +48,8 @@ export default async function SiswaInsightPage() {
             Insight Personal SHAP
           </h2>
           <p className="mt-2 flex-1 text-sm leading-relaxed text-dark-4 dark:text-dark-6">
-            Lihat skor prediksi ujian, status risiko, dan faktor-faktor utama
-            yang mempengaruhi hasil belajarmu. Data diambil langsung dari model
+            Lihat prediksi nilai rata-rata raport, status risiko, dan faktor-faktor utama
+            yang memengaruhi hasil belajarmu. Data diambil langsung dari model
             machine learning menggunakan ID akunmu.
           </p>
           <Link

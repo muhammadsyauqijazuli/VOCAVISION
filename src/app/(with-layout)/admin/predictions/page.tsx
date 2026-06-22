@@ -95,7 +95,7 @@ export default async function AdminPredictionsPage({
           </p>
           <h1 className="text-3xl font-bold md:text-4xl">Prediksi Per Siswa</h1>
           <p className="mt-3 max-w-4xl text-sm leading-relaxed text-white/90 md:text-base">
-            Lihat skor prediksi terbaru, status risiko, dan data per siswa yang
+            Lihat prediksi nilai rata-rata raport terbaru, status risiko, dan data per siswa yang
             dihitung dari model Random Forest di backend.
           </p>
         </div>

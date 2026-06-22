@@ -48,6 +48,9 @@ def get_students():
     elif sort_by == 'nisn':
         # nisn stored as string; sort lexicographically
         query = query.order_by(Student.nisn.asc() if sort_dir.lower() == 'asc' else Student.nisn.desc())
+    else:
+        # Default order by newest first so newly uploaded students appear at the top
+        query = query.order_by(Student.created_at.desc())
 
     # DB-level pagination to avoid loading all students into memory
     start = (page - 1) * page_size
@@ -56,6 +59,14 @@ def get_students():
     # Fetch latest predictions for the students on this page in a single query (avoid N+1)
     student_ids = [s.id for s in students]
     latest_preds = {}
+    
+    # Map DB risk classes to frontend risk classes
+    risk_map = {
+        'Aman': 'Tinggi',
+        'Beresiko': 'Netral',
+        'Sangat Beresiko': 'Rendah'
+    }
+
     if student_ids:
         preds_q = Prediction.query.filter(Prediction.student_id.in_(student_ids)).order_by(Prediction.student_id, Prediction.created_at.desc()).all()
         for p in preds_q:
@@ -66,18 +77,21 @@ def get_students():
     result = []
     for s in students:
         pred = latest_preds.get(s.id)
-        if risk_filter and pred and pred.risk_status != risk_filter:
+        mapped_risk = risk_map.get(pred.risk_status, pred.risk_status) if pred else None
+        
+        if risk_filter and pred and mapped_risk != risk_filter:
             continue
         result.append({
             'id': s.id,
             'nama': s.nama_siswa,
             'nisn': s.nisn,
-            'exam_score': s.exam_score,
             'predicted_score': pred.predicted_exam_score if pred else None,
-            'risk_status': pred.risk_status if pred else None,
+            'predicted_nilai_raport': pred.predicted_exam_score if pred else None,
+            'risk_status': mapped_risk,
             'latest_prediction': {
-                'predicted_exam_score': pred.predicted_exam_score if pred else None,
-                'risk_status': pred.risk_status if pred else None,
+                'predicted_score': pred.predicted_exam_score if pred else None,
+                'predicted_nilai_raport': pred.predicted_exam_score if pred else None,
+                'risk_status': mapped_risk,
                 'created_at': pred.created_at.isoformat() if pred and pred.created_at else None,
             } if pred else None,
         })
@@ -105,18 +119,9 @@ def get_students():
             order = {'Rendah': 2, 'Netral': 1, 'Tinggi': 0, None: -1}
             result.sort(key=lambda x: order.get(x.get('risk_status')), reverse=reverse)
 
-    total = len(result)
-    # Pagination
-    if page_size > 0:
-        start = (page - 1) * page_size
-        end = start + page_size
-        paged = result[start:end]
-    else:
-        paged = result
-
     return jsonify({
-        'items': paged,
-        'total': total,
+        'items': result,
+        'total': total if total is not None else len(result),
         'page': page,
         'page_size': page_size,
     }), 200
@@ -139,6 +144,14 @@ def get_student_detail(student_id):
         return jsonify({'message': 'Akses ditolak'}), 403
 
     pred = Prediction.query.filter_by(student_id=student.id).order_by(Prediction.created_at.desc()).first()
+    
+    risk_map = {
+        'Aman': 'Tinggi',
+        'Beresiko': 'Netral',
+        'Sangat Beresiko': 'Rendah'
+    }
+    mapped_risk = risk_map.get(pred.risk_status, pred.risk_status) if pred else None
+
     return jsonify({
         'id': student.id,
         'user_id': student.user_id,
@@ -150,9 +163,9 @@ def get_student_detail(student_id):
         'skor_time_management': student.skor_time_management,
         'jam_tidur': student.jam_tidur,
         'screen_time': student.screen_time,
-        'kehadiran_pelatihan_industry': student.kehadiran_pelatihan_industry,
+        'ses_index': student.ses_index,
+        'deviasi_tidur': student.deviasi_tidur,
         'motivasi_akademik': student.motivasi_akademik,
-        'exam_score': student.exam_score,
         'gender': student.gender,
         'rata_rata_pemasukan_keluarga': student.rata_rata_pemasukan_keluarga,
         'pendidikan_terakhir_orang_tua': student.pendidikan_terakhir_orang_tua,
@@ -161,9 +174,10 @@ def get_student_detail(student_id):
         'kompetensi_skill_level': student.kompetensi_skill_level,
         'industry_readiness': student.industry_readiness,
         'stress_level': student.stress_level,
+        'jurusan': student.jurusan,
         'latest_prediction': {
-            'predicted_exam_score': pred.predicted_exam_score,
-            'risk_status': pred.risk_status,
+            'predicted_score': pred.predicted_exam_score,
+            'risk_status': mapped_risk,
             'created_at': pred.created_at.isoformat() if pred.created_at else None,
         } if pred else None
     }), 200

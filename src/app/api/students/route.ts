@@ -20,11 +20,17 @@ export async function GET(request: Request) {
   const page = params.get("page") ?? "1";
   const page_size = params.get("page_size") ?? "20";
 
+  const backendParams = new URLSearchParams();
+  backendParams.set("page", page);
+  backendParams.set("page_size", page_size);
+  if (params.has("search")) backendParams.set("search", params.get("search")!);
+  if (params.has("sort_by")) backendParams.set("sort_by", params.get("sort_by")!);
+  if (params.has("sort_dir")) backendParams.set("sort_dir", params.get("sort_dir")!);
+  if (params.has("risk_status")) backendParams.set("risk_status", params.get("risk_status")!);
+
   // Forward request to backend
   const response = await fetch(
-    backendUrl(
-      `/students?page=${encodeURIComponent(page)}&page_size=${encodeURIComponent(page_size)}${params.has("search") ? `&search=${encodeURIComponent(params.get("search") ?? "")}` : ""}`,
-    ),
+    backendUrl(`/students?${backendParams.toString()}`),
     {
       method: "GET",
       headers: {
@@ -43,10 +49,10 @@ export async function GET(request: Request) {
     name?: string;
     nisn?: string | null;
     latest_prediction?: {
-      predicted_exam_score?: number;
+      predicted_nilai_raport?: number;
       risk_status?: string;
     };
-    predicted_exam_score?: number;
+    predicted_nilai_raport?: number;
     risk_status?: string;
   };
 
@@ -57,8 +63,8 @@ export async function GET(request: Request) {
       nama: s.nama_siswa ?? s.nama ?? s.name,
       nisn: s.nisn ?? null,
       predicted_score:
-        s.latest_prediction?.predicted_exam_score ??
-        s.predicted_exam_score ??
+        s.latest_prediction?.predicted_nilai_raport ??
+        s.predicted_nilai_raport ??
         null,
       risk_status: s.latest_prediction?.risk_status ?? s.risk_status ?? null,
     }));

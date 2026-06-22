@@ -29,9 +29,9 @@ class Student(db.Model):
     skor_time_management = db.Column(db.Integer, nullable=True)
     jam_tidur = db.Column(db.Float, nullable=True)
     screen_time = db.Column(db.Float, nullable=True)
-    kehadiran_pelatihan_industry = db.Column(db.Float, nullable=True)
+    ses_index = db.Column(db.Float, nullable=True)
+    deviasi_tidur = db.Column(db.Float, nullable=True)
     motivasi_akademik = db.Column(db.Integer, nullable=True)
-    exam_score = db.Column(db.Float, nullable=True)
 
     # Kategorikal
     gender = db.Column(db.Enum('Laki-laki', 'Perempuan'), nullable=True)

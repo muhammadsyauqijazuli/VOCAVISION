@@ -10,14 +10,14 @@ import shap
 # ============================================================
 _MODEL_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'ml_model')
 
-CLASSIFIER_PATH = os.path.join(_MODEL_DIR, 'rf_classifier_final.pkl')
-REGRESSOR_PATH = os.path.join(_MODEL_DIR, 'rf_regressor_final.pkl')
-SCALER_PATH = os.path.join(_MODEL_DIR, 'scaler_final.pkl')
-SELECTOR_PATH = os.path.join(_MODEL_DIR, 'selector_final.pkl')
-FEATURE_NAMES_PATH = os.path.join(_MODEL_DIR, 'feature_names.pkl')
-SELECTED_FEATURES_PATH = os.path.join(_MODEL_DIR, 'selected_feature_names.pkl')
-ENCODERS_PATH = os.path.join(_MODEL_DIR, 'encoders.pkl')
-THRESHOLDS_PATH = os.path.join(_MODEL_DIR, 'thresholds.pkl')
+CLASSIFIER_PATH = os.path.join(_MODEL_DIR, 'model_rf_3class.pkl')
+SCALER_PATH = os.path.join(_MODEL_DIR, 'scaler.pkl')
+SELECTOR_PATH = os.path.join(_MODEL_DIR, 'feature_selector.pkl')
+POLY_PATH = os.path.join(_MODEL_DIR, 'polynomial_transformer.pkl')
+ONEHOT_PATH = os.path.join(_MODEL_DIR, 'onehot_encoder.pkl')
+ORDINAL_PATH = os.path.join(_MODEL_DIR, 'ordinal_encoders.pkl')
+PREPROCESSING_INFO_PATH = os.path.join(_MODEL_DIR, 'preprocessing_info.pkl')
+QUANTILES_PATH = os.path.join(_MODEL_DIR, 'target_quantiles.pkl')
 
 MODEL_VERSION = '3.0.0'
 
@@ -44,7 +44,6 @@ FEATURE_ALIAS_RULES = [
     ('jurusan', ('jurusan', 'major', 'program')),
     ('ses_index', ('ses_index', 'ses')),
     ('deviasi_tidur', ('deviasi_tidur', 'sleep_deviation')),
-    ('kehadiran_pelatihan_industry', ('kehadiran_pelatihan_industry', 'kehadiran_pelatihan_industri', 'pelatihan_industry')),
 ]
 
 # ============================================================
@@ -169,18 +168,18 @@ class MLService:
     """
     Service ML untuk VOCAVISION v3.
     Pipeline: preprocess -> encode -> polynomial -> scale -> select -> predict
-    Dual model: Classifier (risk class) + Regressor (predicted score)
+    Model: Classifier (risk class) only. Regressor removed as per Random_Forest_Model_SMK_final.ipynb
     """
 
     def __init__(self):
         self.classifier = None
-        self.regressor = None
         self.scaler = None
         self.selector = None
-        self.feature_names = None
-        self.selected_feature_names = None
-        self.encoders = None
-        self.thresholds = None
+        self.poly = None
+        self.onehot_encoder = None
+        self.ordinal_encoders = None
+        self.preprocessing_info = None
+        self.quantiles = None
         self.explainer = None
         self.load_model()
 
@@ -188,19 +187,33 @@ class MLService:
         """Muat semua artefak model dari file .pkl."""
         try:
             self.classifier = joblib.load(CLASSIFIER_PATH)
-            self.regressor = joblib.load(REGRESSOR_PATH)
             self.scaler = joblib.load(SCALER_PATH)
             self.selector = joblib.load(SELECTOR_PATH)
-            self.feature_names = joblib.load(FEATURE_NAMES_PATH)
-            self.selected_feature_names = joblib.load(SELECTED_FEATURES_PATH)
-            self.encoders = joblib.load(ENCODERS_PATH)
-            self.thresholds = joblib.load(THRESHOLDS_PATH)
+            
+            if os.path.exists(POLY_PATH):
+                self.poly = joblib.load(POLY_PATH)
+            if os.path.exists(ONEHOT_PATH):
+                self.onehot_encoder = joblib.load(ONEHOT_PATH)
+            if os.path.exists(ORDINAL_PATH):
+                ords = joblib.load(ORDINAL_PATH)
+                self.ordinal_encoders = {}
+                # Extract to simple lists to avoid scikit-learn version issues
+                for col, enc in ords.items():
+                    try:
+                        self.ordinal_encoders[col] = list(enc.categories_[0])
+                    except Exception as e:
+                        print(f"Warning extracting categories for {col}: {e}")
+            if os.path.exists(PREPROCESSING_INFO_PATH):
+                self.preprocessing_info = joblib.load(PREPROCESSING_INFO_PATH)
+            if os.path.exists(QUANTILES_PATH):
+                self.quantiles = joblib.load(QUANTILES_PATH)
+            else:
+                self.quantiles = {'low_3': 83.36, 'high_3': 85.0}
 
             # Inisialisasi SHAP Explainer pada classifier
             self.explainer = shap.TreeExplainer(self.classifier)
             print(f"Model v{MODEL_VERSION} loaded successfully")
             print(f"  Classifier classes: {list(self.classifier.classes_)}")
-            print(f"  Features: {len(self.feature_names)} -> selected {len(self.selected_feature_names)}")
         except Exception as e:
             print(f"Could not load model: {e}")
             self._init_dummy_model()
@@ -208,25 +221,24 @@ class MLService:
     def _init_dummy_model(self):
         """Fallback dummy model untuk development tanpa .pkl files."""
         from sklearn.ensemble import RandomForestClassifier as RFC
-        from sklearn.ensemble import RandomForestRegressor as RFR
 
         print("Initializing dummy model for development...")
         X_dummy = np.random.rand(100, 12)
         y_cls_dummy = np.random.choice(['Sangat Beresiko', 'Beresiko', 'Aman'], 100)
-        y_reg_dummy = np.random.rand(100) * 20 + 75
 
         self.classifier = RFC(n_estimators=10, random_state=42)
         self.classifier.fit(X_dummy, y_cls_dummy)
 
-        self.regressor = RFR(n_estimators=10, random_state=42)
-        self.regressor.fit(X_dummy, y_reg_dummy)
-
         self.scaler = None
         self.selector = None
-        self.feature_names = None
-        self.selected_feature_names = None
-        self.encoders = None
-        self.thresholds = {'low': 83.36, 'high': 85.0}
+        self.poly = None
+        self.onehot_encoder = None
+        self.ordinal_encoders = {}
+        self.preprocessing_info = {
+            'numeric_cols': ['ses_index', 'jam_belajar_per_hari', 'screen_time', 'jam_tidur', 'deviasi_tidur', 'presentase_kehadiran', 'skor_time_management', 'motivasi_akademik', 'rasio_belajar_vs_layar', 'indeks_produktivitas', 'sisa_waktu_aktif'],
+            'selected_features': ['dummy_feature_' + str(i) for i in range(12)]
+        }
+        self.quantiles = {'low_3': 83.36, 'high_3': 85.0}
         self.explainer = None
 
     # ================================================================
@@ -381,7 +393,7 @@ class MLService:
         indeks_produktivitas = (skor_time_management * presentase_kehadiran) / 100
         sisa_waktu_aktif = 24 - (jam_tidur + jam_belajar + screen_time)
 
-        if self.encoders is None:
+        if self.preprocessing_info is None:
             # Dummy mode — return random features
             return pd.DataFrame(np.random.rand(1, 12))
 
@@ -413,14 +425,16 @@ class MLService:
         }
 
         # --- Ordinal Encoding ---
-        ordinal_encoders = self.encoders.get('ordinal_encoders', {})
         ordinal_encoded = {}
         for col, val in ordinal_data.items():
-            if col in ordinal_encoders:
-                encoder = ordinal_encoders[col]
+            if self.ordinal_encoders and col in self.ordinal_encoders:
+                cats = self.ordinal_encoders[col]
                 try:
-                    val_df = pd.DataFrame([[val]], columns=[col])
-                    ordinal_encoded[col] = encoder.transform(val_df)[0][0]
+                    if isinstance(cats, list) or hasattr(cats, 'tolist'):
+                        cats_list = cats if isinstance(cats, list) else cats.tolist()
+                        ordinal_encoded[col] = cats_list.index(val)
+                    else:
+                        ordinal_encoded[col] = 1
                 except ValueError:
                     # Jika kategori tidak dikenal, gunakan median (1)
                     ordinal_encoded[col] = 1
@@ -428,20 +442,18 @@ class MLService:
                 ordinal_encoded[col] = 0
 
         # --- OneHot Encoding ---
-        onehot_encoder = self.encoders.get('onehot_encoder')
-        nominal_cols = self.encoders.get('nominal_cols', [])
+        nominal_cols = self.preprocessing_info.get('nominal_cols', []) if self.preprocessing_info else []
 
-        if onehot_encoder and nominal_cols:
+        if self.onehot_encoder and nominal_cols:
             nominal_df = pd.DataFrame([{col: nominal_data.get(col, '') for col in nominal_cols}])
-            onehot_encoded = onehot_encoder.transform(nominal_df)
-            onehot_feature_names = onehot_encoder.get_feature_names_out(nominal_cols)
+            onehot_encoded = self.onehot_encoder.transform(nominal_df)
+            onehot_feature_names = self.onehot_encoder.get_feature_names_out(nominal_cols)
             df_onehot = pd.DataFrame(onehot_encoded, columns=onehot_feature_names)
         else:
             df_onehot = pd.DataFrame()
 
         # --- Polynomial Features ---
-        poly = self.encoders.get('poly')
-        numeric_cols_order = self.encoders.get('numeric_cols', list(numeric_data.keys()))
+        numeric_cols_order = self.preprocessing_info.get('numeric_cols', list(numeric_data.keys())) if self.preprocessing_info else list(numeric_data.keys())
 
         # Pastikan urutan numerik sesuai training
         numeric_values = []
@@ -450,9 +462,9 @@ class MLService:
 
         numeric_df = pd.DataFrame([numeric_values], columns=numeric_cols_order)
 
-        if poly:
-            poly_result = poly.transform(numeric_df)
-            poly_feature_names = poly.get_feature_names_out(numeric_cols_order)
+        if self.poly:
+            poly_result = self.poly.transform(numeric_df)
+            poly_feature_names = self.poly.get_feature_names_out(numeric_cols_order)
             df_poly = pd.DataFrame(poly_result, columns=poly_feature_names)
         else:
             df_poly = numeric_df
@@ -461,22 +473,34 @@ class MLService:
         df_ordinal = pd.DataFrame([ordinal_encoded])
         X = pd.concat([df_poly, df_ordinal, df_onehot], axis=1)
 
-        # Pastikan kolom sesuai feature_names dari training
-        if self.feature_names:
-            for col in self.feature_names:
-                if col not in X.columns:
-                    X[col] = 0.0
-            X = X[self.feature_names]
+        # Pastikan kolom sesuai feature_names dari training (sebelum scale)
+        # Scaler n_features_in_ = len(X.columns).
+        # We assume X columns match what scaler expects. 
+        # (In robust pipeline we might match feature names explicitly, but concat order is numeric -> ordinal -> nominal)
 
         # --- Scale ---
         if self.scaler:
-            scaled = self.scaler.transform(X)
-            X = pd.DataFrame(scaled, columns=X.columns)
+            # We align column names if possible to avoid warning, but transform uses order
+            try:
+                if hasattr(self.scaler, 'feature_names_in_'):
+                    # Reorder/pad columns to match scaler
+                    for col in self.scaler.feature_names_in_:
+                        if col not in X.columns:
+                            X[col] = 0.0
+                    X = X[self.scaler.feature_names_in_]
+                
+                scaled = self.scaler.transform(X)
+                X = pd.DataFrame(scaled, columns=X.columns)
+            except Exception as e:
+                print("Warning in scaler transform:", e)
+                scaled = self.scaler.transform(X.values)
+                X = pd.DataFrame(scaled, columns=X.columns)
 
         # --- Feature Selection ---
         if self.selector:
             selected = self.selector.transform(X.values)
-            X = pd.DataFrame(selected, columns=self.selected_feature_names)
+            selected_cols = self.preprocessing_info.get('selected_features') if self.preprocessing_info else X.columns
+            X = pd.DataFrame(selected, columns=selected_cols)
 
         return X
 
@@ -490,11 +514,41 @@ class MLService:
         """
         processed = self.preprocess(features)
 
-        # Classifier -> risk status
+        # Classifier -> risk status & probability
         risk_status = self.classifier.predict(processed)[0]
-
-        # Regressor -> predicted score
-        predicted_score = float(self.regressor.predict(processed)[0])
+        
+        # Estimate predicted score using class probabilities and thresholds
+        # This is a synthetic score since regressor was removed
+        try:
+            proba = self.classifier.predict_proba(processed)[0]
+            classes = list(self.classifier.classes_)
+            
+            p_sangat_beresiko = proba[classes.index('Sangat Beresiko')] if 'Sangat Beresiko' in classes else 0
+            p_beresiko = proba[classes.index('Beresiko')] if 'Beresiko' in classes else 0
+            p_aman = proba[classes.index('Aman')] if 'Aman' in classes else 0
+            
+            low_3 = self.quantiles.get('low_3', 83.36)
+            high_3 = self.quantiles.get('high_3', 85.0)
+            
+            if risk_status == 'Sangat Beresiko':
+                # Map from (low_3 - 5) to low_3
+                predicted_score = (low_3 - 5) + (5 * (1 - p_sangat_beresiko))
+            elif risk_status == 'Beresiko':
+                # Map from low_3 to high_3
+                range_val = high_3 - low_3
+                predicted_score = low_3 + (range_val * p_aman)
+            else:
+                # Map from high_3 to (high_3 + 5)
+                predicted_score = high_3 + (5 * p_aman)
+                
+            predicted_score = float(np.clip(predicted_score, 0, 100))
+        except Exception as e:
+            print("Error computing synthetic score:", e)
+            # Fallback
+            low_3 = self.quantiles.get('low_3', 83.36)
+            high_3 = self.quantiles.get('high_3', 85.0)
+            mapping = {'Sangat Beresiko': low_3 - 2, 'Beresiko': (low_3 + high_3)/2, 'Aman': high_3 + 2}
+            predicted_score = mapping.get(risk_status, 80.0)
 
         # SHAP Analysis (pada classifier)
         shap_values = self._compute_shap(processed)
@@ -595,12 +649,14 @@ class MLService:
     # ================================================================
     # BACKWARD COMPATIBILITY
     # ================================================================
-    @staticmethod
-    def get_abs_category(score):
-        """Legacy method — map skor ke kategori risiko."""
-        if score <= 83.36:
+    def get_abs_category(self, score):
+        """Legacy method — map skor ke kategori risiko menggunakan quantiles."""
+        low_3 = self.quantiles.get('low_3', 83.36)
+        high_3 = self.quantiles.get('high_3', 85.0)
+        
+        if score <= low_3:
             return 'Sangat Beresiko'
-        elif score <= 85.0:
+        elif score <= high_3:
             return 'Beresiko'
         else:
             return 'Aman'

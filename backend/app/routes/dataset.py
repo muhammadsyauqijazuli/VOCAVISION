@@ -56,7 +56,7 @@ def build_student_email(nisn):
     return f"{normalized_nisn}@siswa.local"
 
 
-def upsert_student_user(nisn, nama_siswa, email=None):
+def upsert_student_user(nisn, nama_siswa, email=None, student_payload=None):
     normalized_nisn = normalize_nisn(nisn)
     if not normalized_nisn:
         raise ValueError('NISN tidak valid')
@@ -90,11 +90,19 @@ def upsert_student_user(nisn, nama_siswa, email=None):
 
     if not student:
         student = Student(nisn=normalized_nisn, nama_siswa=nama_siswa, user_id=user.id)
+        # Apply student data columns BEFORE flush so NOT NULL constraints are satisfied
+        if student_payload:
+            for col, val in student_payload.items():
+                setattr(student, col, val)
         db.session.add(student)
         db.session.flush()
     else:
         student.nama_siswa = nama_siswa
         student.user_id = user.id
+        # Update existing student with new data
+        if student_payload:
+            for col, val in student_payload.items():
+                setattr(student, col, val)
 
     return student, user, created_user
 
@@ -183,7 +191,7 @@ def _process_dataset_job(app, dataset_id, rows):
                         if key in STUDENT_COLUMN_NAMES and key not in {'id', 'user_id', 'nisn', 'nama_siswa', 'created_at', 'updated_at', 'email'}
                     }
 
-                    student, user, created_user = upsert_student_user(nisn, nama, email)
+                    student, user, created_user = upsert_student_user(nisn, nama, email, student_payload=student_payload)
                     created_accounts += 1 if created_user else 0
 
                     set_job_progress(
@@ -194,9 +202,6 @@ def _process_dataset_job(app, dataset_id, rows):
                         message=f'Menjalankan prediksi untuk baris {idx + 1} dari {total_rows}',
                         status='processing',
                     )
-
-                    for col, val in student_payload.items():
-                        setattr(student, col, val)
 
                     db.session.commit()
 

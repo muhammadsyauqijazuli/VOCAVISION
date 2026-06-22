@@ -39,8 +39,10 @@ CREATE TABLE `students` (
   `presentase_kehadiran` decimal(5,2) DEFAULT NULL,
   `nilai_rata_rata_raport` decimal(5,2) NOT NULL,   -- TARGET, tidak boleh NULL
   `skor_time_management` int DEFAULT NULL,
-  `jam_tidur` decimal(4,1) DEFAULT NULL,
-  `screen_time` decimal(5,1) DEFAULT NULL,
+  `jam_tidur` float DEFAULT NULL,
+  `screen_time` float DEFAULT NULL,
+  `ses_index` float DEFAULT NULL,
+  `deviasi_tidur` float DEFAULT NULL,
   `motivasi_akademik` int DEFAULT NULL,
   `gender` enum('Laki-laki','Perempuan') DEFAULT NULL,
   `rata_rata_pemasukan_keluarga` enum('< 2 Juta','2 - 5 Juta','5 - 10 Juta','> 10 Juta') DEFAULT NULL,

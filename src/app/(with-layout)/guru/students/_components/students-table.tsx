@@ -3,6 +3,7 @@
 import { RiskBadge } from "@/components/guru/RiskBadge";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { formatRiskStatus } from "@/lib/utils";
 
 type StudentRow = {
   id: string;
@@ -136,7 +137,7 @@ export function StudentsTable() {
               Daftar Siswa
             </h2>
             <p className="max-w-2xl text-sm leading-6 text-dark-4 dark:text-dark-6">
-              Cari siswa, lihat skor prediksi terbaru, lalu buka detail untuk
+              Cari siswa, lihat prediksi nilai rata-rata raport terbaru, lalu buka detail untuk
               SHAP insight dan intervensi.
             </p>
           </div>
@@ -212,7 +213,7 @@ export function StudentsTable() {
                 <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                   <div className="rounded-xl bg-gray-1 p-3 dark:bg-dark-2">
                     <dt className="text-dark-4 dark:text-dark-6">
-                      Skor Prediksi
+                      Prediksi Nilai Raport
                     </dt>
                     <dd className="mt-1 font-semibold text-dark dark:text-white">
                       {formatScore(student.predicted_score)}
@@ -221,7 +222,7 @@ export function StudentsTable() {
                   <div className="rounded-xl bg-gray-1 p-3 dark:bg-dark-2">
                     <dt className="text-dark-4 dark:text-dark-6">Status</dt>
                     <dd className="mt-1 font-semibold text-dark dark:text-white">
-                      {student.risk_status ?? "-"}
+                      {student.risk_status ? formatRiskStatus(student.risk_status) : "-"}
                     </dd>
                   </div>
                 </dl>
@@ -279,7 +280,7 @@ export function StudentsTable() {
                 <tr className="text-left text-sm font-semibold text-dark dark:text-white">
                   <th className="px-5 py-4">Nama</th>
                   <th className="px-5 py-4">NISN</th>
-                  <th className="px-5 py-4">Skor Prediksi</th>
+                  <th className="px-5 py-4">Prediksi Nilai Raport</th>
                   <th className="px-5 py-4">Status Risiko</th>
                   <th className="px-5 py-4">Aksi</th>
                 </tr>
