@@ -838,10 +838,10 @@ export default function UpdateDataPage() {
                   <div
                     key={q.id}
                     className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${isDone
-                        ? "bg-primary"
-                        : isCurrent
-                          ? "bg-primary/40"
-                          : "bg-gray-3 dark:bg-dark-3"
+                      ? "bg-primary"
+                      : isCurrent
+                        ? "bg-primary/40"
+                        : "bg-gray-3 dark:bg-dark-3"
                       }`}
                   />
                 );
@@ -982,17 +982,17 @@ export default function UpdateDataPage() {
                               handleRadioSelect(currentQuestion.id, opt.value)
                             }
                             className={`group flex w-full items-center gap-4 rounded-xl border-2 p-4 text-left transition-all duration-200 ${isSelected
-                                ? "border-primary bg-primary/5 shadow-sm dark:bg-primary/10"
-                                : isLocked
-                                  ? "cursor-not-allowed border-stroke bg-gray-1 opacity-50 dark:border-dark-3 dark:bg-dark-2"
-                                  : "border-stroke bg-white hover:border-primary/40 hover:bg-primary/[0.02] hover:shadow-sm dark:border-dark-3 dark:bg-dark-2 dark:hover:border-primary/40"
+                              ? "border-primary bg-primary/5 shadow-sm dark:bg-primary/10"
+                              : isLocked
+                                ? "cursor-not-allowed border-stroke bg-gray-1 opacity-50 dark:border-dark-3 dark:bg-dark-2"
+                                : "border-stroke bg-white hover:border-primary/40 hover:bg-primary/[0.02] hover:shadow-sm dark:border-dark-3 dark:bg-dark-2 dark:hover:border-primary/40"
                               }`}
                           >
                             {/* Letter circle */}
                             <span
                               className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-all ${isSelected
-                                  ? "bg-primary text-white shadow-sm"
-                                  : "bg-gray-2 text-dark-5 group-hover:bg-primary/10 group-hover:text-primary dark:bg-dark-3 dark:text-dark-6"
+                                ? "bg-primary text-white shadow-sm"
+                                : "bg-gray-2 text-dark-5 group-hover:bg-primary/10 group-hover:text-primary dark:bg-dark-3 dark:text-dark-6"
                                 }`}
                             >
                               {isSelected ? (
@@ -1005,8 +1005,8 @@ export default function UpdateDataPage() {
                             {/* Label */}
                             <span
                               className={`flex-1 text-sm leading-relaxed ${isSelected
-                                  ? "font-semibold text-dark dark:text-white"
-                                  : "text-dark-4 group-hover:text-dark dark:text-dark-6 dark:group-hover:text-white"
+                                ? "font-semibold text-dark dark:text-white"
+                                : "text-dark-4 group-hover:text-dark dark:text-dark-6 dark:group-hover:text-white"
                                 }`}
                             >
                               {opt.label}
@@ -1029,8 +1029,8 @@ export default function UpdateDataPage() {
                   <div className="space-y-4">
                     <div
                       className={`rounded-xl border-2 p-5 transition-all ${isLocked
-                          ? "border-primary/30 bg-primary/5 dark:bg-primary/10"
-                          : "border-stroke bg-gray-1 dark:border-dark-3 dark:bg-dark-2"
+                        ? "border-primary/30 bg-primary/5 dark:bg-primary/10"
+                        : "border-stroke bg-gray-1 dark:border-dark-3 dark:bg-dark-2"
                         }`}
                     >
                       <div className="flex items-center gap-3">
@@ -1073,8 +1073,8 @@ export default function UpdateDataPage() {
                                 type="button"
                                 onClick={() => setNumberInput(String(val))}
                                 className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${numberInput === String(val)
-                                    ? "bg-primary text-white"
-                                    : "bg-white text-dark-5 hover:bg-primary/10 hover:text-primary dark:bg-dark-3 dark:text-dark-6"
+                                  ? "bg-primary text-white"
+                                  : "bg-white text-dark-5 hover:bg-primary/10 hover:text-primary dark:bg-dark-3 dark:text-dark-6"
                                   }`}
                               >
                                 {val}
@@ -1103,8 +1103,8 @@ export default function UpdateDataPage() {
                     onClick={goPrev}
                     disabled={currentStep === 0}
                     className={`inline-flex items-center gap-2 rounded-xl border border-stroke bg-white px-5 py-3 text-sm font-semibold text-dark-4 transition hover:border-dark-3 hover:bg-gray-1 dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6 ${currentStep === 0
-                        ? "invisible"
-                        : ""
+                      ? "invisible"
+                      : ""
                       }`}
                   >
                     <FiChevronLeft size={15} />
@@ -1265,8 +1265,8 @@ export default function UpdateDataPage() {
                   >
                     <div
                       className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${insight.impact_value >= 0
-                          ? "bg-green-light-7 text-green"
-                          : "bg-red-light-6 text-red"
+                        ? "bg-green-light-7 text-green"
+                        : "bg-red-light-6 text-red"
                         }`}
                     >
                       {insight.impact_value >= 0 ? (
@@ -1282,8 +1282,8 @@ export default function UpdateDataPage() {
                         </p>
                         <span
                           className={`shrink-0 text-xs font-bold ${insight.impact_value >= 0
-                              ? "text-green"
-                              : "text-red"
+                            ? "text-green"
+                            : "text-red"
                             }`}
                         >
                           {insight.impact_value >= 0 ? "+" : ""}
