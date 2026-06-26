@@ -8,10 +8,10 @@ type RiskBadgeProps = {
 export function RiskBadge({ status, score }: RiskBadgeProps) {
   const resolvedStatus = getRiskStatus(score) ?? status ?? null;
 
-  if (resolvedStatus === "Sangat Beresiko") {
+  if (resolvedStatus === "Beresiko") {
     return (
       <span className="inline-flex items-center rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white shadow-sm">
-        Sangat Beresiko
+        Beresiko
       </span>
     );
   }

@@ -67,7 +67,7 @@ export default async function GuruDashboardPage() {
     : [{}, [] as DashboardStudentRow[]];
 
   const alertRows = students
-    .filter((student) => student.risk_status === "Sangat Beresiko")
+    .filter((student) => student.risk_status === "Beresiko")
     .sort(
       (left, right) =>
         (left.predicted_score ?? 999) - (right.predicted_score ?? 999),
@@ -78,22 +78,22 @@ export default async function GuruDashboardPage() {
       name: student.nama,
       className: "Belum tersedia",
       score: student.predicted_score ?? 0,
-      status: student.risk_status ?? "Sangat Beresiko",
+      status: student.risk_status ?? "Beresiko",
     }));
 
   const fallbackAlertRows =
     alertRows.length > 0
       ? alertRows
       : (stats.top_risky_students ?? [])
-          .filter((student) => student.risk_status === "Sangat Beresiko")
-          .slice(0, 5)
-          .map((student) => ({
-            studentId: student.student_id,
-            name: student.nama,
-            className: "Belum tersedia",
-            score: student.predicted_score ?? 0,
-            status: student.risk_status,
-          }));
+        .filter((student) => student.risk_status === "Beresiko")
+        .slice(0, 5)
+        .map((student) => ({
+          studentId: student.student_id,
+          name: student.nama,
+          className: "Belum tersedia",
+          score: student.predicted_score ?? 0,
+          status: student.risk_status,
+        }));
 
   return (
     <TeacherDashboard

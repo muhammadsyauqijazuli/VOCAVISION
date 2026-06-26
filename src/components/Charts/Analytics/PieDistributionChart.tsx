@@ -10,7 +10,7 @@ import {
 } from "recharts";
 
 const pieData = [
-  { name: "Sangat Beresiko", value: 18 },
+  { name: "Beresiko", value: 18 },
   { name: "Aman", value: 32 },
   { name: "Sangat Aman", value: 50 },
 ];

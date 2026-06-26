@@ -53,7 +53,7 @@ function formatNumber(value: number | null | undefined) {
 }
 
 function getRiskCount(stats: DashboardStatsResponse) {
-  return (stats.sangat_beresiko ?? 0) + (stats.aman ?? 0);
+  return stats.beresiko ?? 0;
 }
 
 function getAverageScore(stats: DashboardStatsResponse) {
@@ -103,10 +103,10 @@ function buildRiskSegments(stats: DashboardStatsResponse): RiskSegment[] {
 
   return [
     {
-      label: "Sangat Beresiko",
-      count: stats.sangat_beresiko ?? 0,
+      label: "Beresiko",
+      count: stats.beresiko ?? 0,
       share:
-        total > 0 ? Math.round(((stats.sangat_beresiko ?? 0) / total) * 100) : 0,
+        total > 0 ? Math.round(((stats.beresiko ?? 0) / total) * 100) : 0,
       color: "#E74C3C",
       description: "Butuh intervensi segera",
     },
@@ -139,8 +139,8 @@ export function TeacherDashboard({
   const alertCount = alertRows.length;
   const alertTitle =
     alertCount > 0
-      ? `${alertCount} siswa Sangat Beresiko`
-      : "Tidak ada siswa Sangat Beresiko";
+      ? `${alertCount} siswa Beresiko`
+      : "Tidak ada siswa Beresiko";
   const chartData = riskSegments.map((segment) => ({
     name: segment.label,
     value: segment.count,
@@ -390,7 +390,7 @@ export function TeacherDashboard({
                 ))
               ) : (
                 <div className="px-5 py-6 text-sm text-dark-4 dark:text-dark-6">
-                  Tidak ada siswa Sangat Beresiko.
+                  Tidak ada siswa Beresiko.
                 </div>
               )}
             </div>

@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export type RiskStatus = "Sangat Beresiko" | "Aman" | "Sangat Aman";
+export type RiskStatus = "Beresiko" | "Aman" | "Sangat Aman";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -19,11 +19,11 @@ export function getRiskStatus(
     return null;
   }
 
-  if (parsedScore <= 83.36) {
-    return "Sangat Beresiko";
+  if (parsedScore <= 82.57) {
+    return "Beresiko";
   }
 
-  if (parsedScore <= 85) {
+  if (parsedScore <= 85.75) {
     return "Aman";
   }
 
@@ -31,7 +31,7 @@ export function getRiskStatus(
 }
 
 export function formatRiskStatus(status: RiskStatus | string | null | undefined): string {
-  // Model now returns "Sangat Beresiko", "Aman", "Sangat Aman"
+  // Model now returns "Beresiko", "Aman", "Sangat Aman"
   // so no transformation is needed unless it's missing
   return status || "Belum ada data";
 }

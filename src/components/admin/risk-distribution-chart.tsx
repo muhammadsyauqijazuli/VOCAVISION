@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 
 type PropsType = {
   data: {
-    sangat_beresiko: number;
+    beresiko: number;
     aman: number;
     sangat_aman: number;
   };
@@ -25,7 +25,7 @@ export function RiskDistributionChart({ data }: PropsType) {
       fontFamily: "inherit",
     },
     colors: ["#E74C3C", "#F39C12", "#3BA99C"],
-    labels: ["Sangat Beresiko", "Aman", "Sangat Aman"],
+    labels: ["Beresiko", "Aman", "Sangat Aman"],
     legend: {
       position: "bottom",
       labels: {
@@ -61,7 +61,7 @@ export function RiskDistributionChart({ data }: PropsType) {
     <div className="h-80">
       <Chart
         options={options}
-        series={[data.sangat_beresiko, data.aman, data.sangat_aman]}
+        series={[data.beresiko, data.aman, data.sangat_aman]}
         type="donut"
         height={isMobile ? 280 : 320}
       />

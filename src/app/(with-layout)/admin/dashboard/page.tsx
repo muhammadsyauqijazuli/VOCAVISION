@@ -19,7 +19,7 @@ type DashboardStats = {
   rata_rata_nilai_raport?: number;
   jumlah_siswa_berprediksi?: number;
   jumlah_siswa_dinilai?: number;
-  sangat_beresiko?: number;
+  beresiko?: number;
   aman?: number;
   sangat_aman?: number;
   top_risky_students?: {
@@ -140,11 +140,11 @@ export default async function AdminDashboardPage() {
             Distribusi Risiko
           </p>
           <h3 className="text-3xl font-bold text-dark dark:text-white">
-            {stats.sangat_beresiko ?? 0} / {stats.aman ?? 0} /{" "}
+            {stats.beresiko ?? 0} / {stats.aman ?? 0} /{" "}
             {stats.sangat_aman ?? 0}
           </h3>
           <p className="mt-2 text-sm text-dark-4 dark:text-dark-6">
-            Sangat Beresiko / Aman / Sangat Aman
+            Beresiko / Aman / Sangat Aman
           </p>
         </div>
       </section>
@@ -165,7 +165,7 @@ export default async function AdminDashboardPage() {
 
           <RiskDistributionChart
             data={{
-              sangat_beresiko: stats.sangat_beresiko ?? 0,
+              beresiko: stats.beresiko ?? 0,
               aman: stats.aman ?? 0,
               sangat_aman: stats.sangat_aman ?? 0,
             }}

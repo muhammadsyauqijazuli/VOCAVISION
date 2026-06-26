@@ -24,7 +24,7 @@ Setiap peran memiliki dashboard dan fitur yang berbeda.
 Sistem harus mampu:
 
 - Memprediksi skor ujian siswa menggunakan model Random Forest.
-- Menampilkan status risiko akademik (**Sangat Beresiko**, **Beresiko**, **Tidak Beresiko**).
+- Menampilkan status risiko akademik (**Beresiko**, **Beresiko**, **Tidak Beresiko**).
 - Menjelaskan faktor penyebab prediksi menggunakan SHAP values.
 - Memberikan rekomendasi tindakan kepada siswa dan guru.
 - Menyimpan catatan intervensi akademik.
@@ -42,17 +42,17 @@ Status risiko ditentukan berdasarkan **predicted exam score**:
 | ------------- | ------------------- |
 | ≥ 75          | **Tidak Beresiko**  |
 | 65 – 74       | **Beresiko**        |
-| ≤ 64          | **Sangat Beresiko** |
+| ≤ 64          | **Beresiko** |
 
 Fungsi bantu di `lib/utils.ts`:
 
 ```ts
 export function getRiskStatus(
   score: number,
-): "Sangat Beresiko" | "Beresiko" | "Tidak Beresiko" {
+): "Beresiko" | "Beresiko" | "Tidak Beresiko" {
   if (score >= 75) return "Tidak Beresiko";
   if (score >= 65) return "Beresiko";
-  return "Sangat Beresiko";
+  return "Beresiko";
 }
 ```
 ````
@@ -155,7 +155,7 @@ Database menggunakan MySQL melalui Prisma ORM. Berikut adalah rincian skema tabe
 - `id` (CHAR(36), Primary Key)
 - `student_id` (CHAR(36), Foreign Key ke students)
 - `predicted_exam_score` (DECIMAL 5,2)
-- `risk_status` (ENUM: 'Sangat Beresiko', 'Beresiko', 'Tidak Beresiko')
+- `risk_status` (ENUM: 'Beresiko', 'Beresiko', 'Tidak Beresiko')
 - `model_version` (VARCHAR 20)
 - `created_at`
 
@@ -246,9 +246,9 @@ karena proyek menggunakan Tailwind CSS v4 yang membaca konfigurasi langsung dari
 
 | Role  | Email          | Password |
 | ----- | -------------- | -------- |
-| Admin | admin@test.com | admin    |
-| Guru  | guru@test.com  | guru     |
-| Siswa | siswa@test.com | siswa    |
+| Admin | <admin@test.com> | admin    |
+| Guru  | <guru@test.com>  | guru     |
+| Siswa | <siswa@test.com> | siswa    |
 
 ## Authorization
 
@@ -393,7 +393,7 @@ student-prediction/
 
 ## RiskBadge
 
-- **Sangat Beresiko**: Red background (`bg-red-600 text-white`)
+- **Beresiko**: Red background (`bg-red-600 text-white`)
 - **Beresiko**: Warning background (`bg-brand-warning text-white`)
 - **Tidak Beresiko**: Success background (`bg-brand-accent-2 text-brand-header`)
 
@@ -445,7 +445,7 @@ Saat menghasilkan kode:
 5. Pisahkan logic fetching data (melalui fetch API ke Route Handlers) dan presentation.
 6. Semua halaman dan komponen harus siap diintegrasikan dengan skema database dan endpoints yang tercantum di atas.
 7. Nama aplikasi selalu **VOCAVISION** (bukan EduPredict).
-8. Status risiko ada 3: **Sangat Beresiko**, **Beresiko**, **Tidak Beresiko**.
+8. Status risiko ada 3: **Beresiko**, **Beresiko**, **Tidak Beresiko**.
 9. Password hash menggunakan bcrypt, tidak disimpan dalam teks biasa.
 10. Semua ID menggunakan UUID (CHAR(36) di MySQL).
 

@@ -156,20 +156,20 @@ function buildRiskData(
   students: AnalyticsStudentRecord[],
 ) {
   const hasStats =
-    typeof stats.sangat_beresiko === "number" ||
+    typeof stats.beresiko === "number" ||
     typeof stats.aman === "number" ||
     typeof stats.sangat_aman === "number";
 
   if (hasStats) {
     return [
-      { name: "Sangat Beresiko", value: stats.sangat_beresiko ?? 0 },
+      { name: "Beresiko", value: stats.beresiko ?? 0 },
       { name: "Aman", value: stats.aman ?? 0 },
       { name: "Sangat Aman", value: stats.sangat_aman ?? 0 },
     ];
   }
 
   const counts = {
-    "Sangat Beresiko": 0,
+    "Beresiko": 0,
     "Aman": 0,
     "Sangat Aman": 0,
   };
@@ -183,7 +183,7 @@ function buildRiskData(
   }
 
   return [
-    { name: "Sangat Beresiko", value: counts["Sangat Beresiko"] },
+    { name: "Beresiko", value: counts["Beresiko"] },
     { name: "Aman", value: counts["Aman"] },
     { name: "Sangat Aman", value: counts["Sangat Aman"] },
   ];
@@ -233,10 +233,10 @@ function getStressInsight(data: ReturnType<typeof buildStressData>) {
 function getRiskInsight(data: ReturnType<typeof buildRiskData>) {
   const total = data.reduce((acc, curr) => acc + curr.value, 0);
   if (total === 0) return null;
-  const rendah = data.find(d => d.name === "Sangat Beresiko")?.value || 0;
+  const rendah = data.find(d => d.name === "Beresiko")?.value || 0;
   const netral = data.find(d => d.name === "Aman")?.value || 0;
   const pct = (((rendah + netral) / total) * 100).toFixed(1);
-  return `Dari total siswa, terdapat ${pct}% yang terdeteksi pada kategori Sangat Beresiko dan Aman yang membutuhkan perhatian.`;
+  return `Dari total siswa, terdapat ${pct}% yang terdeteksi pada kategori Beresiko dan Aman yang membutuhkan perhatian.`;
 }
 
 function getAttendanceInsight(data: ReturnType<typeof buildAttendanceTrendData>) {
@@ -424,8 +424,8 @@ export function AnalyticsDashboard({
     students.map((student) => student.jam_belajar_per_hari).filter(isNumber),
   );
   const lowRiskCount =
-    stats.sangat_beresiko ??
-    riskData.find((item) => item.name === "Sangat Beresiko")?.value ??
+    stats.beresiko ??
+    riskData.find((item) => item.name === "Beresiko")?.value ??
     0;
 
   return (
@@ -487,7 +487,7 @@ export function AnalyticsDashboard({
             {lowRiskCount}
           </h2>
           <p className="mt-2 text-sm text-slate-500 dark:text-dark-6">
-            Kategori Sangat Beresiko menurut analisis backend
+            Kategori Beresiko menurut analisis backend
           </p>
         </div>
       </section>
@@ -675,7 +675,7 @@ export function AnalyticsDashboard({
                     <Cell
                       key={entry.name}
                       fill={
-                        entry.name === "Sangat Beresiko"
+                        entry.name === "Beresiko"
                           ? COLORS.danger
                           : entry.name === "Aman"
                             ? COLORS.warning
