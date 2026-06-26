@@ -253,6 +253,12 @@ function getReadinessInsight(data: ReturnType<typeof buildReadinessData>) {
   return `Sebanyak ${pct}% siswa dikategorikan "Siap Industri". Tingkatkan pelatihan praktik bagi siswa yang belum siap.`;
 }
 
+function getGlobalShapInsight(data: DashboardStatsResponse["global_shap"]) {
+  if (!data || !data.length) return null;
+  const topFeature = data[0];
+  return `Berdasarkan model AI pada seluruh populasi, fitur yang paling memengaruhi kinerja akademik siswa secara umum adalah ${topFeature.feature} dengan bobot pengaruh sebesar ${topFeature.importance}%.`;
+}
+
 function BubbleTooltip({
   active,
   payload,
@@ -379,6 +385,29 @@ function ReadinessTooltip({
   );
 }
 
+function GlobalShapTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: { feature: string; importance: number } }>;
+}) {
+  if (!active || !payload?.length) {
+    return null;
+  }
+
+  const data = payload[0].payload;
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-xl dark:border-dark-3 dark:bg-gray-dark">
+      <p className="font-semibold text-dark dark:text-white">{data.feature}</p>
+      <p className="mt-2 text-dark-4 dark:text-dark-6">
+        Tingkat Kepentingan (SHAP): {data.importance}%
+      </p>
+    </div>
+  );
+}
+
 function EmptyState({
   title,
   description,
@@ -415,6 +444,7 @@ export function AnalyticsDashboard({
   const riskInsight = getRiskInsight(riskData);
   const attendanceInsight = getAttendanceInsight(attendanceTrendData);
   const readinessInsight = getReadinessInsight(readinessData);
+  const globalShapInsight = getGlobalShapInsight(stats.global_shap);
 
   const totalStudents = students.length || stats.total_siswa || 0;
   const averageExamScore =
@@ -842,6 +872,81 @@ export function AnalyticsDashboard({
               <p className="text-sm text-slate-600 dark:text-dark-6">
                 <span className="font-semibold text-brand-accent2">Insight: </span>
                 {readinessInsight}
+              </p>
+            </div>
+          )}
+        </article>
+
+        <article className={cardClassName()}>
+          <div className="mb-4">
+            <p className="text-primary text-sm font-semibold tracking-[0.2em] uppercase">
+              Global Explainability
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-dark dark:text-white">
+              Global Feature Importance (SHAP)
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-dark-6">
+              Fitur yang paling berdampak secara agregat terhadap performa prediksi akademik.
+            </p>
+          </div>
+
+          {stats.global_shap && stats.global_shap.length > 0 ? (
+            <div className="w-full" style={{ height: 360 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={stats.global_shap}
+                  layout="vertical"
+                  margin={{ top: 10, right: 30, bottom: 10, left: 140 }}
+                >
+                  <CartesianGrid stroke={COLORS.grid} strokeDasharray="3 3" horizontal={true} vertical={false} />
+                  <XAxis
+                    type="number"
+                    tick={{ fill: COLORS.slate, fontSize: 11 }}
+                    axisLine={{ stroke: COLORS.slate }}
+                    tickLine={false}
+                    domain={[0, 'auto']}
+                    unit="%"
+                  />
+                  <YAxis
+                    type="category"
+                    dataKey="feature"
+                    tick={{ fill: COLORS.slate, fontSize: 11 }}
+                    axisLine={{ stroke: COLORS.slate }}
+                    tickLine={false}
+                    width={140}
+                  />
+                  <Tooltip
+                    content={<GlobalShapTooltip />}
+                    cursor={{ fill: "rgba(31, 111, 95, 0.08)" }}
+                  />
+                  <Bar
+                    dataKey="importance"
+                    fill={COLORS.header}
+                    radius={[0, 6, 6, 0]}
+                    barSize={16}
+                  >
+                    {stats.global_shap.map((entry, index) => (
+                      <Cell
+                        key={entry.feature}
+                        fill={index === 0 ? COLORS.danger : index === 1 ? COLORS.warning : COLORS.header}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <EmptyState
+              title="Data SHAP belum tersedia"
+              description="Sistem belum dapat mengekstrak analisis SHAP dari model. Pastikan model AI sudah di-load dengan benar."
+            />
+          )}
+
+          {globalShapInsight && (
+            <div className="mt-4 rounded-xl bg-slate-50 p-4 dark:bg-dark-2">
+              <p className="text-sm text-slate-600 dark:text-dark-6">
+                <span className="font-semibold text-primary">Insight: </span>
+                {globalShapInsight}
               </p>
             </div>
           )}

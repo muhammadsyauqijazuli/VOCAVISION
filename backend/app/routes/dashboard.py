@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required
 from ..models import Student, Prediction, User
 from ..utils import role_required
+from ..services.ml_service import MLService
 
 
 dashboard_bp = Blueprint('dashboard', __name__)
@@ -68,8 +69,40 @@ def stats():
         if risk_status in risk_counts:
             risk_counts[risk_status] += 1
         elif risk_status == "Aman" and "Aman" not in risk_counts:
-             # Just in case we didn't init it
              pass
+
+    global_shap = []
+    try:
+        ml = MLService()
+        if hasattr(ml.classifier, 'feature_importances_'):
+            importances = ml.classifier.feature_importances_
+            features = ml.preprocessing_info.get('selected_features', [])
+            if len(features) == len(importances):
+                # Clean up feature names to be more readable
+                name_map = {
+                    'presentase_kehadiran': 'Presentase Kehadiran',
+                    'skor_time_management': 'Skor Time Management',
+                    'ses_index': 'Indeks SES',
+                    'jam_belajar_per_hari': 'Jam Belajar per Hari',
+                    'screen_time': 'Screen Time',
+                    'motivasi_akademik': 'Motivasi Akademik',
+                    'jam_tidur': 'Jam Tidur',
+                    'deviasi_tidur': 'Deviasi Tidur'
+                }
+                for f, imp in zip(features, importances):
+                    # We only care about base numerical features, skip dummy encoded ones if any
+                    # But if we want them, we just map their names.
+                    clean_name = name_map.get(f, f.replace('_', ' ').title())
+                    global_shap.append({
+                        'feature': clean_name,
+                        'importance': round(float(imp) * 100, 2)
+                    })
+                # Sort descending
+                global_shap.sort(key=lambda x: x['importance'], reverse=True)
+                # Keep top 6
+                global_shap = global_shap[:6]
+    except Exception as e:
+        print("Error fetching global SHAP:", e)
 
     return jsonify({
         'total_siswa': total_students,
@@ -81,4 +114,5 @@ def stats():
         'aman': risk_counts.get('Aman', 0),
         'sangat_aman': risk_counts.get('Sangat Aman', 0),
         'top_risky_students': top_risky_students,
+        'global_shap': global_shap,
     }), 200

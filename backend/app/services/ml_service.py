@@ -203,7 +203,7 @@ class MLService:
             if os.path.exists(QUANTILES_PATH):
                 self.quantiles = joblib.load(QUANTILES_PATH)
             else:
-                self.quantiles = {'low_threshold': 82.57, 'high_threshold': 85.75}
+                self.quantiles = {'low_threshold': 82.90, 'high_threshold': 85.50}
 
             # Inisialisasi SHAP Explainer pada classifier
             self.explainer = shap.TreeExplainer(self.classifier)
@@ -231,7 +231,7 @@ class MLService:
             'numeric_cols': ['ses_index', 'jam_belajar_per_hari', 'screen_time', 'jam_tidur', 'deviasi_tidur', 'presentase_kehadiran', 'skor_time_management', 'motivasi_akademik'],
             'selected_features': ['dummy_feature_' + str(i) for i in range(12)]
         }
-        self.quantiles = {'low_threshold': 82.57, 'high_threshold': 85.75}
+        self.quantiles = {'low_threshold': 82.90, 'high_threshold': 85.50}
         self.explainer = None
 
     # ================================================================
@@ -505,8 +505,8 @@ class MLService:
             p_aman = proba[classes.index('Aman')] if 'Aman' in classes else 0
             p_sangat_aman = proba[classes.index('Sangat Aman')] if 'Sangat Aman' in classes else 0
             
-            low_3 = self.quantiles.get('low_threshold', 82.57)
-            high_3 = self.quantiles.get('high_threshold', 85.75)
+            low_3 = self.quantiles.get('low_threshold', 82.90)
+            high_3 = self.quantiles.get('high_threshold', 85.50)
             
             if risk_status == 'Beresiko':
                 # Map from (low_3 - 5) to low_3
@@ -523,8 +523,8 @@ class MLService:
         except Exception as e:
             print("Error computing synthetic score:", e)
             # Fallback
-            low_3 = self.quantiles.get('low_threshold', 82.57)
-            high_3 = self.quantiles.get('high_threshold', 85.75)
+            low_3 = self.quantiles.get('low_threshold', 82.90)
+            high_3 = self.quantiles.get('high_threshold', 85.50)
             mapping = {'Beresiko': low_3 - 2, 'Aman': (low_3 + high_3)/2, 'Sangat Aman': high_3 + 2}
             predicted_score = mapping.get(risk_status, 80.0)
 
@@ -629,8 +629,8 @@ class MLService:
     # ================================================================
     def get_abs_category(self, score):
         """Legacy method — map skor ke kategori risiko menggunakan quantiles."""
-        low_3 = self.quantiles.get('low_threshold', 82.57)
-        high_3 = self.quantiles.get('high_threshold', 85.75)
+        low_3 = self.quantiles.get('low_threshold', 82.90)
+        high_3 = self.quantiles.get('high_threshold', 85.50)
         
         if score <= low_3:
             return 'Beresiko'

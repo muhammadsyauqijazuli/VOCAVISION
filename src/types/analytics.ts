@@ -58,12 +58,16 @@ export type DashboardStatsResponse = {
   beresiko?: number;
   aman?: number;
   sangat_aman?: number;
-  top_risky_students?: Array<{
+  top_risky_students?: {
     student_id: string;
     nama: string;
     nisn: string;
     role: string;
     predicted_score: number | null;
     risk_status: RiskStatus;
+  }[];
+  global_shap?: Array<{
+    feature: string;
+    importance: number;
   }>;
 };

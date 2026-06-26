@@ -40,13 +40,19 @@ def add_intervention(student_id):
     if user.role != 'guru':
         return jsonify({'message': 'Hanya guru yang dapat menambahkan intervensi'}), 403
 
+    student = Student.query.get(student_id)
+    if not student:
+        student = Student.query.filter_by(user_id=student_id).first()
+    if not student:
+        return jsonify({'message': 'Siswa tidak ditemukan'}), 404
+
     data = request.get_json()
     note = data.get('note')
     if not note:
         return jsonify({'message': 'Catatan diperlukan'}), 400
 
     intervention = Intervention(
-        student_id=student_id,
+        student_id=student.id,
         guru_id=user_id,
         note=note
     )
@@ -54,7 +60,7 @@ def add_intervention(student_id):
     
     # Send Notification
     notif = Notification(
-        student_id=student_id,
+        student_id=student.id,
         sender_id=user_id,
         message=f"Guru {user.nama} menambahkan catatan untuk Anda.",
         type='intervention'
@@ -62,12 +68,14 @@ def add_intervention(student_id):
     db.session.add(notif)
     db.session.commit()
 
+    created_at_iso = notif.created_at.isoformat() if notif.created_at else ''
+
     socketio.emit('notification', {
         'id': notif.id,
         'message': notif.message,
         'type': notif.type,
-        'created_at': notif.created_at.isoformat()
-    }, room=student_id)
+        'created_at': created_at_iso
+    }, room=student.id)
 
     return jsonify({'message': 'Intervensi disimpan'}), 201
 
@@ -117,11 +125,17 @@ def delete_intervention(intervention_id):
 @interventions_bp.route('/<student_id>', methods=['GET'])
 @jwt_required()
 def get_interventions(student_id):
-    interventions = Intervention.query.filter_by(student_id=student_id).order_by(Intervention.action_date.desc()).all()
+    student = Student.query.get(student_id)
+    if not student:
+        student = Student.query.filter_by(user_id=student_id).first()
+    if not student:
+        return jsonify({'message': 'Siswa tidak ditemukan'}), 404
+
+    interventions = Intervention.query.filter_by(student_id=student.id).order_by(Intervention.action_date.desc()).all()
     return jsonify([{
         'id': i.id,
-        'guru': User.query.get(i.guru_id).nama,
+        'guru': User.query.get(i.guru_id).nama if User.query.get(i.guru_id) else 'Guru',
         'guru_id': i.guru_id,
         'note': i.note,
-        'date': i.action_date.isoformat()
+        'date': i.action_date.isoformat() if i.action_date else ''
     } for i in interventions]), 200
