@@ -43,6 +43,7 @@ type RiskDatum = {
 type AttendanceTrendDatum = {
   name: string;
   presentase_kehadiran: number;
+  presentase_kehadiran_efektif: number;
   nilai_raport: number;
 };
 
@@ -87,6 +88,7 @@ function hasAttendanceMetrics(
   student: AnalyticsStudentRecord,
 ): student is AnalyticsStudentRecord & {
   presentase_kehadiran: number;
+  presentase_kehadiran_efektif: number;
   nilai_rata_rata_raport: number;
 } {
   return isNumber(student.presentase_kehadiran) && isNumber(student.nilai_rata_rata_raport);
@@ -193,12 +195,13 @@ function buildAttendanceTrendData(students: AnalyticsStudentRecord[]) {
   return students
     .filter(hasAttendanceMetrics)
     .sort(
-      (left, right) => right.presentase_kehadiran - left.presentase_kehadiran,
+      (left, right) => right.presentase_kehadiran_efektif - left.presentase_kehadiran_efektif,
     )
-    .slice(0, 6)
+    .slice(0, 5)
     .map((student) => ({
       name: student.nama,
       presentase_kehadiran: student.presentase_kehadiran,
+      presentase_kehadiran_efektif: student.presentase_kehadiran_efektif,
       nilai_raport: student.nilai_rata_rata_raport,
     }));
 }
@@ -206,8 +209,12 @@ function buildAttendanceTrendData(students: AnalyticsStudentRecord[]) {
 function buildReadinessData(students: AnalyticsStudentRecord[]) {
   const counts = { Siap: 0, "Belum Siap": 0 };
   for (const student of students) {
-    if (student.industry_readiness === "Siap" || student.industry_readiness === "Belum Siap") {
-      counts[student.industry_readiness]++;
+    if (student.industry_readiness !== null) {
+      if (student.industry_readiness >= 70) {
+        counts["Siap"]++;
+      } else {
+        counts["Belum Siap"]++;
+      }
     }
   }
   if (counts.Siap === 0 && counts["Belum Siap"] === 0) return [];
@@ -241,7 +248,7 @@ function getRiskInsight(data: ReturnType<typeof buildRiskData>) {
 
 function getAttendanceInsight(data: ReturnType<typeof buildAttendanceTrendData>) {
   if (!data.length) return null;
-  const avgAtt = data.reduce((acc, curr) => acc + curr.presentase_kehadiran, 0) / data.length;
+  const avgAtt = data.reduce((acc, curr) => acc + curr.presentase_kehadiran_efektif, 0) / data.length;
   return `Sampel menunjukkan rata-rata kehadiran sebesar ${avgAtt.toFixed(0)}%. Kehadiran yang tinggi konsisten dengan pencapaian nilai ujian yang baik.`;
 }
 
@@ -353,7 +360,7 @@ function AttendanceTooltip({
     <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-xl dark:border-dark-3 dark:bg-gray-dark">
       <p className="font-semibold text-dark dark:text-white">{data.name}</p>
       <p className="mt-2 text-dark-4 dark:text-dark-6">
-        Kehadiran: {formatPercent(data.presentase_kehadiran)}
+        Kehadiran Efektif: {formatPercent(data.presentase_kehadiran_efektif)}
       </p>
       <p className="text-dark-4 dark:text-dark-6">
         Nilai raport: {formatScore(data.nilai_raport)}
@@ -779,7 +786,7 @@ export function AnalyticsDashboard({
                   />
                   <Bar
                     yAxisId="left"
-                    dataKey="presentase_kehadiran"
+                    dataKey="presentase_kehadiran_efektif"
                     name="Kehadiran"
                     fill={COLORS.accent}
                     radius={[8, 8, 0, 0]}

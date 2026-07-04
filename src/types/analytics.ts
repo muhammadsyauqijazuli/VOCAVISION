@@ -5,6 +5,7 @@ export type StudentAnalyticsRecord = {
   nama: string;
   jam_belajar_per_hari: number;
   presentase_kehadiran: number;
+  presentase_kehadiran_efektif: number;
   nilai_rata_rata_raport: number;
   skor_time_management: number;
   jam_tidur: number;
@@ -16,7 +17,7 @@ export type StudentAnalyticsRecord = {
   kerja_sampingan: "Tidak" | "Ya";
   study_environment: "Kondusif" | "Cukup" | "Kurang Kondusif";
   kompetensi_skill_level: "Dasar" | "Menengah" | "Mahir";
-  industry_readiness: "Siap" | "Belum Siap";
+  industry_readiness: number;
   stress_level: "Rendah" | "Sedang" | "Berat";
   risk_status: RiskStatus;
 };
@@ -27,6 +28,7 @@ export type AnalyticsStudentRecord = {
   nisn: string;
   jam_belajar_per_hari: number | null;
   presentase_kehadiran: number | null;
+  presentase_kehadiran_efektif: number | null;
   nilai_rata_rata_raport: number | null;
   skor_time_management: number | null;
   jam_tidur: number | null;
@@ -38,7 +40,7 @@ export type AnalyticsStudentRecord = {
   kerja_sampingan: string | null;
   study_environment: string | null;
   kompetensi_skill_level: string | null;
-  industry_readiness: string | null;
+  industry_readiness: number | null;
   stress_level: "Rendah" | "Sedang" | "Berat" | null;
   predicted_score: number | null;
   risk_status: RiskStatus | null;

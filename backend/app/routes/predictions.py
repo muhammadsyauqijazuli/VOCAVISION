@@ -60,7 +60,7 @@ def predict_single():
         student_id=student.id,
         predicted_exam_score=result['predicted_exam_score'],
         risk_status=result['risk_status'],
-        model_version=result.get('model_version', '2.0.0')
+        model_version=result.get('model_version', '3.0.0')
     )
     db.session.add(pred)
     db.session.flush()

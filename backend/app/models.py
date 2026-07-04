@@ -25,12 +25,11 @@ class Student(db.Model):
     # Numerik
     jam_belajar_per_hari = db.Column(db.Float, nullable=True)
     presentase_kehadiran = db.Column(db.Float, nullable=True)
-    nilai_rata_rata_raport = db.Column(db.Float, nullable=True)
+    presentase_kehadiran_efektif = db.Column(db.Float, nullable=True)
+    nilai_rata_rata_raport = db.Column(db.Float, nullable=False)
     skor_time_management = db.Column(db.Integer, nullable=True)
     jam_tidur = db.Column(db.Float, nullable=True)
     screen_time = db.Column(db.Float, nullable=True)
-    ses_index = db.Column(db.Float, nullable=True)
-    deviasi_tidur = db.Column(db.Float, nullable=True)
     motivasi_akademik = db.Column(db.Integer, nullable=True)
 
     # Kategorikal
@@ -40,7 +39,7 @@ class Student(db.Model):
     kerja_sampingan = db.Column(db.Enum('Ya', 'Tidak'), nullable=True)
     study_environment = db.Column(db.Enum('Kondusif', 'Cukup Kondusif', 'Kurang Kondusif'), nullable=True)
     kompetensi_skill_level = db.Column(db.Enum('Rendah', 'Menengah', 'Tinggi'), nullable=True)
-    industry_readiness = db.Column(db.Enum('Siap', 'Belum Siap'), nullable=True)
+    industry_readiness = db.Column(db.Float, nullable=True)
     stress_level = db.Column(db.Enum('Rendah', 'Sedang', 'Berat'), nullable=True)
     jurusan = db.Column(db.Enum('TKJ', 'TAV', 'TPTU', 'MULTIMEDIA'), nullable=True)
 
@@ -53,14 +52,14 @@ class Prediction(db.Model):
     student_id = db.Column(db.String(36), db.ForeignKey('students.id'), nullable=False)
     predicted_exam_score = db.Column(db.Float, nullable=False)
     risk_status = db.Column(db.Enum('Beresiko', 'Aman', 'Sangat Aman'), nullable=False)
-    model_version = db.Column(db.String(20), default='1.0.0')
+    model_version = db.Column(db.String(20), default='3.0.0')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class SHAPAnalysis(db.Model):
     __tablename__ = 'shap_analysis'
     id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
     prediction_id = db.Column(db.String(36), db.ForeignKey('predictions.id'), nullable=False)
-    feature_name = db.Column(db.String(50), nullable=False)
+    feature_name = db.Column(db.String(100), nullable=False)
     impact_value = db.Column(db.Float, nullable=False)
     suggestion_text = db.Column(db.Text, nullable=True)
 

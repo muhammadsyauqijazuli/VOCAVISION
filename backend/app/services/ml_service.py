@@ -10,38 +10,37 @@ import shap
 # ============================================================
 _MODEL_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'ml_model')
 
-CLASSIFIER_PATH = os.path.join(_MODEL_DIR, 'model_rf_3class.pkl')
+CLASSIFIER_PATH = os.path.join(_MODEL_DIR, 'rf_classifier_best.pkl')
 SCALER_PATH = os.path.join(_MODEL_DIR, 'scaler.pkl')
-ONEHOT_PATH = os.path.join(_MODEL_DIR, 'onehot_encoder.pkl')
-ORDINAL_PATH = os.path.join(_MODEL_DIR, 'ordinal_encoders.pkl')
-PREPROCESSING_INFO_PATH = os.path.join(_MODEL_DIR, 'preprocessing_info.pkl')
-QUANTILES_PATH = os.path.join(_MODEL_DIR, 'target_quantiles.pkl')
+FEATURE_NAMES_PATH = os.path.join(_MODEL_DIR, 'feature_names.pkl')
+TRAIN_COLUMNS_PATH = os.path.join(_MODEL_DIR, 'train_columns.pkl')
 
 MODEL_VERSION = '3.0.0'
+
+# Threshold kategorisasi (sesuai notebook)
+SCORE_THRESHOLD_LOW = 82.5    # < 82.5 = Beresiko
+SCORE_THRESHOLD_HIGH = 86.0   # >= 86.0 = Sangat Aman
 
 # ============================================================
 # MAPPING NORMALISASI INPUT
 # ============================================================
-# Fitur alias: canonical_name -> tuple of accepted aliases
 FEATURE_ALIAS_RULES = [
     ('jam_belajar_per_hari', ('jam_belajar_per_hari', 'jam_belajar_perhari', 'jam_belajar')),
     ('presentase_kehadiran', ('presentase_kehadiran', 'persentase_kehadiran', 'kehadiran_kelas', 'attendance')),
+    ('presentase_kehadiran_efektif', ('presentase_kehadiran_efektif', 'persentase_kehadiran_efektif', 'kehadiran_efektif')),
     ('nilai_rata_rata_raport', ('nilai_rata_rata_raport', 'nilai_rata_rata_rapor', 'raport', 'rapor')),
     ('skor_time_management', ('skor_time_management', 'skor_time', 'time_management')),
     ('jam_tidur', ('jam_tidur', 'tidur', 'sleep')),
     ('screen_time', ('screen_time', 'screen', 'layar')),
     ('motivasi_akademik', ('motivasi_akademik', 'motivasi')),
+    ('industry_readiness', ('industry_readiness', 'industry_ready', 'readiness')),
     ('rata_rata_pemasukan_keluarga', ('rata_rata_pemasukan_keluarga', 'pendapatan_keluarga', 'pemasukan_keluarga', 'income')),
     ('pendidikan_terakhir_orang_tua', ('pendidikan_terakhir_orang_tua', 'edukasi_ortu', 'pendidikan_orang_tua', 'education')),
     ('kerja_sampingan', ('kerja_sampingan', 'side_job', 'work')),
     ('study_environment', ('study_environment', 'lingkungan_belajar', 'environment')),
     ('kompetensi_skill_level', ('kompetensi_skill_level', 'skill_level', 'kompetensi', 'skill')),
-    ('industry_readiness', ('industry_readiness', 'industry_ready', 'industry readiness', 'readiness')),
     ('stress_level', ('stress_level', 'stres', 'stress')),
     ('gender', ('gender',)),
-    ('jurusan', ('jurusan', 'major', 'program')),
-    ('ses_index', ('ses_index', 'ses')),
-    ('deviasi_tidur', ('deviasi_tidur', 'sleep_deviation')),
 ]
 
 # ============================================================
@@ -58,10 +57,10 @@ FEATURE_GUIDANCE = {
         'modifiable': True,
         'action': 'meningkatkan kehadiran kelas dan mengejar materi yang tertinggal secara rutin',
     },
-    'nilai_rata_rata_raport': {
-        'label': 'Nilai rata-rata raport',
+    'presentase_kehadiran_efektif': {
+        'label': 'Kehadiran efektif',
         'modifiable': True,
-        'action': 'fokus pada remedial, latihan soal, dan evaluasi mata pelajaran yang paling lemah',
+        'action': 'meningkatkan kehadiran efektif dengan mengurangi ketidakhadiran tanpa izin (alpha)',
     },
     'skor_time_management': {
         'label': 'Time management',
@@ -82,6 +81,11 @@ FEATURE_GUIDANCE = {
         'label': 'Motivasi akademik',
         'modifiable': True,
         'action': 'menetapkan target belajar harian kecil, lalu mengevaluasi progres secara berkala',
+    },
+    'industry_readiness': {
+        'label': 'Industry readiness',
+        'modifiable': True,
+        'action': 'mengikuti simulasi karier, project kecil, atau pelatihan yang relevan dengan dunia industri',
     },
     'rata_rata_pemasukan_keluarga': {
         'label': 'Pemasukan keluarga',
@@ -108,11 +112,6 @@ FEATURE_GUIDANCE = {
         'modifiable': True,
         'action': 'melatih skill dasar secara bertahap melalui modul, latihan praktik, dan umpan balik guru',
     },
-    'industry_readiness': {
-        'label': 'Industry readiness',
-        'modifiable': True,
-        'action': 'mengikuti simulasi karier, project kecil, atau pelatihan yang relevan dengan dunia industri',
-    },
     'stress_level': {
         'label': 'Stress level',
         'modifiable': True,
@@ -123,37 +122,6 @@ FEATURE_GUIDANCE = {
         'modifiable': False,
         'action': 'memusatkan intervensi pada faktor yang dapat diubah seperti jam belajar, kehadiran, tidur, dan stres',
     },
-    'jurusan': {
-        'label': 'Jurusan',
-        'modifiable': False,
-        'action': 'memaksimalkan peluang belajar di jurusan saat ini dengan mengikuti program pengayaan dan praktik tambahan',
-    },
-    'ses_index': {
-        'label': 'Indeks sosial-ekonomi',
-        'modifiable': False,
-        'action': 'memanfaatkan sumber daya sekolah, beasiswa, dan program bantuan yang tersedia',
-    },
-    'deviasi_tidur': {
-        'label': 'Deviasi jam tidur',
-        'modifiable': True,
-        'action': 'menjaga konsistensi jam tidur setiap malam agar tidak terlalu berfluktuasi',
-    },
-    # Engineered features
-    'rasio_belajar_vs_layar': {
-        'label': 'Rasio belajar vs screen time',
-        'modifiable': True,
-        'action': 'meningkatkan proporsi waktu belajar dibandingkan screen time hiburan',
-    },
-    'indeks_produktivitas': {
-        'label': 'Indeks produktivitas',
-        'modifiable': True,
-        'action': 'meningkatkan kehadiran dan manajemen waktu secara bersamaan',
-    },
-    'sisa_waktu_aktif': {
-        'label': 'Sisa waktu aktif',
-        'modifiable': True,
-        'action': 'mengoptimalkan penggunaan waktu luang untuk kegiatan produktif',
-    },
     'default': {
         'label': 'Faktor ini',
         'modifiable': True,
@@ -161,21 +129,51 @@ FEATURE_GUIDANCE = {
     },
 }
 
+# Kolom numerik yang masuk ke model (sesuai notebook: setelah drop nisn, nama, email, gender, nilai_raport)
+NUMERIC_FEATURES = [
+    'jam_belajar_per_hari',
+    'screen_time',
+    'jam_tidur',
+    'presentase_kehadiran',
+    'presentase_kehadiran_efektif',
+    'industry_readiness',
+    'skor_time_management',
+    'motivasi_akademik',
+]
+
+# Kolom kategorikal yang di-one-hot-encode
+CATEGORICAL_FEATURES = [
+    'kerja_sampingan',
+    'rata_rata_pemasukan_keluarga',
+    'pendidikan_terakhir_orang_tua',
+    'study_environment',
+    'kompetensi_skill_level',
+    'stress_level',
+]
+
+# Nilai valid per kolom kategorikal
+CATEGORICAL_VALUES = {
+    'kerja_sampingan': ['Ya', 'Tidak'],
+    'rata_rata_pemasukan_keluarga': ['< 2 Juta', '2 - 5 Juta', '5 - 10 Juta', '> 10 Juta'],
+    'pendidikan_terakhir_orang_tua': ['SD', 'SMP', 'SMA/SMK', 'Diploma', 'Sarjana'],
+    'study_environment': ['Kondusif', 'Cukup Kondusif', 'Kurang Kondusif'],
+    'kompetensi_skill_level': ['Rendah', 'Menengah', 'Tinggi'],
+    'stress_level': ['Rendah', 'Sedang', 'Berat'],
+}
+
 
 class MLService:
     """
     Service ML untuk VOCAVISION v3.
-    Pipeline: preprocess -> encode -> polynomial -> scale -> select -> predict
-    Model: Classifier (risk class) only. Regressor removed as per Random_Forest_Model_SMK_final.ipynb
+    Pipeline: preprocess -> one-hot encode -> scale -> predict
+    Model: RandomForestClassifier (3-class: Beresiko, Aman, Sangat Aman)
     """
 
     def __init__(self):
         self.classifier = None
         self.scaler = None
-        self.onehot_encoder = None
-        self.ordinal_encoders = None
-        self.preprocessing_info = None
-        self.quantiles = None
+        self.feature_names = None
+        self.train_columns = None
         self.explainer = None
         self.load_model()
 
@@ -183,32 +181,22 @@ class MLService:
         """Muat semua artefak model dari file .pkl."""
         try:
             self.classifier = joblib.load(CLASSIFIER_PATH)
-            
+
             if os.path.exists(SCALER_PATH):
                 self.scaler = joblib.load(SCALER_PATH)
-            
-            if os.path.exists(ONEHOT_PATH):
-                self.onehot_encoder = joblib.load(ONEHOT_PATH)
-            if os.path.exists(ORDINAL_PATH):
-                ords = joblib.load(ORDINAL_PATH)
-                self.ordinal_encoders = {}
-                # Extract to simple lists to avoid scikit-learn version issues
-                for col, enc in ords.items():
-                    try:
-                        self.ordinal_encoders[col] = list(enc.categories_[0])
-                    except Exception as e:
-                        print(f"Warning extracting categories for {col}: {e}")
-            if os.path.exists(PREPROCESSING_INFO_PATH):
-                self.preprocessing_info = joblib.load(PREPROCESSING_INFO_PATH)
-            if os.path.exists(QUANTILES_PATH):
-                self.quantiles = joblib.load(QUANTILES_PATH)
-            else:
-                self.quantiles = {'low_threshold': 82.90, 'high_threshold': 85.50}
+
+            if os.path.exists(FEATURE_NAMES_PATH):
+                self.feature_names = joblib.load(FEATURE_NAMES_PATH)
+
+            if os.path.exists(TRAIN_COLUMNS_PATH):
+                self.train_columns = joblib.load(TRAIN_COLUMNS_PATH)
 
             # Inisialisasi SHAP Explainer pada classifier
             self.explainer = shap.TreeExplainer(self.classifier)
             print(f"Model v{MODEL_VERSION} loaded successfully")
             print(f"  Classifier classes: {list(self.classifier.classes_)}")
+            if self.train_columns is not None:
+                print(f"  Train columns: {len(self.train_columns)} features")
         except Exception as e:
             print(f"Could not load model: {e}")
             self._init_dummy_model()
@@ -225,13 +213,8 @@ class MLService:
         self.classifier.fit(X_dummy, y_cls_dummy)
 
         self.scaler = None
-        self.onehot_encoder = None
-        self.ordinal_encoders = {}
-        self.preprocessing_info = {
-            'numeric_cols': ['ses_index', 'jam_belajar_per_hari', 'screen_time', 'jam_tidur', 'deviasi_tidur', 'presentase_kehadiran', 'skor_time_management', 'motivasi_akademik'],
-            'selected_features': ['dummy_feature_' + str(i) for i in range(12)]
-        }
-        self.quantiles = {'low_threshold': 82.90, 'high_threshold': 85.50}
+        self.feature_names = None
+        self.train_columns = None
         self.explainer = None
 
     # ================================================================
@@ -306,7 +289,7 @@ class MLService:
 
     @staticmethod
     def _resolve_feature_key(feature_name):
-        """Map nama fitur (termasuk polynomial) ke guidance key."""
+        """Map nama fitur (termasuk one-hot encoded) ke guidance key."""
         lowered = str(feature_name).lower()
 
         for canonical_name, aliases in FEATURE_ALIAS_RULES:
@@ -314,13 +297,13 @@ class MLService:
                 if alias in lowered:
                     return canonical_name
 
-        # Untuk polynomial features (misal "jam_belajar_per_hari jam_tidur"),
-        # coba match bagian pertama
-        parts = lowered.split(' ')
+        # Untuk one-hot encoded features (misal "kerja_sampingan_Ya"),
+        # coba match bagian awal
+        parts = lowered.split('_')
         if len(parts) > 1:
             for canonical_name, aliases in FEATURE_ALIAS_RULES:
                 for alias in aliases:
-                    if alias in parts[0]:
+                    if alias in '_'.join(parts[:-1]):
                         return canonical_name
 
         return 'default'
@@ -331,8 +314,8 @@ class MLService:
     def preprocess(self, data_dict):
         """
         Konversi payload API menjadi feature vector siap prediksi.
-        Pipeline: normalize -> DataFrame -> ordinal encode -> onehot encode ->
-                  polynomial features -> concat -> scale -> select
+        Pipeline sesuai notebook: DataFrame -> drop kolom non-fitur ->
+                                   one-hot encode -> scale
         """
         raw = dict(data_dict)
 
@@ -347,12 +330,24 @@ class MLService:
         screen_time = float(first_val('screen_time', default=0) or 0)
         jam_tidur = float(first_val('jam_tidur', default=0) or 0)
         presentase_kehadiran = float(first_val('presentase_kehadiran', 'persentase_kehadiran', default=0) or 0)
+        presentase_kehadiran_efektif = float(first_val('presentase_kehadiran_efektif', 'persentase_kehadiran_efektif', default=0) or 0)
+        industry_readiness = float(first_val('industry_readiness', 'industry_ready', default=0) or 0)
         skor_time_management = float(first_val('skor_time_management', default=0) or 0)
         motivasi_akademik = float(first_val('motivasi_akademik', default=0) or 0)
-        ses_index = float(first_val('ses_index', default=6) or 6)
-        deviasi_tidur = float(first_val('deviasi_tidur', default=2) or 2)
 
-        # --- Kategorikal (ordinal) ---
+        # --- Kategorikal ---
+        kerja_sampingan = first_val('kerja_sampingan', default='Tidak')
+        if str(kerja_sampingan).lower() in ('ya', 'true', '1'):
+            kerja_sampingan = 'Ya'
+        else:
+            kerja_sampingan = 'Tidak'
+
+        rata_rata_pemasukan = self._normalize_income(
+            first_val('rata_rata_pemasukan_keluarga', default='< 2 Juta')
+        )
+        pendidikan_ortu = self._normalize_education(
+            first_val('pendidikan_terakhir_orang_tua', default='SMA/SMK')
+        )
         study_env = self._normalize_study_environment(
             first_val('study_environment', default='Cukup Kondusif')
         )
@@ -363,124 +358,62 @@ class MLService:
             first_val('stress_level', default='Sedang')
         )
 
-        # --- Kategorikal (nominal) ---
-        kerja_sampingan = first_val('kerja_sampingan', default='Tidak')
-        if str(kerja_sampingan).lower() in ('ya', 'true', '1'):
-            kerja_sampingan = 'Ya'
-        else:
-            kerja_sampingan = 'Tidak'
-
-        industry_readiness = first_val('industry_readiness', 'industry_ready', default='Belum Siap')
-        if str(industry_readiness).lower() in ('siap', 'true', '1'):
-            industry_readiness = 'Siap'
-        else:
-            industry_readiness = 'Belum Siap'
-
-        jurusan = first_val('jurusan', default='TKJ')
-        valid_jurusan = ['TKJ', 'TAV', 'TPTU', 'MULTIMEDIA']
-        if jurusan not in valid_jurusan:
-            jurusan = 'TKJ'
-
-        if self.preprocessing_info is None:
-            # Dummy mode — return random features
-            return pd.DataFrame(np.random.rand(1, 12))
-
-        # --- Build DataFrame sesuai training pipeline ---
-        numeric_data = {
-            'ses_index': ses_index,
+        # --- Build DataFrame ---
+        data = {
             'jam_belajar_per_hari': jam_belajar,
             'screen_time': screen_time,
             'jam_tidur': jam_tidur,
-            'deviasi_tidur': deviasi_tidur,
             'presentase_kehadiran': presentase_kehadiran,
+            'presentase_kehadiran_efektif': presentase_kehadiran_efektif,
+            'industry_readiness': industry_readiness,
             'skor_time_management': skor_time_management,
             'motivasi_akademik': motivasi_akademik,
-        }
-
-        ordinal_data = {
+            'kerja_sampingan': kerja_sampingan,
+            'rata_rata_pemasukan_keluarga': rata_rata_pemasukan,
+            'pendidikan_terakhir_orang_tua': pendidikan_ortu,
             'study_environment': study_env,
             'kompetensi_skill_level': skill_level,
             'stress_level': stress,
         }
 
-        nominal_data = {
-            'kerja_sampingan': kerja_sampingan,
-            'industry_readiness': industry_readiness,
-            'jurusan': jurusan,
-        }
+        df = pd.DataFrame([data])
 
-        # --- Ordinal Encoding ---
-        ordinal_encoded = {}
-        for col, val in ordinal_data.items():
-            if self.ordinal_encoders and col in self.ordinal_encoders:
-                cats = self.ordinal_encoders[col]
-                try:
-                    if isinstance(cats, list) or hasattr(cats, 'tolist'):
-                        cats_list = cats if isinstance(cats, list) else cats.tolist()
-                        ordinal_encoded[col] = cats_list.index(val)
-                    else:
-                        ordinal_encoded[col] = 1
-                except ValueError:
-                    # Jika kategori tidak dikenal, gunakan median (1)
-                    ordinal_encoded[col] = 1
-            else:
-                ordinal_encoded[col] = 0
+        # --- One-Hot Encoding (sesuai notebook: pd.get_dummies, drop_first=True) ---
+        df = pd.get_dummies(df, columns=CATEGORICAL_FEATURES, drop_first=True)
 
-        # --- OneHot Encoding ---
-        nominal_cols = self.preprocessing_info.get('nominal_cols', []) if self.preprocessing_info else []
-
-        if self.onehot_encoder and nominal_cols:
-            nominal_df = pd.DataFrame([{col: nominal_data.get(col, '') for col in nominal_cols}])
-            onehot_encoded = self.onehot_encoder.transform(nominal_df)
-            onehot_feature_names = self.onehot_encoder.get_feature_names_out(nominal_cols)
-            df_onehot = pd.DataFrame(onehot_encoded, columns=onehot_feature_names)
-        else:
-            df_onehot = pd.DataFrame()
-
-        # --- Assemble DataFrame ---
-        numeric_cols_order = self.preprocessing_info.get('numeric_cols', list(numeric_data.keys())) if self.preprocessing_info else list(numeric_data.keys())
-
-        # Pastikan urutan numerik sesuai training
-        numeric_values = []
-        for col in numeric_cols_order:
-            numeric_values.append(numeric_data.get(col, 0.0))
-
-        numeric_df = pd.DataFrame([numeric_values], columns=numeric_cols_order)
-
-        df_ordinal = pd.DataFrame([ordinal_encoded])
-        
-        # Pastikan kolom ordinal sesuai urutan training
-        ordinal_cols_order = self.preprocessing_info.get('ordinal_cols', list(ordinal_data.keys())) if self.preprocessing_info else list(ordinal_data.keys())
-        for col in ordinal_cols_order:
-            if col not in df_ordinal.columns:
-                df_ordinal[col] = 0
-        df_ordinal = df_ordinal[ordinal_cols_order]
-
-        X_all = pd.concat([numeric_df, df_ordinal, df_onehot], axis=1)
-
-        # --- Feature Selection ---
-        selected_features = self.preprocessing_info.get('selected_features', X_all.columns) if self.preprocessing_info else X_all.columns
-        
-        missing_cols = set(selected_features) - set(X_all.columns)
-        for col in missing_cols:
-            X_all[col] = 0.0
-            
-        X = X_all[selected_features]
+        # --- Align kolom ke training columns ---
+        if self.train_columns is not None:
+            train_cols = list(self.train_columns)
+            # Add missing columns with 0
+            for col in train_cols:
+                if col not in df.columns:
+                    df[col] = 0
+            # Remove extra columns
+            df = df[train_cols]
+        elif self.feature_names is not None:
+            feat_list = list(self.feature_names)
+            for col in feat_list:
+                if col not in df.columns:
+                    df[col] = 0
+            df = df[feat_list]
 
         # --- Scale ---
         if self.scaler:
             try:
                 if hasattr(self.scaler, 'feature_names_in_'):
-                    X = X[self.scaler.feature_names_in_]
-                
-                scaled = self.scaler.transform(X)
-                X = pd.DataFrame(scaled, columns=X.columns)
+                    # Ensure column order matches scaler
+                    df = df[self.scaler.feature_names_in_]
+                scaled = self.scaler.transform(df)
+                df = pd.DataFrame(scaled, columns=df.columns)
             except Exception as e:
                 print("Warning in scaler transform:", e)
-                scaled = self.scaler.transform(X.values)
-                X = pd.DataFrame(scaled, columns=X.columns)
+                try:
+                    scaled = self.scaler.transform(df.values)
+                    df = pd.DataFrame(scaled, columns=df.columns)
+                except Exception as e2:
+                    print("Scaler transform fallback also failed:", e2)
 
-        return X
+        return df
 
     # ================================================================
     # PREDIKSI
@@ -494,38 +427,36 @@ class MLService:
 
         # Classifier -> risk status & probability
         risk_status = str(self.classifier.predict(processed)[0])
-        
+
         # Estimate predicted score using class probabilities and thresholds
-        # This is a synthetic score since regressor was removed
         try:
             proba = self.classifier.predict_proba(processed)[0]
             classes = list(self.classifier.classes_)
-            
+
             p_beresiko = proba[classes.index('Beresiko')] if 'Beresiko' in classes else 0
             p_aman = proba[classes.index('Aman')] if 'Aman' in classes else 0
             p_sangat_aman = proba[classes.index('Sangat Aman')] if 'Sangat Aman' in classes else 0
-            
-            low_3 = self.quantiles.get('low_threshold', 82.90)
-            high_3 = self.quantiles.get('high_threshold', 85.50)
-            
+
             if risk_status == 'Beresiko':
-                # Map from (low_3 - 5) to low_3
-                predicted_score = (low_3 - 5) + (5 * (1 - p_beresiko))
+                # Map from (SCORE_THRESHOLD_LOW - 5) to SCORE_THRESHOLD_LOW
+                predicted_score = (SCORE_THRESHOLD_LOW - 5) + (5 * (1 - p_beresiko))
             elif risk_status == 'Aman':
-                # Map from low_3 to high_3
-                range_val = high_3 - low_3
-                predicted_score = low_3 + (range_val * p_sangat_aman)
+                # Map from SCORE_THRESHOLD_LOW to SCORE_THRESHOLD_HIGH
+                range_val = SCORE_THRESHOLD_HIGH - SCORE_THRESHOLD_LOW
+                predicted_score = SCORE_THRESHOLD_LOW + (range_val * p_sangat_aman)
             else:
-                # Map from high_3 to (high_3 + 5)
-                predicted_score = high_3 + (5 * p_sangat_aman)
-                
+                # Map from SCORE_THRESHOLD_HIGH to (SCORE_THRESHOLD_HIGH + 5)
+                predicted_score = SCORE_THRESHOLD_HIGH + (5 * p_sangat_aman)
+
             predicted_score = float(np.clip(predicted_score, 0, 100))
         except Exception as e:
             print("Error computing synthetic score:", e)
             # Fallback
-            low_3 = self.quantiles.get('low_threshold', 82.90)
-            high_3 = self.quantiles.get('high_threshold', 85.50)
-            mapping = {'Beresiko': low_3 - 2, 'Aman': (low_3 + high_3)/2, 'Sangat Aman': high_3 + 2}
+            mapping = {
+                'Beresiko': SCORE_THRESHOLD_LOW - 2,
+                'Aman': (SCORE_THRESHOLD_LOW + SCORE_THRESHOLD_HIGH) / 2,
+                'Sangat Aman': SCORE_THRESHOLD_HIGH + 2,
+            }
             predicted_score = mapping.get(risk_status, 80.0)
 
         # SHAP Analysis (pada classifier)
@@ -628,13 +559,10 @@ class MLService:
     # BACKWARD COMPATIBILITY
     # ================================================================
     def get_abs_category(self, score):
-        """Legacy method — map skor ke kategori risiko menggunakan quantiles."""
-        low_3 = self.quantiles.get('low_threshold', 82.90)
-        high_3 = self.quantiles.get('high_threshold', 85.50)
-        
-        if score <= low_3:
+        """Legacy method — map skor ke kategori risiko menggunakan thresholds."""
+        if score < SCORE_THRESHOLD_LOW:
             return 'Beresiko'
-        elif score <= high_3:
+        elif score < SCORE_THRESHOLD_HIGH:
             return 'Aman'
         else:
             return 'Sangat Aman'

@@ -178,6 +178,18 @@ const QUESTIONS: Question[] = [
       { label: "Sering bolos (di bawah 60%)", value: "45" },
     ],
   },
+  {
+    id: 20,
+    section: 2,
+    text: "Seberapa sering kamu benar-benar efektif dan fokus mengikuti pelajaran tanpa izin/bolos?",
+    type: "radio",
+    options: [
+      { label: "Sangat sering (95-100%)", value: "98" },
+      { label: "Cukup sering (85-95%)", value: "90" },
+      { label: "Kadang-kadang (70-85%)", value: "80" },
+      { label: "Jarang (di bawah 70%)", value: "60" },
+    ],
+  },
 
   // ── Section 3: Dinamika Praktik & Lingkungan Belajar ──
   {
@@ -413,9 +425,9 @@ function convertToPayload(answers: Record<number, string | number>) {
   const num = (id: number) => Number(answers[id] ?? 0);
   const str = (id: number) => String(answers[id] ?? "");
 
-  // Industry readiness: Q9 + Q10, > 50 → "Siap"
+  // Industry readiness: Q9 + Q10 (0-100)
   const industrySum = num(9) + num(10);
-  const industry_readiness = industrySum > 50 ? "Siap" : "Belum Siap";
+  const industry_readiness = industrySum;
 
   // Study environment: Q12 + Q13
   const envSum = num(12) + num(13);
@@ -446,6 +458,7 @@ function convertToPayload(answers: Record<number, string | number>) {
     jam_tidur: num(6),
     screen_time: num(7),
     presentase_kehadiran: num(8),
+    presentase_kehadiran_efektif: num(20),
     industry_readiness,
     kompetensi_skill_level: str(11),
     study_environment,

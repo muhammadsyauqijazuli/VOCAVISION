@@ -17,6 +17,7 @@ type StudentDetailResponse = {
   nisn: string;
   jam_belajar_per_hari: number | string | null;
   presentase_kehadiran: number | string | null;
+  presentase_kehadiran_efektif: number | string | null;
   nilai_rata_rata_raport: number | string | null;
   skor_time_management: number | string | null;
   jam_tidur: number | string | null;
@@ -28,7 +29,7 @@ type StudentDetailResponse = {
   kerja_sampingan: string | null;
   study_environment: string | null;
   kompetensi_skill_level: string | null;
-  industry_readiness: string | null;
+  industry_readiness: number | null;
   stress_level: string | null;
   jurusan: string | null;
   latest_prediction: {
@@ -62,33 +63,32 @@ type InterventionRecommendation = {
 type StudentNumericKey =
   | "jam_belajar_per_hari"
   | "presentase_kehadiran"
+  | "presentase_kehadiran_efektif"
   | "nilai_rata_rata_raport"
   | "skor_time_management"
   | "jam_tidur"
   | "screen_time"
   | "motivasi_akademik"
-  | "ses_index"
-  | "deviasi_tidur";
+  | "industry_readiness";
 
 type StudentCategoricalKey =
   | "gender"
   | "kerja_sampingan"
   | "study_environment"
   | "kompetensi_skill_level"
-  | "industry_readiness"
   | "stress_level"
   | "jurusan";
 
 const numericFields: Array<{ key: StudentNumericKey; label: string }> = [
   { key: "jam_belajar_per_hari", label: "Jam belajar per hari" },
   { key: "presentase_kehadiran", label: "Presentase kehadiran" },
+  { key: "presentase_kehadiran_efektif", label: "Presentase kehadiran efektif" },
   { key: "nilai_rata_rata_raport", label: "Nilai rata-rata raport" },
   { key: "skor_time_management", label: "Skor time management" },
   { key: "jam_tidur", label: "Jam tidur" },
-  { key: "deviasi_tidur", label: "Deviasi tidur" },
   { key: "screen_time", label: "Screen time" },
-  { key: "ses_index", label: "SES Index" },
   { key: "motivasi_akademik", label: "Motivasi akademik" },
+  { key: "industry_readiness", label: "Kesiapan Industri" },
 ] as const;
 
 const categoricalFields: Array<{ key: StudentCategoricalKey; label: string }> =
@@ -97,7 +97,6 @@ const categoricalFields: Array<{ key: StudentCategoricalKey; label: string }> =
     { key: "kerja_sampingan", label: "Kerja Sampingan" },
     { key: "study_environment", label: "Lingkungan Belajar" },
     { key: "kompetensi_skill_level", label: "Tingkat Kompetensi Skill" },
-    { key: "industry_readiness", label: "Kesiapan Industri" },
     { key: "stress_level", label: "Tingkat Stres" },
     { key: "jurusan", label: "Jurusan" },
   ] as const;
@@ -221,12 +220,12 @@ function buildRecommendations(
   }
 
   if (
-    student.industry_readiness &&
-    student.industry_readiness.toLowerCase() !== "siap"
+    student.industry_readiness !== null &&
+    student.industry_readiness < 70
   ) {
     recommendations.push({
-      title: "Bangun kesiapan industri",
-      description: `Industry readiness ${studentName} masih ${student.industry_readiness}. Ajak mengikuti pelatihan, simulasi praktik, atau kegiatan berbasis proyek.`,
+      title: "Kesiapan Industri Kurang",
+      description: `Industry readiness ${studentName} masih di angka ${student.industry_readiness}. Ajak mengikuti pelatihan, simulasi praktik, atau kegiatan berbasis proyek.`,
     });
   }
 

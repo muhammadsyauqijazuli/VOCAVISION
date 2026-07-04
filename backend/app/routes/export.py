@@ -24,6 +24,7 @@ EXCEL_COLUMNS = [
     ('nisn', 'NISN'),
     ('jam_belajar_per_hari', 'Jam Belajar / Hari'),
     ('presentase_kehadiran', 'Presentase Kehadiran'),
+    ('presentase_kehadiran_efektif', 'Presentase Kehadiran Efektif'),
     ('nilai_rata_rata_raport', 'Nilai Rata-rata Raport'),
     ('skor_time_management', 'Skor Time Management'),
     ('jam_tidur', 'Jam Tidur'),
@@ -90,6 +91,7 @@ def gather_rows(class_id=None, risk_status=None):
             'nisn': student.nisn,
             'jam_belajar_per_hari': student.jam_belajar_per_hari,
             'presentase_kehadiran': student.presentase_kehadiran,
+            'presentase_kehadiran_efektif': student.presentase_kehadiran_efektif,
             'nilai_rata_rata_raport': student.nilai_rata_rata_raport,
             'skor_time_management': student.skor_time_management,
             'jam_tidur': student.jam_tidur,
@@ -398,6 +400,7 @@ def _student_variable_rows(report: dict[str, Any]):
         ['NISN', _format_value(student.nisn)],
         ['Jam Belajar / Hari', _format_value(student.jam_belajar_per_hari)],
         ['Presentase Kehadiran', _format_value(student.presentase_kehadiran)],
+        ['Presentase Kehadiran Efektif', _format_value(student.presentase_kehadiran_efektif)],
         ['Nilai Rata-rata Raport', _format_value(student.nilai_rata_rata_raport)],
         ['Skor Time Management', _format_value(student.skor_time_management)],
         ['Jam Tidur', _format_value(student.jam_tidur)],
@@ -530,10 +533,11 @@ def _build_student_story(report: dict[str, Any]):
         concerns.append(f'Kompetensi skill masih {student.kompetensi_skill_level.lower()}, perlu penguatan konsep inti.')
         actions.append('Berikan latihan tambahan atau proyek kecil untuk memperkuat skill utama.')
 
-    if student.industry_readiness and student.industry_readiness.lower() == 'siap':
-        strengths.append('Kesiapan industri sudah baik, menunjukkan orientasi belajar yang matang.')
-    elif student.industry_readiness:
-        concerns.append(f'Kesiapan industri masih {student.industry_readiness.lower()}, sehingga pengalaman praktik perlu ditambah.')
+    industry_readiness = _to_float(student.industry_readiness)
+    if industry_readiness is not None and industry_readiness >= 70:
+        strengths.append(f'Kesiapan industri sudah baik ({industry_readiness:.0f}%), menunjukkan orientasi belajar yang matang.')
+    elif industry_readiness is not None:
+        concerns.append(f'Kesiapan industri masih {industry_readiness:.0f}%, sehingga pengalaman praktik perlu ditambah.')
         actions.append('Arahkan ke pelatihan praktik atau simulasi berbasis proyek.')
 
     top_shap_texts = []
@@ -576,6 +580,7 @@ def _student_appendix_rows(report: dict[str, Any]):
         ['Gender', _format_value(student.gender)],
         ['Jam Belajar / Hari', _format_value(student.jam_belajar_per_hari)],
         ['Presentase Kehadiran', _format_value(student.presentase_kehadiran)],
+        ['Presentase Kehadiran Efektif', _format_value(student.presentase_kehadiran_efektif)],
         ['Nilai Rata-rata Raport', _format_value(student.nilai_rata_rata_raport)],
         ['Skor Time Management', _format_value(student.skor_time_management)],
         ['Jam Tidur', _format_value(student.jam_tidur)],

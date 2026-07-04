@@ -76,18 +76,18 @@ def stats():
         ml = MLService()
         if hasattr(ml.classifier, 'feature_importances_'):
             importances = ml.classifier.feature_importances_
-            features = ml.preprocessing_info.get('selected_features', [])
-            if len(features) == len(importances):
+            features = ml.train_columns if ml.train_columns is not None else ml.feature_names
+            if features is not None and len(features) == len(importances):
                 # Clean up feature names to be more readable
                 name_map = {
                     'presentase_kehadiran': 'Presentase Kehadiran',
+                    'presentase_kehadiran_efektif': 'Kehadiran Efektif',
                     'skor_time_management': 'Skor Time Management',
-                    'ses_index': 'Indeks SES',
+                    'industry_readiness': 'Kesiapan Industri',
                     'jam_belajar_per_hari': 'Jam Belajar per Hari',
                     'screen_time': 'Screen Time',
                     'motivasi_akademik': 'Motivasi Akademik',
                     'jam_tidur': 'Jam Tidur',
-                    'deviasi_tidur': 'Deviasi Tidur'
                 }
                 for f, imp in zip(features, importances):
                     # We only care about base numerical features, skip dummy encoded ones if any
