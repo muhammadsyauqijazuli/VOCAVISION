@@ -9572,3 +9572,14 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+CREATE TABLE datasets (
+    id              CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    admin_id        CHAR(36) NOT NULL,
+    file_name       VARCHAR(255) NOT NULL,
+    row_count       INT,
+    status          ENUM('pending','processing','completed','failed') DEFAULT 'pending',
+    uploaded_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
