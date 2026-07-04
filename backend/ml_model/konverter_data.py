@@ -12,8 +12,8 @@ import os
 # KONFIGURASI
 # ============================================================
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-INPUT_FILE = os.path.join(SCRIPT_DIR, 'Book1.csv')
-OUTPUT_FILE = os.path.join(SCRIPT_DIR, 'data_15_variabel_new2.csv')
+INPUT_FILE = os.path.join(SCRIPT_DIR, 'data_mentah_kuisioner.csv')
+OUTPUT_FILE = os.path.join(SCRIPT_DIR, 'data_clean.csv')
 
 # ============================================================
 # 1. BACA DATA
