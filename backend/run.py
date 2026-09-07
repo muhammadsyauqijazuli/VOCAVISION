@@ -4,23 +4,30 @@ import sys
 
 app = create_app()
 
-# Enable detailed logging
+# Logging configuration — INFO level for app, WARNING for noisy libraries
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     stream=sys.stdout
 )
 
 logger = logging.getLogger(__name__)
 
+# Suppress noisy library loggers
+for noisy_logger in [
+    'sqlalchemy.engine.Engine',
+    'sqlalchemy.orm',
+    'sqlalchemy.pool',
+    'flask_cors',
+    'werkzeug',
+]:
+    logging.getLogger(noisy_logger).setLevel(logging.WARNING)
+
+# Keep app-level loggers at INFO
+logging.getLogger('app').setLevel(logging.INFO)
+
 print(f"Flask app database URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
 logger.info("Flask app initialized successfully")
-
-# Enable propagate for all loggers
-logging.getLogger().setLevel(logging.DEBUG)
-for logger_name in logging.root.manager.loggerDict:
-    logging.getLogger(logger_name).setLevel(logging.DEBUG)
-    logging.getLogger(logger_name).propagate = True
 
 from app import socketio
 
