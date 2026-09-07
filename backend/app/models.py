@@ -11,7 +11,7 @@ class User(db.Model):
     nama = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=True)
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.Enum('admin', 'guru', 'siswa'), nullable=False)
+    role = db.Column(db.Enum('admin', 'guru', 'siswa', 'orang_tua'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -31,6 +31,7 @@ class Student(db.Model):
     jam_tidur = db.Column(db.Float, nullable=True)
     screen_time = db.Column(db.Float, nullable=True)
     motivasi_akademik = db.Column(db.Integer, nullable=True)
+    skor_skill_level = db.Column(db.Float, nullable=True)
 
     # Kategorikal
     gender = db.Column(db.Enum('Laki-laki', 'Perempuan'), nullable=True)
@@ -90,3 +91,12 @@ class Notification(db.Model):
     is_read = db.Column(db.Boolean, default=False)
     type = db.Column(db.String(50), default='intervention')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class ParentLink(db.Model):
+    __tablename__ = 'parent_links'
+    id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
+    parent_id = db.Column(db.String(36), db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    student_id = db.Column(db.String(36), db.ForeignKey('students.id', ondelete='CASCADE'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    __table_args__ = (db.UniqueConstraint('parent_id', 'student_id'),)

@@ -18,7 +18,7 @@ const DEFAULT_FORM: UserFormValues = {
 };
 
 type AdminUsersManagerProps = {
-  scopeRole?: Extract<UserRole, "guru" | "siswa">;
+  scopeRole?: Extract<UserRole, "guru" | "siswa" | "orang_tua">;
   title?: string;
   description?: string;
   showStudentSyncPanel?: boolean;
@@ -29,6 +29,7 @@ type UserApiRecord = UserRecord & {
 };
 
 function formatRole(role: UserRole) {
+  if (role === "orang_tua") return "Orang Tua";
   return role.charAt(0).toUpperCase() + role.slice(1);
 }
 
@@ -483,6 +484,7 @@ export function AdminUsersManager({
                   <option value="admin">Admin</option>
                   <option value="guru">Guru</option>
                   <option value="siswa">Siswa</option>
+                  <option value="orang_tua">Orang Tua</option>
                 </select>
               </div>
 
@@ -617,6 +619,7 @@ export function AdminUsersManager({
                 <option value="admin">Admin</option>
                 <option value="guru">Guru</option>
                 <option value="siswa">Siswa</option>
+                <option value="orang_tua">Orang Tua</option>
               </select>
             )}
           </div>

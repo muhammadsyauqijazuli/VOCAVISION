@@ -10,6 +10,11 @@ import pandas as pd
 import io
 from werkzeug.security import generate_password_hash
 
+"""
+Dataset Processing Routes.
+Provides API endpoints for uploading and asynchronously processing student dataset files (CSV/XLSX).
+"""
+
 dataset_bp = Blueprint('dataset', __name__)
 STUDENT_COLUMN_NAMES = set(Student.__table__.columns.keys())
 DATASET_JOB_PROGRESS = {}
@@ -150,6 +155,11 @@ def set_job_progress(dataset_id, *, phase=None, current=0, total=0, message=None
 
 
 def _process_dataset_job(app, dataset_id, rows):
+    """
+    Background worker thread to process uploaded dataset rows.
+    Validates data, creates user accounts, runs ML predictions, and saves results.
+    Updates the global DATASET_JOB_PROGRESS dictionary with its status.
+    """
     with app.app_context():
         ml = MLService()
         success = 0
@@ -281,6 +291,10 @@ def _process_dataset_job(app, dataset_id, rows):
 @jwt_required()
 @role_required(['admin'])
 def upload_dataset():
+    """
+    Handle CSV or XLSX file upload, parse it into rows, and spawn a background thread
+    for asynchronous processing and prediction.
+    """
     if 'file' not in request.files:
         return jsonify({'message': 'Tidak ada file'}), 400
     file = request.files['file']
@@ -288,13 +302,14 @@ def upload_dataset():
         return jsonify({'message': 'Nama file kosong'}), 400
 
     user_id = get_jwt_identity()
-    # Simpan log
+    
+    # Initialize dataset entry log
     dataset_entry = Dataset(admin_id=user_id, file_name=file.filename, status='processing')
     db.session.add(dataset_entry)
     db.session.commit()
 
     try:
-        # Baca file
+        # Parse file into a DataFrame
         if file.filename.endswith('.csv'):
             df = pd.read_csv(file)
         elif file.filename.endswith('.xlsx'):
@@ -335,6 +350,9 @@ def upload_dataset():
 @jwt_required()
 @role_required(['admin'])
 def get_dataset_status(dataset_id):
+    """
+    Fetch the current processing progress of a given dataset upload.
+    """
     dataset = Dataset.query.get(dataset_id)
     if not dataset:
         return jsonify({'message': 'Dataset tidak ditemukan'}), 404

@@ -923,3 +923,56 @@ graph LR
 
 > [!NOTE]
 > Basis data utama menggunakan **MySQL/MariaDB** melalui SQLAlchemy ORM. Terdapat juga database terpisah **PostgreSQL** melalui Prisma yang digunakan khusus untuk authentication schema (NextAuth), namun tidak termasuk dalam ERD ini karena bukan bagian dari domain bisnis utama.
+
+
+# 4.7 Implementasi Website Monitoring VOCAVISION
+
+## 4.9.1 Arsitektur Sistem
+
+VOCAVISION diimplementasikan dengan arsitektur *Three-Tier* terpisah:
+
+1. **Frontend (Presentation)**: 
+   - Dibangun dengan **Next.js 16 (React 19)**, **Tailwind CSS v4**, dan **Recharts**.
+   - Menyediakan antarmuka interaktif dan komunikasi dengan backend via REST API & WebSocket.
+2. **Backend (Business Logic)**: 
+   - Menggunakan **Flask (Python 3.11+)** dengan **SQLAlchemy ORM**.
+   - Menangani autentikasi (JWT), pemrosesan data, notifikasi real-time (Socket.IO), dan integrasi model Machine Learning (**Scikit-learn & SHAP**).
+3. **Database (Data Layer)**: 
+   - **MySQL/MariaDB** menyimpan 7 entitas utama (Users, Students, Predictions, SHAP Analysis, Interventions, Notifications, Datasets).
+
+## 4.9.2 Fitur Utama
+
+- **Autentikasi Berbasis Role**: Akses spesifik untuk 3 level pengguna (Admin, Guru, Siswa) menggunakan JWT Token.
+- **Manajemen & Sinkronisasi Pengguna (Admin)**: CRUD akun pengguna dan *auto-generation* akun siswa berdasarkan NISN.
+- **Pemrosesan Dataset Asynchronous (Admin)**: Upload file CSV/XLSX untuk *bulk import* siswa yang otomatis menjalankan pipeline prediksi.
+- **Prediksi Risiko & SHAP Insight (ML)**: 
+  - Model *Random Forest* mengklasifikasikan siswa ke dalam kategori **Beresiko**, **Aman**, atau **Sangat Aman** menggunakan 14 metrik kebiasaan dan demografi.
+  - *SHAP TreeExplainer* memberikan penjelasan transparan mengenai fitur apa yang paling berkontribusi terhadap skor siswa, dilengkapi dengan rekomendasi otomatis.
+- **Monitoring & Intervensi Akademik (Guru)**: Pelacakan *Top Risky Students*, pencatatan riwayat intervensi, serta ekspor data ke PDF/Excel.
+- **Notifikasi Real-Time**: Notifikasi instan menggunakan WebSocket (Socket.IO) yang dikirimkan langsung ke siswa saat guru menambahkan catatan evaluasi.
+
+## 4.9.3 Tampilan Antarmuka
+
+Antarmuka (*User Interface*) disesuaikan secara dinamis berdasarkan otorisasi pengguna:
+
+### 1. Panel Admin
+- **Dashboard**: Menampilkan metrik global (rata-rata prediksi, persentase risiko, daftar *Top 5 Siswa Beresiko*).
+- **Data Management**: Tabel interaktif untuk CRUD pengguna, manajemen role, dan antarmuka *drag-and-drop* untuk upload dataset dengan indikator proses (*progress bar*).
+
+### 2. Panel Guru
+- **Monitoring Kelas**: Tabel daftar seluruh siswa dengan fitur filter dan pengurutan (*sorting*) berdasarkan tingkat risiko atau nilai prediksi.
+- **Detail & Evaluasi Siswa**: Halaman analitik per siswa yang menampilkan *SHAP Bar Chart* (dampak positif/negatif tiap fitur) dan panel input untuk mencatat intervensi.
+
+### 3. Panel Siswa
+- **Self-Assessment**: Formulir bagi siswa untuk memperbarui data kebiasaan (jam tidur, kehadiran, dll) dan melakukan prediksi ulang hasil secara mandiri.
+- **Insight & Rekomendasi**: Menampilkan visualisasi faktor apa yang paling memengaruhi nilai mereka dan saran perbaikan yang dapat ditindaklanjuti.
+- **Catatan & Notifikasi**: *Timeline* intervensi yang dikirimkan oleh guru.
+
+## Ringkasan API Endpoints
+Backend menyediakan lebih dari 20 REST API yang dilindungi otorisasi JWT, meliputi:
+- `/api/auth/*` (Otentikasi & Manajemen Sesi)
+- `/api/users/*` (CRUD Pengguna - *Admin Only*)
+- `/api/dataset/*` (Upload & Status Pemrosesan - *Admin Only*)
+- `/api/students/*` (Daftar & Detail Siswa)
+- `/api/predict/*` (Eksekusi Model Prediksi & Insight SHAP)
+- `/api/interventions/*` & `/api/notifications/*` (Log Intervensi Guru & Notifikasi)

@@ -5,29 +5,26 @@ import numpy as np
 import pandas as pd
 import shap
 
-# ============================================================
-# PATH KE ARTEFAK MODEL
-# ============================================================
+"""
+Machine Learning Service Module.
+Handles loading ML artifacts, preprocessing input data, and providing predictions.
+"""
 _MODEL_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'ml_model')
 
 CLASSIFIER_PATH = os.path.join(_MODEL_DIR, 'rf_classifier_best.pkl')
+REGRESSOR_PATH = os.path.join(_MODEL_DIR, 'rf_regressor_best.pkl')
 SCALER_PATH = os.path.join(_MODEL_DIR, 'scaler.pkl')
 FEATURE_NAMES_PATH = os.path.join(_MODEL_DIR, 'feature_names.pkl')
 TRAIN_COLUMNS_PATH = os.path.join(_MODEL_DIR, 'train_columns.pkl')
+THRESHOLDS_PATH = os.path.join(_MODEL_DIR, 'jenks_thresholds.pkl')
 
 MODEL_VERSION = '3.0.0'
 
-# Threshold kategorisasi (sesuai notebook)
-SCORE_THRESHOLD_LOW = 82.5    # < 82.5 = Beresiko
-SCORE_THRESHOLD_HIGH = 86.0   # >= 86.0 = Sangat Aman
-
-# ============================================================
-# MAPPING NORMALISASI INPUT
-# ============================================================
+# Input normalization mappings
 FEATURE_ALIAS_RULES = [
     ('jam_belajar_per_hari', ('jam_belajar_per_hari', 'jam_belajar_perhari', 'jam_belajar')),
     ('presentase_kehadiran', ('presentase_kehadiran', 'persentase_kehadiran', 'kehadiran_kelas', 'attendance')),
-    ('presentase_kehadiran_efektif', ('presentase_kehadiran_efektif', 'persentase_kehadiran_efektif', 'kehadiran_efektif')),
+    ('presentase_kehadiran_efektif', ('presentase_kehadiran_efektif', 'persentase_kehadiran_efektif', 'kehadiran_efektif', 'libur_tanpa_keterangan')),
     ('nilai_rata_rata_raport', ('nilai_rata_rata_raport', 'nilai_rata_rata_rapor', 'raport', 'rapor')),
     ('skor_time_management', ('skor_time_management', 'skor_time', 'time_management')),
     ('jam_tidur', ('jam_tidur', 'tidur', 'sleep')),
@@ -43,9 +40,7 @@ FEATURE_ALIAS_RULES = [
     ('gender', ('gender',)),
 ]
 
-# ============================================================
-# PANDUAN REKOMENDASI PER FITUR
-# ============================================================
+# Feature recommendation guidelines based on SHAP impact
 FEATURE_GUIDANCE = {
     'jam_belajar_per_hari': {
         'label': 'Jam belajar per hari',
@@ -58,7 +53,7 @@ FEATURE_GUIDANCE = {
         'action': 'meningkatkan kehadiran kelas dan mengejar materi yang tertinggal secara rutin',
     },
     'presentase_kehadiran_efektif': {
-        'label': 'Kehadiran efektif',
+        'label': 'Libur tanpa keterangan',
         'modifiable': True,
         'action': 'meningkatkan kehadiran efektif dengan mengurangi ketidakhadiran tanpa izin (alpha)',
     },
@@ -129,7 +124,7 @@ FEATURE_GUIDANCE = {
     },
 }
 
-# Kolom numerik yang masuk ke model (sesuai notebook: setelah drop nisn, nama, email, gender, nilai_raport)
+# Numeric features used in the model
 NUMERIC_FEATURES = [
     'jam_belajar_per_hari',
     'screen_time',
@@ -141,7 +136,7 @@ NUMERIC_FEATURES = [
     'motivasi_akademik',
 ]
 
-# Kolom kategorikal yang di-one-hot-encode
+# Categorical features that require one-hot encoding
 CATEGORICAL_FEATURES = [
     'kerja_sampingan',
     'rata_rata_pemasukan_keluarga',
@@ -151,7 +146,7 @@ CATEGORICAL_FEATURES = [
     'stress_level',
 ]
 
-# Nilai valid per kolom kategorikal
+# Valid values for each categorical feature
 CATEGORICAL_VALUES = {
     'kerja_sampingan': ['Ya', 'Tidak'],
     'rata_rata_pemasukan_keluarga': ['< 2 Juta', '2 - 5 Juta', '5 - 10 Juta', '> 10 Juta'],
@@ -164,23 +159,29 @@ CATEGORICAL_VALUES = {
 
 class MLService:
     """
-    Service ML untuk VOCAVISION v3.
-    Pipeline: preprocess -> one-hot encode -> scale -> predict
-    Model: RandomForestClassifier (3-class: Beresiko, Aman, Sangat Aman)
+    ML Service for VOCAVISION.
+    Pipeline: preprocess -> one-hot encode -> scale -> predict.
+    Model: RandomForestClassifier (3-class: Beresiko, Aman, Sangat Aman).
     """
 
     def __init__(self):
         self.classifier = None
+        self.regressor = None
         self.scaler = None
         self.feature_names = None
         self.train_columns = None
         self.explainer = None
+        self.score_threshold_low = 81.83
+        self.score_threshold_high = 85.75
         self.load_model()
 
     def load_model(self):
-        """Muat semua artefak model dari file .pkl."""
+        """Load all model artifacts from .pkl files."""
         try:
             self.classifier = joblib.load(CLASSIFIER_PATH)
+
+            if os.path.exists(REGRESSOR_PATH):
+                self.regressor = joblib.load(REGRESSOR_PATH)
 
             if os.path.exists(SCALER_PATH):
                 self.scaler = joblib.load(SCALER_PATH)
@@ -191,8 +192,23 @@ class MLService:
             if os.path.exists(TRAIN_COLUMNS_PATH):
                 self.train_columns = joblib.load(TRAIN_COLUMNS_PATH)
 
-            # Inisialisasi SHAP Explainer pada classifier
-            self.explainer = shap.TreeExplainer(self.classifier)
+            if os.path.exists(THRESHOLDS_PATH):
+                thresholds = joblib.load(THRESHOLDS_PATH)
+                self.score_threshold_low = thresholds.get('low', 81.83)
+                self.score_threshold_high = thresholds.get('high', 85.75)
+
+            # Initialize SHAP Explainer on the classifier
+            try:
+                if hasattr(self.classifier, 'calibrated_classifiers_'):
+                    # Use the base estimator of the first calibrated classifier for SHAP
+                    base_rf = self.classifier.calibrated_classifiers_[0].estimator
+                    self.explainer = shap.TreeExplainer(base_rf)
+                else:
+                    self.explainer = shap.TreeExplainer(self.classifier)
+            except Exception as e:
+                print(f"SHAP initialization failed: {e}")
+                self.explainer = None
+                
             print(f"Model v{MODEL_VERSION} loaded successfully")
             print(f"  Classifier classes: {list(self.classifier.classes_)}")
             if self.train_columns is not None:
@@ -202,24 +218,29 @@ class MLService:
             self._init_dummy_model()
 
     def _init_dummy_model(self):
-        """Fallback dummy model untuk development tanpa .pkl files."""
+        """Fallback dummy model for development without .pkl files."""
         from sklearn.ensemble import RandomForestClassifier as RFC
+        from sklearn.ensemble import RandomForestRegressor as RFR
 
         print("Initializing dummy model for development...")
         X_dummy = np.random.rand(100, 12)
         y_cls_dummy = np.random.choice(['Beresiko', 'Aman', 'Sangat Aman'], 100)
+        y_reg_dummy = np.random.uniform(50, 100, 100)
 
         self.classifier = RFC(n_estimators=10, random_state=42)
         self.classifier.fit(X_dummy, y_cls_dummy)
+
+        self.regressor = RFR(n_estimators=10, random_state=42)
+        self.regressor.fit(X_dummy, y_reg_dummy)
 
         self.scaler = None
         self.feature_names = None
         self.train_columns = None
         self.explainer = None
 
-    # ================================================================
-    # NORMALISASI INPUT
-    # ================================================================
+    # ----------------------------------------------------------------
+    # INPUT NORMALIZATION
+    # ----------------------------------------------------------------
     @staticmethod
     def _normalize_study_environment(value):
         mapping = {
@@ -308,14 +329,13 @@ class MLService:
 
         return 'default'
 
-    # ================================================================
+    # ----------------------------------------------------------------
     # PREPROCESSING PIPELINE
-    # ================================================================
+    # ----------------------------------------------------------------
     def preprocess(self, data_dict):
         """
-        Konversi payload API menjadi feature vector siap prediksi.
-        Pipeline sesuai notebook: DataFrame -> drop kolom non-fitur ->
-                                   one-hot encode -> scale
+        Convert API payload into a feature vector ready for prediction.
+        Pipeline: DataFrame -> one-hot encode categorical features -> scale.
         """
         raw = dict(data_dict)
 
@@ -325,17 +345,18 @@ class MLService:
                     return raw[k]
             return default
 
-        # --- Numerik ---
+        # Numeric features
         jam_belajar = float(first_val('jam_belajar_per_hari', 'jam_belajar_perhari', default=0) or 0)
         screen_time = float(first_val('screen_time', default=0) or 0)
         jam_tidur = float(first_val('jam_tidur', default=0) or 0)
         presentase_kehadiran = float(first_val('presentase_kehadiran', 'persentase_kehadiran', default=0) or 0)
-        presentase_kehadiran_efektif = float(first_val('presentase_kehadiran_efektif', 'persentase_kehadiran_efektif', default=0) or 0)
+        presentase_kehadiran_efektif = float(first_val('presentase_kehadiran_efektif', 'persentase_kehadiran_efektif', 'libur_tanpa_keterangan', default=0) or 0)
         industry_readiness = float(first_val('industry_readiness', 'industry_ready', default=0) or 0)
         skor_time_management = float(first_val('skor_time_management', default=0) or 0)
         motivasi_akademik = float(first_val('motivasi_akademik', default=0) or 0)
+        skor_skill_level = float(first_val('skor_skill_level', 'skor_skill', default=80.0) or 80.0)
 
-        # --- Kategorikal ---
+        # Categorical features
         kerja_sampingan = first_val('kerja_sampingan', default='Tidak')
         if str(kerja_sampingan).lower() in ('ya', 'true', '1'):
             kerja_sampingan = 'Ya'
@@ -358,7 +379,28 @@ class MLService:
             first_val('stress_level', default='Sedang')
         )
 
-        # --- Build DataFrame ---
+        # Feature Engineering
+        rasio_belajar_screen = jam_belajar / (screen_time + 1.0)
+        
+        stress_num = 3 if stress == 'Berat' else (2 if stress == 'Sedang' else 1)
+        indeks_kerentanan_stres = stress_num / (motivasi_akademik + 1.0)
+        
+        skor_regulasi_diri = skor_time_management * motivasi_akademik
+        
+        pemasukan_map = {'> 10 Juta': 4.0, '5 - 10 Juta': 3.0, '2 - 5 Juta': 2.0, '< 2 Juta': 1.0}
+        pendidikan_map = {'Sarjana': 4.0, 'SMA/SMK': 3.0, 'Diploma': 3.5, 'SMP': 2.0, 'SD': 1.0}
+        pemasukan_val = pemasukan_map.get(rata_rata_pemasukan, 1.0)
+        pendidikan_val = pendidikan_map.get(pendidikan_ortu, 3.0)
+        indeks_sosial_ekonomi = pemasukan_val * pendidikan_val
+        
+        if skor_skill_level >= 85.0 and skill_level == 'Rendah':
+            keselarasan_skill = 'Imposter'
+        elif skor_skill_level < 75.0 and skill_level == 'Tinggi':
+            keselarasan_skill = 'Overconfident'
+        else:
+            keselarasan_skill = 'Aligned'
+
+        # Build initial DataFrame
         data = {
             'jam_belajar_per_hari': jam_belajar,
             'screen_time': screen_time,
@@ -368,20 +410,26 @@ class MLService:
             'industry_readiness': industry_readiness,
             'skor_time_management': skor_time_management,
             'motivasi_akademik': motivasi_akademik,
+            'skor_skill_level': skor_skill_level,
+            'rasio_belajar_screen': rasio_belajar_screen,
+            'indeks_kerentanan_stres': indeks_kerentanan_stres,
+            'skor_regulasi_diri': skor_regulasi_diri,
+            'indeks_sosial_ekonomi': indeks_sosial_ekonomi,
             'kerja_sampingan': kerja_sampingan,
             'rata_rata_pemasukan_keluarga': rata_rata_pemasukan,
             'pendidikan_terakhir_orang_tua': pendidikan_ortu,
             'study_environment': study_env,
             'kompetensi_skill_level': skill_level,
             'stress_level': stress,
+            'keselarasan_persepsi_skill': keselarasan_skill,
         }
 
         df = pd.DataFrame([data])
 
-        # --- One-Hot Encoding (sesuai notebook: pd.get_dummies, drop_first=True) ---
+        # One-Hot Encoding using get_dummies (drop_first=True)
         df = pd.get_dummies(df, columns=CATEGORICAL_FEATURES, drop_first=True)
 
-        # --- Align kolom ke training columns ---
+        # Align columns to match the training data columns
         if self.train_columns is not None:
             train_cols = list(self.train_columns)
             # Add missing columns with 0
@@ -390,14 +438,16 @@ class MLService:
                     df[col] = 0
             # Remove extra columns
             df = df[train_cols]
-        elif self.feature_names is not None:
+
+        # Subset to the exact features expected by the model (e.g. top 20)
+        if self.feature_names is not None:
             feat_list = list(self.feature_names)
             for col in feat_list:
                 if col not in df.columns:
                     df[col] = 0
             df = df[feat_list]
 
-        # --- Scale ---
+        # Scale the features
         if self.scaler:
             try:
                 if hasattr(self.scaler, 'feature_names_in_'):
@@ -415,47 +465,57 @@ class MLService:
 
         return df
 
-    # ================================================================
-    # PREDIKSI
-    # ================================================================
+    # ----------------------------------------------------------------
+    # PREDICTION
+    # ----------------------------------------------------------------
     def predict(self, features):
         """
-        Prediksi risiko akademik dan skor ujian.
-        Returns dict: predicted_exam_score, risk_status, shap_analysis, model_version
+        Predict academic risk and exam score.
+        Returns a dict: predicted_exam_score, risk_status, shap_analysis, model_version.
         """
         processed = self.preprocess(features)
 
         # Classifier -> risk status & probability
         risk_status = str(self.classifier.predict(processed)[0])
 
-        # Estimate predicted score using class probabilities and thresholds
+        # Estimate predicted score using regressor model or class probabilities
         try:
-            proba = self.classifier.predict_proba(processed)[0]
-            classes = list(self.classifier.classes_)
-
-            p_beresiko = proba[classes.index('Beresiko')] if 'Beresiko' in classes else 0
-            p_aman = proba[classes.index('Aman')] if 'Aman' in classes else 0
-            p_sangat_aman = proba[classes.index('Sangat Aman')] if 'Sangat Aman' in classes else 0
-
-            if risk_status == 'Beresiko':
-                # Map from (SCORE_THRESHOLD_LOW - 5) to SCORE_THRESHOLD_LOW
-                predicted_score = (SCORE_THRESHOLD_LOW - 5) + (5 * (1 - p_beresiko))
-            elif risk_status == 'Aman':
-                # Map from SCORE_THRESHOLD_LOW to SCORE_THRESHOLD_HIGH
-                range_val = SCORE_THRESHOLD_HIGH - SCORE_THRESHOLD_LOW
-                predicted_score = SCORE_THRESHOLD_LOW + (range_val * p_sangat_aman)
+            if self.regressor is not None:
+                predicted_score = float(self.regressor.predict(processed)[0])
+                predicted_score = float(np.clip(predicted_score, 0, 100))
             else:
-                # Map from SCORE_THRESHOLD_HIGH to (SCORE_THRESHOLD_HIGH + 5)
-                predicted_score = SCORE_THRESHOLD_HIGH + (5 * p_sangat_aman)
+                proba = self.classifier.predict_proba(processed)[0]
+                classes = list(self.classifier.classes_)
 
-            predicted_score = float(np.clip(predicted_score, 0, 100))
+                p_beresiko = proba[classes.index('Beresiko')] if 'Beresiko' in classes else 0
+                p_aman = proba[classes.index('Aman')] if 'Aman' in classes else 0
+                p_sangat_aman = proba[classes.index('Sangat Aman')] if 'Sangat Aman' in classes else 0
+
+                if risk_status == 'Beresiko':
+                    # Smooth mapping within [score_threshold_low - 10, score_threshold_low]
+                    w = p_aman / p_beresiko if p_beresiko > 0 else 0
+                    predicted_score = (self.score_threshold_low - 10) + (10 * w)
+                elif risk_status == 'Aman':
+                    # Smooth mapping within [score_threshold_low, score_threshold_high]
+                    # Interpolate based on how close the student is to Sangat Aman vs Beresiko
+                    denom = p_beresiko + p_sangat_aman
+                    w = p_sangat_aman / denom if denom > 0 else 0.5
+                    range_val = self.score_threshold_high - self.score_threshold_low
+                    predicted_score = self.score_threshold_low + (range_val * w)
+                else:
+                    # Smooth mapping within [score_threshold_high, 100]
+                    w = (p_sangat_aman - p_aman) / p_sangat_aman if p_sangat_aman > 0 else 0
+                    range_val = 100 - self.score_threshold_high
+                    predicted_score = self.score_threshold_high + (range_val * w)
+
+                predicted_score = float(np.clip(predicted_score, 0, 100))
         except Exception as e:
             print("Error computing synthetic score:", e)
             # Fallback
             mapping = {
-                'Beresiko': SCORE_THRESHOLD_LOW - 2,
-                'Aman': (SCORE_THRESHOLD_LOW + SCORE_THRESHOLD_HIGH) / 2,
-                'Sangat Aman': SCORE_THRESHOLD_HIGH + 2,
+                'Beresiko': self.score_threshold_low - 2,
+                'Aman': (self.score_threshold_low + self.score_threshold_high) / 2,
+                'Sangat Aman': self.score_threshold_high + 2,
             }
             predicted_score = mapping.get(risk_status, 80.0)
 
@@ -560,9 +620,9 @@ class MLService:
     # ================================================================
     def get_abs_category(self, score):
         """Legacy method — map skor ke kategori risiko menggunakan thresholds."""
-        if score < SCORE_THRESHOLD_LOW:
+        if score <= self.score_threshold_low:
             return 'Beresiko'
-        elif score < SCORE_THRESHOLD_HIGH:
+        elif score <= self.score_threshold_high:
             return 'Aman'
         else:
             return 'Sangat Aman'

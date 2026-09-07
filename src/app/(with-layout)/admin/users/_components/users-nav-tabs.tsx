@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const tabs = [
   { label: "Manajemen Siswa", href: "/admin/users/siswa" },
   { label: "Manajemen Guru", href: "/admin/users/guru" },
+  { label: "Manajemen Orang Tua", href: "/admin/users/ortu" },
 ];
 
 export function UsersNavTabs() {

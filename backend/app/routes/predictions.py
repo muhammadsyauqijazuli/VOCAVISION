@@ -6,13 +6,21 @@ from ..models import Student, Prediction, SHAPAnalysis, User
 from ..services.ml_service import MLService
 from .. import db
 
+"""
+Predictions API Routes.
+Handles execution of machine learning models and SHAP insight generation.
+"""
+
 predictions_bp = Blueprint('predictions', __name__)
 ml_service = MLService()
 
-# app/routes/predictions.py (perbaikan)
 @predictions_bp.route('/single', methods=['POST'])
 @jwt_required()
 def predict_single():
+    """
+    Execute a single prediction for a student based on input features.
+    Creates or updates the student record if necessary, then saves the prediction results.
+    """
     data = request.get_json(silent=True) or {}
     student_id = data.pop('student_id', None)
     user_id = data.pop('user_id', None)
@@ -44,7 +52,7 @@ def predict_single():
     if not student:
         return jsonify({'message': 'Siswa tidak ditemukan'}), 404
 
-    # Update data siswa dari payload
+    # Update student data from payload
     for key, value in data.items():
         if hasattr(student, key):
             setattr(student, key, value)
@@ -52,10 +60,30 @@ def predict_single():
         student.user_id = user_id
     db.session.commit()
 
-    # Prediksi
-    result = ml_service.predict(data)
+    # Build prediction feature dict from updated student record
+    features = {
+        'gender': student.gender,
+        'rata_rata_pemasukan_keluarga': student.rata_rata_pemasukan_keluarga,
+        'kerja_sampingan': student.kerja_sampingan,
+        'pendidikan_terakhir_orang_tua': student.pendidikan_terakhir_orang_tua,
+        'jam_belajar_per_hari': student.jam_belajar_per_hari,
+        'jam_tidur': student.jam_tidur,
+        'screen_time': student.screen_time,
+        'presentase_kehadiran': student.presentase_kehadiran,
+        'presentase_kehadiran_efektif': student.presentase_kehadiran_efektif,
+        'industry_readiness': student.industry_readiness,
+        'kompetensi_skill_level': student.kompetensi_skill_level,
+        'study_environment': student.study_environment,
+        'skor_time_management': student.skor_time_management,
+        'motivasi_akademik': student.motivasi_akademik,
+        'stress_level': student.stress_level,
+        'skor_skill_level': student.skor_skill_level,
+    }
 
-    # Simpan prediksi & SHAP
+    # Execute ML prediction
+    result = ml_service.predict(features)
+
+    # Save prediction and SHAP analysis to database
     pred = Prediction(
         student_id=student.id,
         predicted_exam_score=result['predicted_exam_score'],
@@ -85,9 +113,13 @@ def predict_single():
 @predictions_bp.route('/insight/<student_id>', methods=['GET'])
 @jwt_required()
 def get_insight(student_id):
+    """
+    Retrieve SHAP insights and recommendation factors for a specific student's latest prediction.
+    """
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
-    # Try primary key first, then fallback to user_id lookup
+    
+    # Resolve student ID (handles both primary key and user_id fallback)
     student = Student.query.get(student_id)
     if not student:
         student = Student.query.filter_by(user_id=student_id).first()

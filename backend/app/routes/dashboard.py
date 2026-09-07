@@ -7,11 +7,19 @@ from ..services.ml_service import MLService
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
-# app/routes/dashboard.py
+"""
+Dashboard API Routes.
+Provides aggregated statistics and metrics for the admin and teacher dashboards.
+"""
+
 @dashboard_bp.route('/stats', methods=['GET'])
 @jwt_required()
-@role_required(['admin', 'guru'])
+@role_required(['admin', 'guru', 'orang_tua'])
 def stats():
+    """
+    Get global statistics including total students, average predicted scores,
+    risk distributions, top risky students, and global feature importances.
+    """
     total_students = Student.query.count()
     latest_preds = {}
 
@@ -43,8 +51,6 @@ def stats():
             latest_preds.values(),
             key=lambda item: item.predicted_exam_score if item.predicted_exam_score is not None else 10**9,
         )
-
-        # Removed risk_map
 
         for prediction in ordered_predictions[:5]:
             student = Student.query.get(prediction.student_id)
@@ -78,10 +84,10 @@ def stats():
             importances = ml.classifier.feature_importances_
             features = ml.train_columns if ml.train_columns is not None else ml.feature_names
             if features is not None and len(features) == len(importances):
-                # Clean up feature names to be more readable
+                # Map feature names to readable labels
                 name_map = {
                     'presentase_kehadiran': 'Presentase Kehadiran',
-                    'presentase_kehadiran_efektif': 'Kehadiran Efektif',
+                    'presentase_kehadiran_efektif': 'Libur Tanpa Keterangan',
                     'skor_time_management': 'Skor Time Management',
                     'industry_readiness': 'Kesiapan Industri',
                     'jam_belajar_per_hari': 'Jam Belajar per Hari',
@@ -90,16 +96,14 @@ def stats():
                     'jam_tidur': 'Jam Tidur',
                 }
                 for f, imp in zip(features, importances):
-                    # We only care about base numerical features, skip dummy encoded ones if any
-                    # But if we want them, we just map their names.
                     clean_name = name_map.get(f, f.replace('_', ' ').title())
                     global_shap.append({
                         'feature': clean_name,
                         'importance': round(float(imp) * 100, 2)
                     })
-                # Sort descending
+                
+                # Sort descending and keep the top 6 features
                 global_shap.sort(key=lambda x: x['importance'], reverse=True)
-                # Keep top 6
                 global_shap = global_shap[:6]
     except Exception as e:
         print("Error fetching global SHAP:", e)

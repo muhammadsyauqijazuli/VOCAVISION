@@ -26,7 +26,7 @@ async function resolveRole(token: string) {
 }
 
 function isRolePath(pathname: string) {
-  return ["/admin", "/guru", "/siswa"].some((prefix) =>
+  return ["/admin", "/guru", "/siswa", "/orangtua"].some((prefix) =>
     pathname.startsWith(prefix),
   );
 }
@@ -70,7 +70,9 @@ export async function proxy(request: NextRequest) {
         ? "admin"
         : pathname.startsWith("/guru")
           ? "guru"
-          : "siswa";
+          : pathname.startsWith("/orangtua")
+            ? "orang_tua"
+            : "siswa";
 
       if (targetRole !== role) {
         return NextResponse.redirect(

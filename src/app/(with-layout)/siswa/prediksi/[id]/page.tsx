@@ -36,6 +36,7 @@ type StudentDetailResponse = {
   kerja_sampingan: string | null;
   study_environment: string | null;
   kompetensi_skill_level: string | null;
+  skor_skill_level: number | string | null;
   industry_readiness: number | null;
   stress_level: string | null;
   jurusan: string | null;
@@ -76,6 +77,7 @@ type StudentNumericKey =
   | "jam_tidur"
   | "screen_time"
   | "motivasi_akademik"
+  | "skor_skill_level"
   | "industry_readiness";
 
 type StudentCategoricalKey =
@@ -89,12 +91,13 @@ type StudentCategoricalKey =
 const numericFields: Array<{ key: StudentNumericKey; label: string }> = [
   { key: "jam_belajar_per_hari", label: "Jam belajar per hari" },
   { key: "presentase_kehadiran", label: "Presentase kehadiran" },
-  { key: "presentase_kehadiran_efektif", label: "Presentase kehadiran efektif" },
+  { key: "presentase_kehadiran_efektif", label: "Libur tanpa keterangan" },
   { key: "nilai_rata_rata_raport", label: "Nilai rata-rata raport" },
   { key: "skor_time_management", label: "Skor time management" },
   { key: "jam_tidur", label: "Jam tidur" },
   { key: "screen_time", label: "Screen time" },
   { key: "motivasi_akademik", label: "Motivasi akademik" },
+  { key: "skor_skill_level", label: "Skor Skill Level" },
   { key: "industry_readiness", label: "Kesiapan Industri" },
 ] as const;
 
@@ -210,6 +213,14 @@ function buildRecommendations(
     recommendations.push({
       title: "Tingkatkan skill inti",
       description: `Kompetensi skill level ${name} masih ${student.kompetensi_skill_level}. Berikan latihan tambahan, proyek kecil, atau modul penguatan konsep.`,
+    });
+  }
+
+  const skillScore = toNumber(student.skor_skill_level);
+  if (skillScore !== null && skillScore < 80) {
+    recommendations.push({
+      title: "Optimalkan skor skill",
+      description: `Skor skill ${name} berada di angka ${skillScore.toFixed(1)}. Ajak siswa untuk berlatih praktik mandiri lebih tekun dan tingkatkan latihan keterampilan kejuruan.`,
     });
   }
 

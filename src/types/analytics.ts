@@ -17,6 +17,7 @@ export type StudentAnalyticsRecord = {
   kerja_sampingan: "Tidak" | "Ya";
   study_environment: "Kondusif" | "Cukup" | "Kurang Kondusif";
   kompetensi_skill_level: "Dasar" | "Menengah" | "Mahir";
+  skor_skill_level: number;
   industry_readiness: number;
   stress_level: "Rendah" | "Sedang" | "Berat";
   risk_status: RiskStatus;
@@ -40,6 +41,7 @@ export type AnalyticsStudentRecord = {
   kerja_sampingan: string | null;
   study_environment: string | null;
   kompetensi_skill_level: string | null;
+  skor_skill_level: number | null;
   industry_readiness: number | null;
   stress_level: "Rendah" | "Sedang" | "Berat" | null;
   predicted_score: number | null;

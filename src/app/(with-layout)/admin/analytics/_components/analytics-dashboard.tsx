@@ -360,7 +360,7 @@ function AttendanceTooltip({
     <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-xl dark:border-dark-3 dark:bg-gray-dark">
       <p className="font-semibold text-dark dark:text-white">{data.name}</p>
       <p className="mt-2 text-dark-4 dark:text-dark-6">
-        Kehadiran Efektif: {formatPercent(data.presentase_kehadiran_efektif)}
+        Libur Tanpa Keterangan: {formatPercent(data.presentase_kehadiran_efektif)}
       </p>
       <p className="text-dark-4 dark:text-dark-6">
         Nilai raport: {formatScore(data.nilai_raport)}

@@ -74,11 +74,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       });
 
       socketInstance.on("connect", () => {
-        // We need the backend student_id. The session user.id is the User ID.
-        // The backend `__init__.py` expects `student_id`. Wait, we should send the User ID or let the backend look up the student ID.
-        // Wait, interventions.py emits to `student_id`, not `user_id`.
-        // Let's send the user_id, and let the backend handle the join, or modify the frontend.
-        // We will just emit the join event with user_id, and we should modify the backend `on_join` to find the student_id!
+        // Emit join event using user_id; the backend will resolve the corresponding student_id.
         socketInstance.emit("join", { user_id: session.user.id });
       });
 

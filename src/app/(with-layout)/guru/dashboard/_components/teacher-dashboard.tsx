@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { RiskBadge } from "@/components/guru/RiskBadge";
 import type { RiskStatus } from "@/lib/utils";
 import type { DashboardStatsResponse } from "@/types/analytics";
@@ -354,11 +355,12 @@ export function TeacherDashboard({
           </div>
 
           <div className="mt-6 overflow-hidden rounded-2xl border border-stroke/70 dark:border-dark-3">
-            <div className="grid grid-cols-[1.6fr_0.75fr_0.6fr_1fr] gap-4 border-b border-stroke/70 bg-gray-50 px-5 py-4 text-xs font-semibold tracking-[0.18em] text-dark-4 uppercase dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6">
+            <div className="grid grid-cols-[1.6fr_0.75fr_0.6fr_1fr_1fr] gap-4 border-b border-stroke/70 bg-gray-50 px-5 py-4 text-xs font-semibold tracking-[0.18em] text-dark-4 uppercase dark:border-dark-3 dark:bg-dark-2 dark:text-dark-6">
               <span>Nama Siswa</span>
               <span>Kelas</span>
               <span>Skor</span>
               <span>Status Risiko</span>
+              <span className="text-right">Aksi</span>
             </div>
 
             <div className="divide-y divide-stroke/70 dark:divide-dark-3">
@@ -366,7 +368,7 @@ export function TeacherDashboard({
                 alertRows.map((row) => (
                   <div
                     key={row.studentId}
-                    className="grid grid-cols-[1.6fr_0.75fr_0.6fr_1fr] items-center gap-4 px-5 py-5"
+                    className="grid grid-cols-[1.6fr_0.75fr_0.6fr_1fr_1fr] items-center gap-4 px-5 py-5"
                   >
                     <div>
                       <p className="font-semibold text-dark dark:text-white">
@@ -385,6 +387,20 @@ export function TeacherDashboard({
                     </span>
                     <div>
                       <RiskBadge status={row.status} score={row.score} />
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <Link
+                        href={`/guru/students/${row.studentId}`}
+                        className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:opacity-95"
+                      >
+                        Detail
+                      </Link>
+                      <Link
+                        href={`/guru/reports/${row.studentId}`}
+                        className="inline-flex items-center rounded-lg border border-stroke px-4 py-2 text-sm font-semibold text-dark transition hover:bg-gray-1 dark:border-dark-3 dark:text-white dark:hover:bg-dark-2"
+                      >
+                        Laporan
+                      </Link>
                     </div>
                   </div>
                 ))

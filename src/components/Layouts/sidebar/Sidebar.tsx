@@ -24,10 +24,8 @@ export function Sidebar({ role }: SidebarProps) {
   const toggleExpanded = useCallback((title: string) => {
     setExpandedItems((prev) => (prev.includes(title) ? [] : [title]));
 
-    // Uncomment the following line to enable multiple expanded items
-    // setExpandedItems((prev) =>
-    //   prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title],
-    // );
+    // Expand only the selected item (accordion style)
+    // To allow multiple open items, you would use: prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
   }, []);
 
   useEffect(() => {

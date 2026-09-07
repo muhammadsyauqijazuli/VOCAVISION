@@ -18,7 +18,7 @@ export function RiskBadge({ status, score }: RiskBadgeProps) {
 
   if (resolvedStatus === "Aman") {
     return (
-      <span className="bg-brand-warning inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold text-white shadow-sm">
+      <span className="inline-flex items-center rounded-full bg-orange-500 px-3 py-1 text-xs font-semibold text-white shadow-sm">
         Aman
       </span>
     );
@@ -26,7 +26,7 @@ export function RiskBadge({ status, score }: RiskBadgeProps) {
 
   if (resolvedStatus === "Sangat Aman") {
     return (
-      <span className="bg-brand-accent-2 text-brand-header inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold shadow-sm">
+      <span className="inline-flex items-center rounded-full bg-green-500 px-3 py-1 text-xs font-semibold text-white shadow-sm">
         Sangat Aman
       </span>
     );

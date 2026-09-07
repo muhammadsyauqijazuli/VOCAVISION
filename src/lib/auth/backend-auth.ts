@@ -1,4 +1,4 @@
-export type Role = "admin" | "guru" | "siswa";
+export type Role = "admin" | "guru" | "siswa" | "orang_tua";
 
 export type BackendUser = {
   id: string;
@@ -44,6 +44,8 @@ export function getRoleHomePath(role?: string) {
       return "/guru/dashboard";
     case "siswa":
       return "/siswa/dashboard";
+    case "orang_tua":
+      return "/orangtua/dashboard";
     default:
       return "/auth/sign-in";
   }

@@ -1,7 +1,11 @@
+/**
+ * Fetch device usage data for charts.
+ * @param timeFrame - Optional timeframe ("monthly" | "yearly")
+ * @returns Array of device usage statistics
+ */
 export async function getDevicesUsedData(
   timeFrame?: "monthly" | "yearly" | (string & {}),
 ) {
-  // Fake delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const data = [
@@ -37,10 +41,14 @@ export async function getDevicesUsedData(
   return data;
 }
 
+/**
+ * Fetch payments overview data for charts.
+ * @param timeFrame - Optional timeframe ("monthly" | "yearly")
+ * @returns Object containing received and due payment data points
+ */
 export async function getPaymentsOverviewData(
   timeFrame?: "monthly" | "yearly" | (string & {}),
 ) {
-  // Fake delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   if (timeFrame === "yearly") {
@@ -94,8 +102,12 @@ export async function getPaymentsOverviewData(
   };
 }
 
+/**
+ * Fetch weekly profit data for charts.
+ * @param timeFrame - Optional timeframe string
+ * @returns Object containing sales and revenue data points
+ */
 export async function getWeeksProfitData(timeFrame?: string) {
-  // Fake delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   if (timeFrame === "last week") {
@@ -143,8 +155,11 @@ export async function getWeeksProfitData(timeFrame?: string) {
   };
 }
 
+/**
+ * Fetch campaign visitors data for charts.
+ * @returns Object containing total visitors, performance percentage, and chart data points
+ */
 export async function getCampaignVisitorsData() {
-  // Fake delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   return {
@@ -162,8 +177,11 @@ export async function getCampaignVisitorsData() {
   };
 }
 
+/**
+ * Fetch visitor analytics data for charts.
+ * @returns Array of visitor data points over time
+ */
 export async function getVisitorsAnalyticsData() {
-  // Fake delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   return [
@@ -172,6 +190,10 @@ export async function getVisitorsAnalyticsData() {
   ].map((value, index) => ({ x: index + 1 + "", y: value }));
 }
 
+/**
+ * Fetch costs per interaction data for charts.
+ * @returns Object containing average cost, growth, and chart data series
+ */
 export async function getCostsPerInteractionData() {
   return {
     avg_cost: 560.93,

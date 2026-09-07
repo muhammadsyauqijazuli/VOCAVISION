@@ -1,7 +1,10 @@
 import * as logos from "@/assets/logos";
 
+/**
+ * Fetch top products data.
+ * @returns Array of product objects
+ */
 export async function getTopProducts() {
-  // Fake delay
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
   return [
@@ -40,8 +43,11 @@ export async function getTopProducts() {
   ];
 }
 
+/**
+ * Fetch invoice table data.
+ * @returns Array of invoice records
+ */
 export async function getInvoiceTableData() {
-  // Fake delay
   await new Promise((resolve) => setTimeout(resolve, 1400));
 
   return [
@@ -72,8 +78,11 @@ export async function getInvoiceTableData() {
   ];
 }
 
+/**
+ * Fetch top channels analytics data.
+ * @returns Array of channel objects
+ */
 export async function getTopChannels() {
-  // Fake delay
   await new Promise((resolve) => setTimeout(resolve, 1500));
 
   return [

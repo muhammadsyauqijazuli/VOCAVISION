@@ -469,8 +469,8 @@ export default function SigninLandingPage() {
       {/* About Web Section */}
       <section id="about-web" className="relative overflow-hidden bg-white py-24 dark:bg-gray-950">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div 
-            data-animate-on-scroll 
+          <div
+            data-animate-on-scroll
             style={revealDelay(0)}
             className="mx-auto mb-16 max-w-3xl text-center"
           >
@@ -680,7 +680,7 @@ export default function SigninLandingPage() {
           >
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3972.193026365452!2d97.45268687508003!3d5.109436494866657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3047f35cbfffffff%3A0xc58a0cb0f61d3f75!2sSMK%20Negeri%201%20Tanah%20Jambo%20Aye!5e0!3m2!1sid!2sid!4v1717520000000!5m2!1sid!2sid"
-              className="absolute inset-0 h-full w-full border-0" 
+              className="absolute inset-0 h-full w-full border-0"
               allowFullScreen={true}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -721,166 +721,150 @@ export default function SigninLandingPage() {
         </div>
       </section>
 
-      <section id="how-it-works" className="relative overflow-hidden bg-linear-to-b from-slate-50 via-white to-blue-50/40 py-20 transition-colors duration-300 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute top-10 left-8 h-48 w-48 rounded-full bg-blue-200/30 blur-3xl dark:bg-blue-900/20" />
-          <div className="absolute top-1/3 right-0 h-72 w-72 rounded-full bg-cyan-200/20 blur-3xl dark:bg-cyan-500/10" />
-          <div className="absolute top-0 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-indigo-200/20 blur-3xl dark:bg-indigo-500/10" />
+      <section id="how-it-works" className="relative overflow-hidden bg-slate-50 py-24 dark:bg-gray-950">
+        {/* Modern gradient background decorations */}
+        <div className="pointer-events-none absolute inset-0 flex justify-center">
+          <div className="absolute -top-[10%] -left-[10%] h-[500px] w-[500px] rounded-full bg-blue-400/10 blur-[100px] dark:bg-blue-900/20" />
+          <div className="absolute top-[40%] -right-[10%] h-[400px] w-[400px] rounded-full bg-cyan-400/10 blur-[100px] dark:bg-cyan-900/20" />
+          <div className="absolute -bottom-[10%] left-[20%] h-[600px] w-[600px] rounded-full bg-indigo-400/10 blur-[100px] dark:bg-indigo-900/20" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div
-            data-animate-on-scroll
-            style={revealDelay(0)}
-            className="mx-auto mb-6 inline-flex w-full justify-center"
-          >
-            <span className="rounded-full border border-blue-100 bg-white/80 px-4 py-2 text-xs font-semibold tracking-[0.3em] text-blue-700 uppercase shadow-sm backdrop-blur dark:border-gray-700 dark:bg-gray-900/70 dark:text-blue-300">
+          <div data-animate-on-scroll style={revealDelay(0)} className="mx-auto mb-16 max-w-3xl text-center">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200/50 bg-blue-50/50 px-4 py-2 text-xs font-bold tracking-[0.2em] text-blue-600 uppercase shadow-sm backdrop-blur-sm dark:border-blue-900/30 dark:bg-blue-900/20 dark:text-blue-400">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500"></span>
+              </span>
               Alur & Nilai Utama
-            </span>
+            </div>
+            <h2 className="mb-6 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl dark:text-white">
+              Bagaimana <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">Vocavision Bekerja?</span>
+            </h2>
+            <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
+              Kami merancang Vocavision agar proses analisis data siswa menjadi lebih intuitif, mulai dari input data hingga pengambilan keputusan strategis.
+            </p>
           </div>
 
-          <h2
-            data-animate-on-scroll
-            style={revealDelay(40)}
-            className="mb-6 text-center text-3xl font-bold text-gray-800 sm:text-4xl dark:text-white"
-          >
-            Bagaimana Vocavision Bekerja?
-          </h2>
+          {/* 3 Steps - Connected Path Design */}
+          <div className="relative mt-16">
+            {/* Connecting Line for Desktop */}
+            <div className="absolute top-1/2 left-[10%] hidden h-0.5 w-[80%] -translate-y-1/2 bg-gradient-to-r from-transparent via-blue-200 to-transparent lg:block dark:via-blue-800/50" />
 
-          <p
-            data-animate-on-scroll
-            style={revealDelay(70)}
-            className="mx-auto max-w-3xl text-center text-sm leading-7 text-gray-600 sm:text-base dark:text-gray-400"
-          >
-            Vocavision membantu siswa dan guru memahami data, melihat prediksi,
-            lalu mengambil tindakan — semuanya dalam satu alur yang sederhana.
-          </p>
+            <div className="grid gap-10 lg:grid-cols-3 lg:gap-8">
+              {[
+                {
+                  step: "01",
+                  title: "Pengumpulan Data",
+                  desc: "Guru atau siswa menjawab 17 pertanyaan survei komprehensif mengenai kebiasaan belajar dan faktor lingkungan.",
+                  icon: HiClipboardList,
+                  color: "from-blue-500 to-cyan-500",
+                  shadow: "shadow-blue-500/25",
+                },
+                {
+                  step: "02",
+                  title: "Analisis Prediktif",
+                  desc: "Model Machine Learning kami langsung memproses data untuk menghasilkan skor prediksi dan tingkat risiko yang akurat.",
+                  icon: HiLightBulb,
+                  color: "from-indigo-500 to-blue-500",
+                  shadow: "shadow-indigo-500/25",
+                },
+                {
+                  step: "03",
+                  title: "Tindak Lanjut Cerdas",
+                  desc: "Dapatkan Insight SHAP untuk melihat faktor dominan, serta rekomendasi langkah yang bisa segera diterapkan.",
+                  icon: HiCheckCircle,
+                  color: "from-cyan-500 to-teal-500",
+                  shadow: "shadow-cyan-500/25",
+                },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  data-animate-on-scroll
+                  style={revealDelay(100 + idx * 100)}
+                  className="group relative flex flex-col items-center rounded-3xl border border-white/40 bg-white/60 p-8 text-center shadow-xl shadow-gray-200/50 backdrop-blur-md transition-all duration-500 hover:-translate-y-2 hover:bg-white hover:shadow-2xl hover:shadow-gray-200/80 dark:border-gray-800/60 dark:bg-gray-900/50 dark:shadow-none dark:hover:bg-gray-900/80"
+                >
+                  {/* Step Number Badge */}
+                  <div className="absolute -top-4 -right-4 flex h-12 w-12 items-center justify-center rounded-full bg-white font-bold text-gray-900 shadow-lg dark:bg-gray-800 dark:text-white">
+                    {item.step}
+                  </div>
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-3">
-            <div
-              data-animate-on-scroll
-              style={revealDelay(140)}
-              className="group flex flex-col items-center rounded-2xl border border-gray-100 bg-white/85 p-6 text-center shadow-sm transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-950/70"
-            >
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-cyan-500 text-white shadow-lg shadow-blue-500/20 transition-transform duration-500 group-hover:scale-105">
-                <HiClipboardList className="h-7 w-7" />
-              </div>
-              <h4 className="mt-4 font-semibold text-gray-800 dark:text-white">
-                1. Isi Data
-              </h4>
-              <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400">
-                Jawab 17 pertanyaan singkat tentang kebiasaan belajar &
-                lingkungan.
-              </p>
-            </div>
-
-            <div
-              data-animate-on-scroll
-              style={revealDelay(200)}
-              className="group flex flex-col items-center rounded-2xl border border-gray-100 bg-white/85 p-6 text-center shadow-sm transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-950/70"
-            >
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-cyan-500 text-white shadow-lg shadow-blue-500/20 transition-transform duration-500 group-hover:scale-105">
-                <HiLightBulb className="h-7 w-7" />
-              </div>
-              <h4 className="mt-4 font-semibold text-gray-800 dark:text-white">
-                2. Lihat Prediksi
-              </h4>
-              <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400">
-                Skor, status risiko, dan faktor dominan ditampilkan dengan
-                jelas.
-              </p>
-            </div>
-
-            <div
-              data-animate-on-scroll
-              style={revealDelay(260)}
-              className="group flex flex-col items-center rounded-2xl border border-gray-100 bg-white/85 p-6 text-center shadow-sm transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-950/70"
-            >
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-cyan-500 text-white shadow-lg shadow-blue-500/20 transition-transform duration-500 group-hover:scale-105">
-                <HiCheckCircle className="h-7 w-7" />
-              </div>
-              <h4 className="mt-4 font-semibold text-gray-800 dark:text-white">
-                3. Tindak Lanjut
-              </h4>
-              <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-400">
-                Ikuti saran praktis dan pantau perubahan secara berkala.
-              </p>
+                  <div className={`mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-white shadow-lg ${item.shadow} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}>
+                    <item.icon className="h-10 w-10" />
+                  </div>
+                  <h4 className="mb-3 text-xl font-bold text-gray-900 dark:text-white">
+                    {item.title}
+                  </h4>
+                  <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div
-            data-animate-on-scroll
-            style={revealDelay(300)}
-            className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-          >
+          {/* Tech Stack & Features Grid */}
+          <div className="mt-24">
+            <div data-animate-on-scroll style={revealDelay(200)} className="mb-10 text-center">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Didukung Oleh Teknologi Terkini</h3>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                { icon: HiShieldCheck, text: "Autentikasi JWT & RBAC (Admin/Guru/Siswa)" },
+                { icon: HiDatabase, text: "Penyimpanan Database Kuat dengan SQLAlchemy" },
+                { icon: HiChartBar, text: "Model Random Forest & SHAP Explainability" },
+                { icon: HiDocumentReport, text: "Laporan PDF/Excel siap unduh kapan saja" },
+                { icon: HiServer, text: "Backend Flask Performa Tinggi & API RESTful" },
+                { icon: HiVariable, text: "17 Variabel Prediktor Tervalidasi Akademik" },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  data-animate-on-scroll
+                  style={revealDelay(250 + idx * 50)}
+                  className="group flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all duration-300 hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-md dark:border-gray-800 dark:bg-gray-900/50 dark:hover:border-blue-900/50 dark:hover:bg-blue-900/10"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-100/50 text-blue-600 transition-transform duration-300 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white dark:bg-blue-900/30 dark:text-blue-400">
+                    <item.icon className="h-6 w-6" />
+                  </div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {item.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Stats Highlights */}
+          <div className="mt-20 grid grid-cols-1 gap-6 sm:grid-cols-3">
             {[
-              {
-                icon: HiShieldCheck,
-                text: "Autentikasi JWT & RBAC (Admin/Guru/Siswa)",
-              },
-              { icon: HiDatabase, text: "Penyimpanan MySQL dengan SQLAlchemy" },
-              {
-                icon: HiChartBar,
-                text: "Model Random Forest & SHAP Explainability",
-              },
-              { icon: HiDocumentReport, text: "Laporan PDF/Excel siap unduh" },
-              { icon: HiServer, text: "Backend Flask dengan API RESTful" },
-              { icon: HiVariable, text: "17 variabel prediktor tervalidasi" },
-            ].map((item, idx) => (
+              { label: "Variabel Prediktor", value: "15", prefix: "", suffix: "" },
+              { label: "Peran Pengguna", value: "4", prefix: "", suffix: "" },
+              { label: "Akurasi Model", value: "80", prefix: ">", suffix: "%" },
+            ].map((stat, idx) => (
               <div
                 key={idx}
                 data-animate-on-scroll
-                style={revealDelay(340 + idx * 60)}
-                className="flex items-start gap-3 rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm backdrop-blur transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-950/70"
+                style={revealDelay(300 + idx * 100)}
+                className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-white p-8 text-center shadow-lg shadow-gray-200/40 transition-all hover:-translate-y-1 dark:border-gray-800 dark:bg-gray-900 dark:shadow-none"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-primary dark:bg-gray-900">
-                  <item.icon className="h-5 w-5" />
+                <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-gradient-to-br from-blue-500/10 to-cyan-500/10 blur-2xl transition-all duration-500 group-hover:scale-150" />
+                <div className="flex items-baseline justify-center gap-1">
+                  <span className="text-3xl font-bold text-gray-400 dark:text-gray-500">{stat.prefix}</span>
+                  <span className="bg-gradient-to-br from-gray-900 to-gray-600 bg-clip-text text-5xl font-extrabold text-transparent dark:from-white dark:to-gray-400">{stat.value}</span>
+                  <span className="text-3xl font-bold text-gray-400 dark:text-gray-500">{stat.suffix}</span>
                 </div>
-                <p className="pt-0.5 text-sm leading-6 text-gray-700 dark:text-gray-300">
-                  {item.text}
+                <p className="mt-3 font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider text-xs">
+                  {stat.label}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            <div
-              data-animate-on-scroll
-              style={revealDelay(100)}
-              className="rounded-2xl border border-gray-100 bg-white/80 px-6 py-8 text-center shadow-sm backdrop-blur transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/70"
-            >
-              <span className="block text-4xl font-bold text-primary">17</span>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">
-                Variabel prediktor
-              </p>
-            </div>
-            <div
-              data-animate-on-scroll
-              style={revealDelay(160)}
-              className="rounded-2xl border border-gray-100 bg-white/80 px-6 py-8 text-center shadow-sm backdrop-blur transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/70"
-            >
-              <span className="block text-4xl font-bold text-primary">3</span>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">
-                Peran pengguna
-              </p>
-            </div>
-            <div
-              data-animate-on-scroll
-              style={revealDelay(220)}
-              className="rounded-2xl border border-gray-100 bg-white/80 px-6 py-8 text-center shadow-sm backdrop-blur transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-xl dark:border-gray-800 dark:bg-gray-900/70"
-            >
-              <span className="block text-4xl font-bold text-primary">
-                &gt;85%
-              </span>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">
-                Akurasi model
-              </p>
-            </div>
+          <div className="mt-16 flex justify-center">
+            <p className="rounded-full bg-gray-100/80 px-6 py-2.5 text-sm font-medium text-gray-600 backdrop-blur-sm dark:bg-gray-900/80 dark:text-gray-400">
+              ✨ Mudah, cepat, dan langsung bisa diterapkan oleh guru maupun siswa.
+            </p>
           </div>
-
-          <p className="mt-10 text-center text-sm text-gray-500 italic dark:text-gray-400">
-            Mudah, cepat, dan langsung bisa diterapkan oleh guru maupun siswa.
-          </p>
         </div>
       </section>
 

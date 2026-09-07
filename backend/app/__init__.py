@@ -49,6 +49,7 @@ def create_app():
     from .routes.dataset import dataset_bp
     from .routes.export import export_bp
     from .routes.notifications import notifications_bp
+    from .routes.orangtua import orangtua_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(users_bp, url_prefix='/api/users')
@@ -59,5 +60,6 @@ def create_app():
     app.register_blueprint(dataset_bp, url_prefix='/api/dataset')
     app.register_blueprint(export_bp, url_prefix='/api/export')
     app.register_blueprint(notifications_bp, url_prefix='/api/notifications')
+    app.register_blueprint(orangtua_bp, url_prefix='/api/orangtua')
 
     return app

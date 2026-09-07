@@ -24,7 +24,7 @@ EXCEL_COLUMNS = [
     ('nisn', 'NISN'),
     ('jam_belajar_per_hari', 'Jam Belajar / Hari'),
     ('presentase_kehadiran', 'Presentase Kehadiran'),
-    ('presentase_kehadiran_efektif', 'Presentase Kehadiran Efektif'),
+    ('presentase_kehadiran_efektif', 'Libur Tanpa Keterangan'),
     ('nilai_rata_rata_raport', 'Nilai Rata-rata Raport'),
     ('skor_time_management', 'Skor Time Management'),
     ('jam_tidur', 'Jam Tidur'),
@@ -36,6 +36,7 @@ EXCEL_COLUMNS = [
     ('kerja_sampingan', 'Kerja Sampingan'),
     ('study_environment', 'Study Environment'),
     ('kompetensi_skill_level', 'Kompetensi Skill Level'),
+    ('skor_skill_level', 'Skor Skill Level'),
     ('industry_readiness', 'Industry Readiness'),
     ('stress_level', 'Stress Level'),
     ('predicted_score', 'Prediksi Nilai Raport'),
@@ -103,6 +104,7 @@ def gather_rows(class_id=None, risk_status=None):
             'kerja_sampingan': student.kerja_sampingan,
             'study_environment': student.study_environment,
             'kompetensi_skill_level': student.kompetensi_skill_level,
+            'skor_skill_level': student.skor_skill_level,
             'industry_readiness': student.industry_readiness,
             'stress_level': student.stress_level,
             'predicted_score': prediction.predicted_exam_score if prediction else None,
@@ -400,7 +402,7 @@ def _student_variable_rows(report: dict[str, Any]):
         ['NISN', _format_value(student.nisn)],
         ['Jam Belajar / Hari', _format_value(student.jam_belajar_per_hari)],
         ['Presentase Kehadiran', _format_value(student.presentase_kehadiran)],
-        ['Presentase Kehadiran Efektif', _format_value(student.presentase_kehadiran_efektif)],
+        ['Libur Tanpa Keterangan', _format_value(student.presentase_kehadiran_efektif)],
         ['Nilai Rata-rata Raport', _format_value(student.nilai_rata_rata_raport)],
         ['Skor Time Management', _format_value(student.skor_time_management)],
         ['Jam Tidur', _format_value(student.jam_tidur)],
@@ -412,6 +414,7 @@ def _student_variable_rows(report: dict[str, Any]):
         ['Kerja Sampingan', _format_value(student.kerja_sampingan)],
         ['Study Environment', _format_value(student.study_environment)],
         ['Kompetensi Skill Level', _format_value(student.kompetensi_skill_level)],
+        ['Skor Skill Level', _format_value(student.skor_skill_level)],
         ['Industry Readiness', _format_value(student.industry_readiness)],
         ['Stress Level', _format_value(student.stress_level)],
         ['Prediksi Nilai Raport', _format_value(prediction.predicted_exam_score)],
@@ -474,6 +477,7 @@ def _build_student_story(report: dict[str, Any]):
     screen_time = _to_float(student.screen_time)
     motivation = _to_float(student.motivasi_akademik)
     time_management = _to_float(student.skor_time_management)
+    skor_skill = _to_float(student.skor_skill_level)
 
     strengths = []
     concerns = []
@@ -533,6 +537,12 @@ def _build_student_story(report: dict[str, Any]):
         concerns.append(f'Kompetensi skill masih {student.kompetensi_skill_level.lower()}, perlu penguatan konsep inti.')
         actions.append('Berikan latihan tambahan atau proyek kecil untuk memperkuat skill utama.')
 
+    if skor_skill is not None and skor_skill >= 80:
+        strengths.append(f'Skor keahlian/skill level sudah mencapai {skor_skill:.1f}, menunjukkan penguasaan dasar yang baik.')
+    elif skor_skill is not None:
+        concerns.append(f'Skor keahlian/skill level baru {skor_skill:.1f}, masih perlu diperkuat dengan latihan praktik.')
+        actions.append('Tingkatkan porsi praktik mandiri dan bimbingan terarah untuk menguatkan skill kejuruan.')
+
     industry_readiness = _to_float(student.industry_readiness)
     if industry_readiness is not None and industry_readiness >= 70:
         strengths.append(f'Kesiapan industri sudah baik ({industry_readiness:.0f}%), menunjukkan orientasi belajar yang matang.')
@@ -580,7 +590,7 @@ def _student_appendix_rows(report: dict[str, Any]):
         ['Gender', _format_value(student.gender)],
         ['Jam Belajar / Hari', _format_value(student.jam_belajar_per_hari)],
         ['Presentase Kehadiran', _format_value(student.presentase_kehadiran)],
-        ['Presentase Kehadiran Efektif', _format_value(student.presentase_kehadiran_efektif)],
+        ['Libur Tanpa Keterangan', _format_value(student.presentase_kehadiran_efektif)],
         ['Nilai Rata-rata Raport', _format_value(student.nilai_rata_rata_raport)],
         ['Skor Time Management', _format_value(student.skor_time_management)],
         ['Jam Tidur', _format_value(student.jam_tidur)],
@@ -591,6 +601,7 @@ def _student_appendix_rows(report: dict[str, Any]):
         ['Kerja Sampingan', _format_value(student.kerja_sampingan)],
         ['Study Environment', _format_value(student.study_environment)],
         ['Kompetensi Skill Level', _format_value(student.kompetensi_skill_level)],
+        ['Skor Skill Level', _format_value(student.skor_skill_level)],
         ['Industry Readiness', _format_value(student.industry_readiness)],
         ['Stress Level', _format_value(student.stress_level)],
         ['Prediksi Nilai Raport', _format_value(prediction.predicted_exam_score)],
@@ -640,6 +651,7 @@ def _analytics_dashboard_rows():
             'kerja_sampingan': student.kerja_sampingan,
             'study_environment': student.study_environment,
             'kompetensi_skill_level': student.kompetensi_skill_level,
+            'skor_skill_level': student.skor_skill_level,
             'industry_readiness': student.industry_readiness,
             'stress_level': student.stress_level,
             'predicted_score': prediction.predicted_exam_score if prediction else None,
@@ -663,9 +675,9 @@ def _analytics_summary(rows: list[dict[str, Any]]):
     avg_study_hours = (sum(study_hours) / len(study_hours)) if study_hours else None
 
     risk_counts = {
-        'Rendah': 0,
-        'Netral': 0,
-        'Tinggi': 0,
+        'Beresiko': 0,
+        'Aman': 0,
+        'Sangat Aman': 0,
     }
     for row in rows:
         risk_status = row.get('risk_status')
@@ -694,7 +706,7 @@ def _build_dashboard_cards(summary: dict[str, Any]):
         _build_dashboard_card_table('Total sample', str(summary['total_students']), 'Seluruh siswa di backend'),
         _build_dashboard_card_table('Avg exam score', '-' if summary['avg_score'] is None else f"{summary['avg_score']:.1f}", 'Rata-rata prediksi skor'),
         _build_dashboard_card_table('Avg study hours', '-' if summary['avg_study_hours'] is None else f"{summary['avg_study_hours']:.1f}", 'Jam belajar per hari'),
-        _build_dashboard_card_table('Risk count', str(summary['risk_counts']['Tinggi']), 'Tinggi'),
+        _build_dashboard_card_table('Risk count', str(summary['risk_counts']['Beresiko']), 'Beresiko'),
     ]]
     table = Table(rows, colWidths=[122, 122, 122, 122])
     table.setStyle(TableStyle([

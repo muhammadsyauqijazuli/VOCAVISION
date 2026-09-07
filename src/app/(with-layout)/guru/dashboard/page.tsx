@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { backendUrl, getRoleHomePath } from "@/lib/auth/backend-auth";
 import type { DashboardStatsResponse } from "@/types/analytics";
+import type { RiskStatus } from "@/lib/utils";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { TeacherDashboard } from "./_components/teacher-dashboard";

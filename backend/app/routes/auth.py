@@ -22,7 +22,8 @@ def login():
         demo = {
             'admin@test.com': ('admin', 'admin'),
             'guru@test.com': ('guru', 'guru'),
-            'siswa@test.com': ('siswa', 'siswa')
+            'siswa@test.com': ('siswa', 'siswa'),
+            'ortu@test.com': ('orang_tua', 'ortu')
         }
         if email in demo and password == demo[email][1]:
             role = demo[email][0]

@@ -113,6 +113,15 @@ export const NAV_CONFIG: NavConfigItem[] = [
     allowedRoles: ["siswa"],
     section: "MAIN MENU",
   },
+
+  // Orang Tua
+  {
+    title: "Dashboard Orang Tua",
+    href: "/orangtua/dashboard",
+    icon: Icons.HomeIcon,
+    allowedRoles: ["orang_tua"],
+    section: "MAIN MENU",
+  },
 ];
 
 export default NAV_CONFIG;

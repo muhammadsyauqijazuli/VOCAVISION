@@ -7,12 +7,19 @@ from ..utils import role_required
 
 students_bp = Blueprint('students', __name__)
 
-# app/routes/students.py
+"""
+Students API Routes.
+Handles fetching list of students and detailed profiles for Admin and Guru roles.
+"""
+
 @students_bp.route('', methods=['GET'])
 @students_bp.route('/', methods=['GET'])
 @jwt_required()
-@role_required(['admin', 'guru'])
+@role_required(['admin', 'guru', 'orang_tua'])
 def get_students():
+    """
+    Retrieve a paginated list of students with optional search, filtering, and sorting.
+    """
     search = request.args.get('search')
     risk_filter = request.args.get('risk_status')
 
@@ -60,7 +67,7 @@ def get_students():
     student_ids = [s.id for s in students]
     latest_preds = {}
     
-    # No longer mapping risk classes
+    # Retrieve latest predictions for the students on this page in a single query to avoid N+1
 
     if student_ids:
         preds_q = Prediction.query.filter(Prediction.student_id.in_(student_ids)).order_by(Prediction.student_id, Prediction.created_at.desc()).all()
@@ -68,7 +75,7 @@ def get_students():
             if p.student_id not in latest_preds:
                 latest_preds[p.student_id] = p
 
-    # Build result (keep payload small for list view)
+    # Build minimal payload result for list view
     result = []
     for s in students:
         pred = latest_preds.get(s.id)
@@ -127,7 +134,7 @@ def get_students():
 def get_student_detail(student_id):
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
-    # Try primary key first, then fallback to user_id lookup
+    # Resolve student ID (handles both primary key and user_id fallback)
     student = Student.query.get(student_id)
     if not student:
         student = Student.query.filter_by(user_id=student_id).first()
@@ -161,6 +168,7 @@ def get_student_detail(student_id):
         'kerja_sampingan': student.kerja_sampingan,
         'study_environment': student.study_environment,
         'kompetensi_skill_level': student.kompetensi_skill_level,
+        'skor_skill_level': student.skor_skill_level,
         'industry_readiness': student.industry_readiness,
         'stress_level': student.stress_level,
         'jurusan': student.jurusan,

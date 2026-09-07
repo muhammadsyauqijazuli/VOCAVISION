@@ -65,7 +65,7 @@ export async function POST(request: Request) {
       role: mePayload.role ?? loginPayload.role,
       nama: mePayload.nama ?? body.email?.split("@")[0] ?? "Pengguna",
     },
-    (loginPayload.role as "admin" | "guru" | "siswa") ?? "siswa",
+    (loginPayload.role as "admin" | "guru" | "siswa" | "orang_tua") ?? "siswa",
   );
 
   const response = NextResponse.json({

@@ -19,20 +19,23 @@ export function getRiskStatus(
     return null;
   }
 
-  if (parsedScore <= 82.57) {
+  if (parsedScore <= 81.83) {
     return "Beresiko";
   }
 
-  if (parsedScore <= 85.75) {
+  if (parsedScore < 85.75) {
     return "Aman";
   }
 
   return "Sangat Aman";
 }
 
+/**
+ * Format the risk status safely, providing a fallback if the data is missing.
+ * @param status - The raw risk status string
+ * @returns The formatted risk status string
+ */
 export function formatRiskStatus(status: RiskStatus | string | null | undefined): string {
-  // Model now returns "Beresiko", "Aman", "Sangat Aman"
-  // so no transformation is needed unless it's missing
   return status || "Belum ada data";
 }
 export function formatShapFeatureName(name: string): string {
@@ -42,10 +45,11 @@ export function formatShapFeatureName(name: string): string {
     screen_time: "Screen Time",
     jam_tidur: "Jam Tidur Malam",
     presentase_kehadiran: "Kehadiran Kelas",
-    presentase_kehadiran_efektif: "Kehadiran Efektif",
+    presentase_kehadiran_efektif: "Libur Tanpa Keterangan",
     skor_time_management: "Manajemen Waktu",
     motivasi_akademik: "Motivasi Akademik",
     industry_readiness: "Kesiapan Industri",
+    skor_skill_level: "Skor Keahlian/Skill Level",
     "kompetensi_skill_level_Rendah": "Skill Level (Rendah)",
     "kompetensi_skill_level_Menengah": "Skill Level (Menengah)",
     "kompetensi_skill_level_Tinggi": "Skill Level (Tinggi)",
@@ -60,7 +64,7 @@ export function formatShapFeatureName(name: string): string {
     return dictionary[name];
   }
 
-  // Interaction features, e.g. "jam_tidur indeks_produktivitas"
+  // Handle interaction features (e.g., "feature1 feature2")
   if (name.includes(" ")) {
     const parts = name.split(" ");
     const mappedParts = parts.map((p) => dictionary[p] || p);

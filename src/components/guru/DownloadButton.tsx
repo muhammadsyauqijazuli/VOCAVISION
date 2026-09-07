@@ -23,7 +23,7 @@ export default function DownloadButton({
       const response = await fetch(
         `/api/export/${format}?student_id=${encodeURIComponent(studentId)}`,
         {
-          // cookie will be automatically included for same-origin requests in Next/Browser
+          // Credentials (cookies) are automatically included for same-origin requests
           cache: "no-store",
         },
       );
