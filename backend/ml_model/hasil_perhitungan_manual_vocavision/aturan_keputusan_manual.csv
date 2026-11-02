@@ -1,0 +1,7 @@
+aturan,prediksi_manual,jumlah_data,distribusi_kelas
+skor_skill_level <= 86.835 DAN screen_time <= 7.5 DAN jam_belajar_per_hari <= 4.5 DAN jam_belajar_per_hari <= 2.26,Aman,10,"{'Beresiko': 0, 'Aman': 10, 'Sangat Aman': 0}"
+skor_skill_level <= 86.835 DAN screen_time <= 7.5 DAN jam_belajar_per_hari <= 4.5 DAN jam_belajar_per_hari > 2.26,Aman,4,"{'Beresiko': 0, 'Aman': 3, 'Sangat Aman': 1}"
+skor_skill_level <= 86.835 DAN screen_time <= 7.5 DAN jam_belajar_per_hari > 4.5 DAN industry_readiness <= 70,Beresiko,1,"{'Beresiko': 1, 'Aman': 0, 'Sangat Aman': 0}"
+skor_skill_level <= 86.835 DAN screen_time <= 7.5 DAN jam_belajar_per_hari > 4.5 DAN industry_readiness > 70,Aman,1,"{'Beresiko': 0, 'Aman': 1, 'Sangat Aman': 0}"
+skor_skill_level <= 86.835 DAN screen_time > 7.5,Beresiko,1,"{'Beresiko': 1, 'Aman': 0, 'Sangat Aman': 0}"
+skor_skill_level > 86.835,Sangat Aman,3,"{'Beresiko': 0, 'Aman': 0, 'Sangat Aman': 3}"

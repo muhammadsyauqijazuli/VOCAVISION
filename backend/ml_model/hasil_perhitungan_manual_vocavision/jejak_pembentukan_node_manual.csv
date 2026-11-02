@@ -1,0 +1,6 @@
+node,kedalaman,jumlah_data,distribusi_kelas,gini_node,fitur_terpilih,threshold,data_kiri,data_kanan,gini_kiri,gini_kanan,gini_split,gini_gain
+ROOT,0,20,"{'Beresiko': 2, 'Aman': 14, 'Sangat Aman': 4}",0.4600000000000001,skor_skill_level,86.83500000000001,17,3,0.3044982698961938,0.0,0.2588235294117647,0.2011764705882354
+ROOT-K,1,17,"{'Beresiko': 2, 'Aman': 14, 'Sangat Aman': 1}",0.3044982698961938,screen_time,7.5,16,1,0.2265625,0.0,0.21323529411764705,0.09126297577854672
+ROOT-K-K,2,16,"{'Beresiko': 1, 'Aman': 14, 'Sangat Aman': 1}",0.2265625,jam_belajar_per_hari,4.5,14,2,0.13265306122448983,0.5,0.1785714285714286,0.0479910714285714
+ROOT-K-K-K,3,14,"{'Beresiko': 0, 'Aman': 13, 'Sangat Aman': 1}",0.13265306122448983,jam_belajar_per_hari,2.26,10,4,0.0,0.375,0.10714285714285714,0.025510204081632695
+ROOT-K-K-N,3,2,"{'Beresiko': 1, 'Aman': 1, 'Sangat Aman': 0}",0.5,industry_readiness,70.0,1,1,0.0,0.0,0.0,0.5

@@ -1,0 +1,3 @@
+Metode,Benar,Salah,Akurasi pada 20 sampel (%),F1-macro pada 20 sampel
+Random Forest Manual (5 Pohon),17,3,85.0,0.5868
+Random Forest Model Final (100 Pohon),17,3,85.0,0.5868

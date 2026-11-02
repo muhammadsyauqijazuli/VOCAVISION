@@ -1,0 +1,4 @@
+No Pohon,Node,Jumlah data node,Distribusi kelas parent,Gini Index parent,Fitur yang diacak,Atribut,Threshold,N kiri,N kanan,Kiri Beresiko,Kiri Aman,Kiri Sangat Aman,Kanan Beresiko,Kanan Aman,Kanan Sangat Aman,Gini kiri,Gini kanan,Gini Split,Gini Gain
+2,ROOT-N-N,2,"{'Beresiko': 0, 'Aman': 1, 'Sangat Aman': 1}",0.5,"skor_time_management, jam_tidur, kompetensi_skill_level_Rendah, skor_skill_level",jam_tidur,4.0,1,1,0,1,0,0,0,1,0.0,0.0,0.0,0.5
+2,ROOT-N-N,2,"{'Beresiko': 0, 'Aman': 1, 'Sangat Aman': 1}",0.5,"skor_time_management, jam_tidur, kompetensi_skill_level_Rendah, skor_skill_level",skor_skill_level,88.0,1,1,0,1,0,0,0,1,0.0,0.0,0.0,0.5
+2,ROOT-N-N,2,"{'Beresiko': 0, 'Aman': 1, 'Sangat Aman': 1}",0.5,"skor_time_management, jam_tidur, kompetensi_skill_level_Rendah, skor_skill_level",skor_time_management,70.0,1,1,0,1,0,0,0,1,0.0,0.0,0.0,0.5

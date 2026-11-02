@@ -1,0 +1,12 @@
+fitur,threshold,n_kiri,n_kanan,gini_kiri,gini_kanan,gini_split,gini_gain,kiri_Beresiko,kiri_Aman,kiri_Sangat Aman,kanan_Beresiko,kanan_Aman,kanan_Sangat Aman
+industry_readiness,70.0,1,1,0.0,0.0,0.0,0.5,1,0,0,0,1,0
+jam_belajar_per_hari,7.0,1,1,0.0,0.0,0.0,0.5,1,0,0,0,1,0
+jam_tidur,11.0,1,1,0.0,0.0,0.0,0.5,1,0,0,0,1,0
+libur_tanpa_keterangan,91.66499999999999,1,1,0.0,0.0,0.0,0.5,0,1,0,1,0,0
+motivasi_akademik,80.0,1,1,0.0,0.0,0.0,0.5,1,0,0,0,1,0
+pendidikan_terakhir_orang_tua_SMA/SMK,0.5,1,1,0.0,0.0,0.0,0.5,0,1,0,1,0,0
+pendidikan_terakhir_orang_tua_SMP,0.5,1,1,0.0,0.0,0.0,0.5,1,0,0,0,1,0
+presentase_kehadiran,87.745,1,1,0.0,0.0,0.0,0.5,0,1,0,1,0,0
+screen_time,4.0,1,1,0.0,0.0,0.0,0.5,0,1,0,1,0,0
+skor_skill_level,83.83500000000001,1,1,0.0,0.0,0.0,0.5,1,0,0,0,1,0
+study_environment_Kondusif,0.5,1,1,0.0,0.0,0.0,0.5,1,0,0,0,1,0

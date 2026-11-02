@@ -1,0 +1,2 @@
+No Pohon,Node,Jumlah data node,Distribusi kelas parent,Gini Index parent,Fitur yang diacak,Atribut,Threshold,N kiri,N kanan,Kiri Beresiko,Kiri Aman,Kiri Sangat Aman,Kanan Beresiko,Kanan Aman,Kanan Sangat Aman,Gini kiri,Gini kanan,Gini Split,Gini Gain
+4,ROOT-N,5,"{'Beresiko': 0, 'Aman': 1, 'Sangat Aman': 4}",0.31999999999999984,"pendidikan_terakhir_orang_tua_SMP, rata_rata_pemasukan_keluarga_< 2 Juta, stress_level_Sedang, study_environment_Kurang Kondusif",rata_rata_pemasukan_keluarga_< 2 Juta,0.5,4,1,0,0,4,0,1,0,0.0,0.0,0.0,0.31999999999999984

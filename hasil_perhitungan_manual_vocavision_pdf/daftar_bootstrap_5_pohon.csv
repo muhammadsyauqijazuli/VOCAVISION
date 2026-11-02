@@ -1,0 +1,101 @@
+Pohon,Urutan pengambilan,No sampel asal,source_csv_line,Kelas
+1,1,19,63,Sangat Aman
+1,2,13,8,Aman
+1,3,17,34,Sangat Aman
+1,4,1,163,Beresiko
+1,5,11,25,Aman
+1,6,4,10,Aman
+1,7,16,32,Aman
+1,8,18,64,Sangat Aman
+1,9,4,10,Aman
+1,10,2,114,Beresiko
+1,11,9,88,Aman
+1,12,5,201,Aman
+1,13,10,22,Aman
+1,14,13,8,Aman
+1,15,2,114,Beresiko
+1,16,2,114,Beresiko
+1,17,14,73,Aman
+1,18,4,10,Aman
+1,19,3,3,Aman
+1,20,4,10,Aman
+2,1,13,8,Aman
+2,2,8,80,Aman
+2,3,16,32,Aman
+2,4,8,80,Aman
+2,5,18,64,Sangat Aman
+2,6,15,47,Aman
+2,7,13,8,Aman
+2,8,8,80,Aman
+2,9,16,32,Aman
+2,10,7,62,Aman
+2,11,2,114,Beresiko
+2,12,12,132,Aman
+2,13,8,80,Aman
+2,14,4,10,Aman
+2,15,18,64,Sangat Aman
+2,16,3,3,Aman
+2,17,16,32,Aman
+2,18,17,34,Sangat Aman
+2,19,19,63,Sangat Aman
+2,20,9,88,Aman
+3,1,6,85,Aman
+3,2,4,10,Aman
+3,3,12,132,Aman
+3,4,6,85,Aman
+3,5,6,85,Aman
+3,6,10,22,Aman
+3,7,18,64,Sangat Aman
+3,8,14,73,Aman
+3,9,16,32,Aman
+3,10,16,32,Aman
+3,11,10,22,Aman
+3,12,15,47,Aman
+3,13,5,201,Aman
+3,14,7,62,Aman
+3,15,13,8,Aman
+3,16,12,132,Aman
+3,17,10,22,Aman
+3,18,20,235,Sangat Aman
+3,19,6,85,Aman
+3,20,15,47,Aman
+4,1,15,47,Aman
+4,2,1,163,Beresiko
+4,3,3,3,Aman
+4,4,3,3,Aman
+4,5,4,10,Aman
+4,6,3,3,Aman
+4,7,16,32,Aman
+4,8,8,80,Aman
+4,9,7,62,Aman
+4,10,13,8,Aman
+4,11,19,63,Sangat Aman
+4,12,17,34,Sangat Aman
+4,13,10,22,Aman
+4,14,3,3,Aman
+4,15,17,34,Sangat Aman
+4,16,12,132,Aman
+4,17,7,62,Aman
+4,18,6,85,Aman
+4,19,9,88,Aman
+4,20,17,34,Sangat Aman
+5,1,9,88,Aman
+5,2,2,114,Beresiko
+5,3,20,235,Sangat Aman
+5,4,19,63,Sangat Aman
+5,5,11,25,Aman
+5,6,6,85,Aman
+5,7,9,88,Aman
+5,8,13,8,Aman
+5,9,18,64,Sangat Aman
+5,10,17,34,Sangat Aman
+5,11,3,3,Aman
+5,12,20,235,Sangat Aman
+5,13,7,62,Aman
+5,14,4,10,Aman
+5,15,16,32,Aman
+5,16,10,22,Aman
+5,17,15,47,Aman
+5,18,15,47,Aman
+5,19,13,8,Aman
+5,20,7,62,Aman

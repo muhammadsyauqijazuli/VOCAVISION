@@ -1,0 +1,21 @@
+No Sampel,source_csv_line,nilai_rata_rata_raport,status_hitung,Prediksi Manual,Hasil
+1,163,78.07,Beresiko,Beresiko,Benar
+2,114,81.27,Beresiko,Beresiko,Benar
+3,3,84.75,Aman,Aman,Benar
+4,10,84.5,Aman,Aman,Benar
+5,201,81.71,Aman,Aman,Benar
+6,85,83.79,Aman,Aman,Benar
+7,62,84.86,Aman,Aman,Benar
+8,80,82.71,Aman,Aman,Benar
+9,88,81.92,Aman,Aman,Benar
+10,22,85.57,Aman,Aman,Benar
+11,25,82.43,Aman,Aman,Benar
+12,132,83.14,Aman,Aman,Benar
+13,8,83.5,Aman,Aman,Benar
+14,73,82.33,Aman,Aman,Benar
+15,47,84.14,Aman,Aman,Benar
+16,32,83.29,Aman,Aman,Benar
+17,34,87.67,Sangat Aman,Sangat Aman,Benar
+18,64,86.08,Sangat Aman,Sangat Aman,Benar
+19,63,85.67,Sangat Aman,Sangat Aman,Benar
+20,235,86.5,Sangat Aman,Aman,Salah

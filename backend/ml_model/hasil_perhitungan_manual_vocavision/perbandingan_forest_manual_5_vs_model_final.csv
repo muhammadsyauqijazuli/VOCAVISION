@@ -1,0 +1,21 @@
+No Sampel,source_csv_line,Nilai Rata-rata Rapor,Aktual,Prediksi Forest Manual (5 Pohon),Prediksi Model Final (100 Pohon),Hasil Forest Manual,Hasil Model Final,Prediksi Forest Manual vs Model Final
+1,163,78.07,Beresiko,Aman,Aman,Salah,Salah,Sama
+2,114,81.27,Beresiko,Aman,Aman,Salah,Salah,Sama
+3,3,84.75,Aman,Aman,Aman,Benar,Benar,Sama
+4,10,84.5,Aman,Aman,Aman,Benar,Benar,Sama
+5,201,81.71,Aman,Aman,Aman,Benar,Benar,Sama
+6,85,83.79,Aman,Aman,Aman,Benar,Benar,Sama
+7,62,84.86,Aman,Aman,Aman,Benar,Benar,Sama
+8,80,82.71,Aman,Aman,Aman,Benar,Benar,Sama
+9,88,81.92,Aman,Aman,Aman,Benar,Benar,Sama
+10,22,85.57,Aman,Aman,Aman,Benar,Benar,Sama
+11,25,82.43,Aman,Aman,Aman,Benar,Benar,Sama
+12,132,83.14,Aman,Aman,Aman,Benar,Benar,Sama
+13,8,83.5,Aman,Aman,Aman,Benar,Benar,Sama
+14,73,82.33,Aman,Aman,Aman,Benar,Benar,Sama
+15,47,84.14,Aman,Aman,Aman,Benar,Benar,Sama
+16,32,83.29,Aman,Aman,Aman,Benar,Benar,Sama
+17,34,87.67,Sangat Aman,Sangat Aman,Sangat Aman,Benar,Benar,Sama
+18,64,86.08,Sangat Aman,Sangat Aman,Sangat Aman,Benar,Benar,Sama
+19,63,85.67,Sangat Aman,Sangat Aman,Aman,Benar,Salah,Berbeda
+20,235,86.5,Sangat Aman,Aman,Sangat Aman,Salah,Benar,Berbeda

@@ -22,14 +22,16 @@ import sys
 # =============================================================================
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Prioritas file input: data mentah_backup.csv jika ada (original raw), fallback ke data mentah.csv
+# Prioritas file input: data mentah_backup.csv jika ada, fallback ke data mentah backup.csv / data mentah.csv
 if os.path.exists(os.path.join(SCRIPT_DIR, 'data mentah_backup.csv')):
     INPUT_FILE = os.path.join(SCRIPT_DIR, 'data mentah_backup.csv')
+elif os.path.exists(os.path.join(SCRIPT_DIR, 'data mentah backup.csv')):
+    INPUT_FILE = os.path.join(SCRIPT_DIR, 'data mentah backup.csv')
 else:
     INPUT_FILE = os.path.join(SCRIPT_DIR, 'data mentah.csv')
 
 OUTPUT_CLEAN = os.path.join(SCRIPT_DIR, 'data_clean.csv')
-OUTPUT_RAW_SYNC = os.path.join(SCRIPT_DIR, 'data mentah.csv')
+OUTPUT_RAW_SYNC = os.path.join(SCRIPT_DIR, 'data mentah_backup.csv')
 
 
 # =============================================================================
@@ -122,6 +124,20 @@ def run_pipeline():
     # 1. BACA DATA MENTAH
     enc, sep = detect_separator_and_encoding(INPUT_FILE)
     df_raw = pd.read_csv(INPUT_FILE, sep=sep, encoding=enc)
+
+    # Handling otomatis jika CSV memiliki outer double quotes pada setiap baris (terbaca 1 kolom)
+    if len(df_raw.columns) <= 1:
+        import io
+        with open(INPUT_FILE, 'r', encoding=enc) as f:
+            lines = f.readlines()
+        cleaned = []
+        for l in lines:
+            l = l.strip()
+            if l.startswith('"') and l.endswith('"'):
+                l = l[1:-1].replace('""', '"')
+            cleaned.append(l)
+        df_raw = pd.read_csv(io.StringIO('\n'.join(cleaned)))
+
     print(f"[*] Data mentah dibaca dari: {os.path.basename(INPUT_FILE)}")
     print(f"    Jumlah baris: {len(df_raw)}, Jumlah kolom: {len(df_raw.columns)}")
 
@@ -420,7 +436,13 @@ def run_pipeline():
 
     # 8. TAHAP 6: SIMPAN OUTPUT KE data_clean.csv
     print(f"\n[*] Tahap 6: Menyimpan hasil data bersih ke: {OUTPUT_CLEAN}")
-    df_clean.to_csv(OUTPUT_CLEAN, index=False)
+    try:
+        df_clean.to_csv(OUTPUT_CLEAN, index=False)
+    except PermissionError:
+        print(f"\n[!] PERMISSION DENIED ERROR:")
+        print(f"[!] File '{OUTPUT_CLEAN}' sedang DIBUKA dan DIKUNCI oleh Microsoft Excel (EXCEL.exe) atau aplikasi lain.")
+        print("[!] Solusi: Tutup aplikasi Microsoft Excel / spreadsheet viewer Anda, lalu jalankan kembali skrip ini.")
+        sys.exit(1)
     print(f"    - Dimensi Data Bersih: {df_clean.shape[0]} baris x {df_clean.shape[1]} kolom")
     print(f"    - Sisa Missing Values: {df_clean.isna().sum().sum()} (100% Bersih & Valid)")
 

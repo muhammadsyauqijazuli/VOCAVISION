@@ -1,0 +1,21 @@
+No Sampel,source_csv_line,Aktual,Suara Pohon 1,Suara Pohon 2,Suara Pohon 3,Suara Pohon 4,Suara Pohon 5,Hasil Majority Voting,Hasil
+1,163,Beresiko,Beresiko,Aman,Aman,Beresiko,Aman,Aman,Salah
+2,114,Beresiko,Beresiko,Beresiko,Aman,Aman,Aman,Aman,Salah
+3,3,Aman,Aman,Beresiko,Aman,Aman,Aman,Aman,Benar
+4,10,Aman,Aman,Aman,Aman,Aman,Aman,Aman,Benar
+5,201,Aman,Aman,Aman,Aman,Aman,Aman,Aman,Benar
+6,85,Aman,Aman,Aman,Aman,Aman,Aman,Aman,Benar
+7,62,Aman,Aman,Aman,Aman,Aman,Aman,Aman,Benar
+8,80,Aman,Aman,Aman,Aman,Aman,Aman,Aman,Benar
+9,88,Aman,Beresiko,Aman,Aman,Aman,Aman,Aman,Benar
+10,22,Aman,Aman,Aman,Aman,Aman,Aman,Aman,Benar
+11,25,Aman,Aman,Sangat Aman,Aman,Aman,Aman,Aman,Benar
+12,132,Aman,Aman,Aman,Aman,Aman,Aman,Aman,Benar
+13,8,Aman,Aman,Aman,Aman,Aman,Aman,Aman,Benar
+14,73,Aman,Aman,Aman,Aman,Aman,Aman,Aman,Benar
+15,47,Aman,Aman,Aman,Aman,Aman,Aman,Aman,Benar
+16,32,Aman,Aman,Aman,Aman,Aman,Aman,Aman,Benar
+17,34,Sangat Aman,Sangat Aman,Sangat Aman,Sangat Aman,Sangat Aman,Aman,Sangat Aman,Benar
+18,64,Sangat Aman,Sangat Aman,Sangat Aman,Sangat Aman,Aman,Sangat Aman,Sangat Aman,Benar
+19,63,Sangat Aman,Sangat Aman,Sangat Aman,Aman,Sangat Aman,Sangat Aman,Sangat Aman,Benar
+20,235,Sangat Aman,Aman,Aman,Aman,Aman,Aman,Aman,Salah

@@ -1,0 +1,23 @@
+Pohon,Aturan,Prediksi,Jumlah data node,Distribusi kelas,Gini daun
+1,skor_skill_level <= 86.835 AND skor_skill_level <= 83.665 AND industry_readiness <= 50,Beresiko,5,"{'Beresiko': 4, 'Aman': 1, 'Sangat Aman': 0}",0.31999999999999984
+1,skor_skill_level <= 86.835 AND skor_skill_level <= 83.665 AND industry_readiness > 50,Aman,4,"{'Beresiko': 0, 'Aman': 4, 'Sangat Aman': 0}",0.0
+1,skor_skill_level <= 86.835 AND skor_skill_level > 83.665,Aman,8,"{'Beresiko': 0, 'Aman': 8, 'Sangat Aman': 0}",0.0
+1,skor_skill_level > 86.835,Sangat Aman,3,"{'Beresiko': 0, 'Aman': 0, 'Sangat Aman': 3}",0.0
+2,jam_belajar_per_hari <= 0.5,Sangat Aman,3,"{'Beresiko': 0, 'Aman': 0, 'Sangat Aman': 3}",0.0
+2,jam_belajar_per_hari > 0.5 AND kerja_sampingan_Ya <= 0.5 AND jam_belajar_per_hari <= 4.5,Aman,13,"{'Beresiko': 0, 'Aman': 13, 'Sangat Aman': 0}",0.0
+2,jam_belajar_per_hari > 0.5 AND kerja_sampingan_Ya <= 0.5 AND jam_belajar_per_hari > 4.5,Beresiko,2,"{'Beresiko': 1, 'Aman': 1, 'Sangat Aman': 0}",0.5
+2,jam_belajar_per_hari > 0.5 AND kerja_sampingan_Ya > 0.5 AND jam_tidur <= 4,Aman,1,"{'Beresiko': 0, 'Aman': 1, 'Sangat Aman': 0}",0.0
+2,jam_belajar_per_hari > 0.5 AND kerja_sampingan_Ya > 0.5 AND jam_tidur > 4,Sangat Aman,1,"{'Beresiko': 0, 'Aman': 0, 'Sangat Aman': 1}",0.0
+3,skor_skill_level <= 87.335 AND skor_time_management <= 65.905,Aman,13,"{'Beresiko': 0, 'Aman': 13, 'Sangat Aman': 0}",0.0
+3,skor_skill_level <= 87.335 AND skor_time_management > 65.905 AND motivasi_akademik <= 35.35,Aman,3,"{'Beresiko': 0, 'Aman': 3, 'Sangat Aman': 0}",0.0
+3,skor_skill_level <= 87.335 AND skor_time_management > 65.905 AND motivasi_akademik > 35.35,Aman,3,"{'Beresiko': 0, 'Aman': 2, 'Sangat Aman': 1}",0.4444444444444444
+3,skor_skill_level > 87.335,Sangat Aman,1,"{'Beresiko': 0, 'Aman': 0, 'Sangat Aman': 1}",0.0
+4,kerja_sampingan_Ya <= 0.5 AND industry_readiness <= 50 AND libur_tanpa_keterangan <= 94.61,Beresiko,1,"{'Beresiko': 1, 'Aman': 0, 'Sangat Aman': 0}",0.0
+4,kerja_sampingan_Ya <= 0.5 AND industry_readiness <= 50 AND libur_tanpa_keterangan > 94.61,Aman,2,"{'Beresiko': 0, 'Aman': 2, 'Sangat Aman': 0}",0.0
+4,kerja_sampingan_Ya <= 0.5 AND industry_readiness > 50,Aman,12,"{'Beresiko': 0, 'Aman': 12, 'Sangat Aman': 0}",0.0
+4,kerja_sampingan_Ya > 0.5 AND rata_rata_pemasukan_keluarga_< 2 Juta <= 0.5,Sangat Aman,4,"{'Beresiko': 0, 'Aman': 0, 'Sangat Aman': 4}",0.0
+4,kerja_sampingan_Ya > 0.5 AND rata_rata_pemasukan_keluarga_< 2 Juta > 0.5,Aman,1,"{'Beresiko': 0, 'Aman': 1, 'Sangat Aman': 0}",0.0
+5,jam_belajar_per_hari <= 0.5,Sangat Aman,2,"{'Beresiko': 0, 'Aman': 0, 'Sangat Aman': 2}",0.0
+5,jam_belajar_per_hari > 0.5 AND motivasi_akademik <= 35.35,Aman,6,"{'Beresiko': 0, 'Aman': 6, 'Sangat Aman': 0}",0.0
+5,jam_belajar_per_hari > 0.5 AND motivasi_akademik > 35.35 AND jam_belajar_per_hari <= 2.26,Aman,7,"{'Beresiko': 0, 'Aman': 6, 'Sangat Aman': 1}",0.24489795918367352
+5,jam_belajar_per_hari > 0.5 AND motivasi_akademik > 35.35 AND jam_belajar_per_hari > 2.26,Aman,5,"{'Beresiko': 1, 'Aman': 2, 'Sangat Aman': 2}",0.6399999999999999

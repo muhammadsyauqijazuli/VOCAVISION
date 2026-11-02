@@ -1,0 +1,21 @@
+No Sampel,source_csv_line,Bagian pada train-test split,Aktual,Prediksi RF Manual (5 Pohon),Prediksi RF Final (100 Pohon),Hasil RF Manual,Hasil RF Final,Kesamaan Prediksi
+1,163,Data uji,Beresiko,Aman,Aman,Salah,Salah,Sama
+2,114,Data uji,Beresiko,Aman,Aman,Salah,Salah,Sama
+3,3,Data uji,Aman,Aman,Aman,Benar,Benar,Sama
+4,10,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+5,201,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+6,85,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+7,62,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+8,80,Data uji,Aman,Aman,Aman,Benar,Benar,Sama
+9,88,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+10,22,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+11,25,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+12,132,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+13,8,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+14,73,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+15,47,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+16,32,Data uji,Aman,Aman,Aman,Benar,Benar,Sama
+17,34,Data latih,Sangat Aman,Sangat Aman,Sangat Aman,Benar,Benar,Sama
+18,64,Data latih,Sangat Aman,Sangat Aman,Sangat Aman,Benar,Benar,Sama
+19,63,Data uji,Sangat Aman,Sangat Aman,Aman,Benar,Salah,Berbeda
+20,235,Data latih,Sangat Aman,Aman,Sangat Aman,Salah,Benar,Berbeda
