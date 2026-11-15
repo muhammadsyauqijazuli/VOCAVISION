@@ -1,0 +1,16 @@
+No Sampel,source_csv_line,Bagian pada train-test split,Aktual,Prediksi RF Manual (5 Pohon),Prediksi RF Final (100 Pohon),Hasil RF Manual,Hasil RF Final,Kesamaan Prediksi
+1,57,Data latih,Beresiko,Beresiko,Beresiko,Benar,Benar,Sama
+2,86,Data latih,Beresiko,Beresiko,Beresiko,Benar,Benar,Sama
+3,100,Data latih,Beresiko,Beresiko,Aman,Benar,Salah,Berbeda
+4,139,Data latih,Beresiko,Beresiko,Beresiko,Benar,Benar,Sama
+5,209,Data latih,Beresiko,Beresiko,Beresiko,Benar,Benar,Sama
+6,61,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+7,85,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+8,91,Data uji,Aman,Aman,Aman,Benar,Benar,Sama
+9,118,Data latih,Aman,Aman,Aman,Benar,Benar,Sama
+10,172,Data uji,Aman,Aman,Aman,Benar,Benar,Sama
+11,26,Data latih,Sangat Aman,Sangat Aman,Sangat Aman,Benar,Benar,Sama
+12,53,Data latih,Sangat Aman,Sangat Aman,Sangat Aman,Benar,Benar,Sama
+13,127,Data latih,Sangat Aman,Sangat Aman,Sangat Aman,Benar,Benar,Sama
+14,226,Data latih,Sangat Aman,Sangat Aman,Sangat Aman,Benar,Benar,Sama
+15,242,Data uji,Sangat Aman,Sangat Aman,Sangat Aman,Benar,Benar,Sama
